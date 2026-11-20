@@ -43,8 +43,20 @@
   /* ---------- paper sheet ---------- */
   .paper{margin-top:14px; width:100%; max-width:640px; background:#fff; border-radius:16px;
     padding:10px; box-shadow:0 20px 44px rgba(50,25,0,.42), 0 2px 6px rgba(50,25,0,.25);}
-  .paper canvas{display:block; width:100%; height:auto; max-height:46dvh; margin:0 auto;
-    border-radius:10px; touch-action:none; background:#fff;}
+  /* Zoom viewport: the canvas is clipped here while zoomed; the canvas itself
+     carries the scale/translate transform, so taps still map through
+     getBoundingClientRect() (which already includes the transform). */
+  .zoom-viewport{position:relative; overflow:hidden; border-radius:10px; background:#fff;}
+  .paper canvas{display:block; width:100%; height:auto; margin:0 auto;
+    border-radius:10px; touch-action:none; background:#fff;
+    transform-origin:0 0; will-change:transform;}
+  .zoom-bar{display:flex; align-items:center; justify-content:center; gap:10px; padding-top:8px;}
+  .zoom-btn{min-width:52px; min-height:44px; padding:0 14px; border-radius:12px;
+    background:#FFF7E8; color:#5C4632; font-size:24px; font-weight:800; line-height:1;
+    box-shadow:0 3px 8px rgba(50,25,0,.18); display:flex; align-items:center; justify-content:center;}
+  .zoom-btn.reset{font-size:14px; letter-spacing:.02em;}
+  .zoom-btn:disabled{opacity:.4;}
+  .zoom-label{min-width:52px; text-align:center; font-size:14px; font-weight:800; color:#8A6D3B;}
   .paper.loading canvas{opacity:.25;}
   .loading-note{text-align:center; font-size:13px; color:#8A6D3B; padding:6px 0 0;}
 
@@ -133,7 +145,6 @@
   @media (min-width:700px){
     h1{font-size:38px;}
     .guide-thumb{width:104px;}
-    .paper canvas{max-height:52dvh;}
   }
 </style>
 </head>
@@ -153,11 +164,19 @@
   </div>
 
   <div class="paper loading" id="paper">
-    <canvas id="art" width="1920" height="1280"></canvas>
+    <div class="zoom-viewport" id="zoomViewport">
+      <canvas id="art" width="1920" height="1280"></canvas>
+    </div>
+    <div class="zoom-bar" aria-label="Zoom controls">
+      <button class="zoom-btn" id="zoomOutBtn" aria-label="Zoom out">&minus;</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="zoom-btn" id="zoomInBtn" aria-label="Zoom in">+</button>
+      <button class="zoom-btn reset" id="zoomResetBtn" aria-label="Reset zoom">Reset</button>
+    </div>
     <div class="loading-note" id="loadingNote">Loading your lion&hellip;</div>
   </div>
 
-  <p class="hint"><b>Pick a crayon</b>, then tap the picture to color it in!</p>
+  <p class="hint"><b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.</p>
 
   <div class="controls">
     <button class="undo-btn" id="undoBtn" aria-label="Undo last color" disabled>
@@ -218,16 +237,19 @@
 <script>
 'use strict';
 /* ================= CONFIG ================= */
-/* 8 vivid crayons — saturated colors that pop on white paper */
+/* 8 crayons — sampled EXACTLY from the regenerated color guide (lion-guide.jpg,
+   per-region median of the guide's flat fills, 2026-11-20). Tapping the matching
+   crayon now gives the same color as the guide. The guide has 7 distinct hues;
+   the two pinks (flowers vs ears/nose) differ by only a few RGB points. */
 const CRAYONS = [
-  ['Red',    '#FF3838'],
-  ['Orange', '#FF8C1A'],
-  ['Yellow', '#FFD60A'],
-  ['Green',  '#2FD44F'],
-  ['Blue',   '#2E7DFF'],
-  ['Purple', '#8A3FFC'],
-  ['Pink',   '#FF4FA3'],
-  ['Brown',  '#8B5A2B']
+  ['Gold',     '#FEC950'],   // lion face & body
+  ['Orange',   '#FB9035'],   // mane & tail
+  ['Yellow',   '#FED53B'],   // sun
+  ['Green',    '#73C155'],   // grass
+  ['Sky Blue', '#D3E5F1'],   // clouds (pale blue, as in the guide)
+  ['Purple',   '#B982D2'],   // purple flowers
+  ['Pink',     '#FE8BA8'],   // pink flowers
+  ['Rose',     '#FD90A3']    // inner ears & nose
 ];
 const WALL = 200;                       // wall threshold — verified leak-proof on this lion page
 const LS_KEY = 'cps-phase0:lion';       // single-page sample save key
@@ -362,12 +384,115 @@ function render(){
 /* Reused from the proven Color & Play app: works on the flat baseCanvas layer,
    so re-tapping a region always matches its flat color exactly (the wax grain
    lives only on the display layer and can never break a re-fill). */
+/* ================= ZOOM (pinch + buttons + pan) ================= */
+/* The canvas carries a CSS translate+scale transform (origin 0 0) inside
+   .zoom-viewport (overflow hidden). getBoundingClientRect() already includes
+   the transform, so a tap's screen point still maps to art coordinates with
+   the same formula as before — zoom never breaks tap-to-fill. One pointer
+   that stays put is a tap (fill); one pointer that moves is a pan; two
+   pointers pinch-zoom around their midpoint. */
+const zoomViewport = $('zoomViewport');
+let zoom = { scale: 1, tx: 0, ty: 0 };
+const ZOOM_MIN = 1, ZOOM_MAX = 3, TAP_SLOP = 12, TAP_MS = 600;
+const pointers = new Map();   // pointerId -> {x, y} in client coords
+let tapCandidate = null;      // {x, y, t} for the single-pointer tap, or null
+let pinch = null;             // {d0, mx0, my0, scale0, tx0, ty0} while pinching
+function zoomViewportPoint(cx, cy){
+  const r = zoomViewport.getBoundingClientRect();
+  return { x: cx - r.left, y: cy - r.top };
+}
+function clampZoom(){
+  const vw = zoomViewport.clientWidth, vh = zoomViewport.clientHeight;
+  const cw = viewCanvas.offsetWidth, ch = viewCanvas.offsetHeight;
+  if (zoom.scale <= 1){ zoom.scale = 1; zoom.tx = 0; zoom.ty = 0; }
+  else {
+    zoom.tx = Math.min(0, Math.max(vw - cw * zoom.scale, zoom.tx));
+    zoom.ty = Math.min(0, Math.max(vh - ch * zoom.scale, zoom.ty));
+  }
+}
+function applyZoom(){
+  clampZoom();
+  viewCanvas.style.transform = 'translate(' + zoom.tx + 'px,' + zoom.ty + 'px) scale(' + zoom.scale + ')';
+  $('zoomLabel').textContent = Math.round(zoom.scale * 100) + '%';
+  $('zoomOutBtn').disabled = zoom.scale <= ZOOM_MIN;
+  $('zoomInBtn').disabled = zoom.scale >= ZOOM_MAX;
+}
+function zoomAt(vpX, vpY, newScale){
+  const old = zoom.scale;
+  newScale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, newScale));
+  if (newScale === old) return;
+  const f = newScale / old;
+  zoom.tx = vpX - (vpX - zoom.tx) * f;
+  zoom.ty = vpY - (vpY - zoom.ty) * f;
+  zoom.scale = newScale;
+  applyZoom();
+}
+function zoomStep(factor){
+  zoomAt(zoomViewport.clientWidth / 2, zoomViewport.clientHeight / 2, zoom.scale * factor);
+}
+$('zoomInBtn').addEventListener('click', () => zoomStep(1.25));
+$('zoomOutBtn').addEventListener('click', () => zoomStep(1 / 1.25));
+$('zoomResetBtn').addEventListener('click', () => { zoom.scale = 1; zoom.tx = 0; zoom.ty = 0; applyZoom(); });
+
 viewCanvas.addEventListener('pointerdown', e => {
   if (!lineImg || !mask) return;
   e.preventDefault();
+  try { viewCanvas.setPointerCapture(e.pointerId); } catch(err){}
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1){
+    tapCandidate = { x: e.clientX, y: e.clientY, t: Date.now() };
+  } else if (pointers.size === 2){
+    tapCandidate = null;
+    const pts = [...pointers.values()];
+    const mp = zoomViewportPoint((pts[0].x + pts[1].x) / 2, (pts[0].y + pts[1].y) / 2);
+    pinch = { d0: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+              mx0: mp.x, my0: mp.y, scale0: zoom.scale, tx0: zoom.tx, ty0: zoom.ty };
+  }
+});
+viewCanvas.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId);
+  const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1){
+    if (tapCandidate &&
+        Math.hypot(e.clientX - tapCandidate.x, e.clientY - tapCandidate.y) > TAP_SLOP)
+      tapCandidate = null;
+    if (!tapCandidate && zoom.scale > 1){ zoom.tx += dx; zoom.ty += dy; applyZoom(); }
+  } else if (pointers.size === 2 && pinch){
+    const pts = [...pointers.values()];
+    const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    const mp = zoomViewportPoint((pts[0].x + pts[1].x) / 2, (pts[0].y + pts[1].y) / 2);
+    const newScale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, pinch.scale0 * d / pinch.d0));
+    const f = newScale / pinch.scale0;
+    /* keep the art point under the original midpoint fixed, then follow the midpoint */
+    zoom.tx = mp.x - (pinch.mx0 - pinch.tx0) * f;
+    zoom.ty = mp.y - (pinch.my0 - pinch.ty0) * f;
+    zoom.scale = newScale;
+    applyZoom();
+  }
+});
+function endPointer(e){
+  if (!pointers.has(e.pointerId)) return;
+  const wasTap = tapCandidate && pointers.size === 1 &&
+    Date.now() - tapCandidate.t < TAP_MS &&
+    Math.hypot(e.clientX - tapCandidate.x, e.clientY - tapCandidate.y) <= TAP_SLOP;
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  if (pointers.size === 0) tapCandidate = null;
+  if (wasTap) tapToFill(e.clientX, e.clientY);
+}
+viewCanvas.addEventListener('pointerup', endPointer);
+viewCanvas.addEventListener('pointercancel', e => {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  tapCandidate = null;
+});
+function tapToFill(clientX, clientY){
+  if (!lineImg || !mask) return;
   const r = viewCanvas.getBoundingClientRect();
-  const x = Math.floor((e.clientX - r.left) / r.width * W);
-  const y = Math.floor((e.clientY - r.top) / r.height * H);
+  const x = Math.floor((clientX - r.left) / r.width * W);
+  const y = Math.floor((clientY - r.top) / r.height * H);
   if (x < 0 || y < 0 || x >= W || y >= H) return;
   pushUndo();
   const [cr, cg, cb] = hexToRgb(currentColor);
@@ -380,7 +505,7 @@ viewCanvas.addEventListener('pointerdown', e => {
   } else {
     undoStack.pop(); // nothing changed; drop the snapshot
   }
-});
+}
 function floodFill(sx, sy, r, g, b){
   const w = W, h = H;
   const start = sy * w + sx;
@@ -583,12 +708,15 @@ function restoreProgress(){
 /* ================= INIT ================= */
 loadArt();
 updateUndoBtn();
+applyZoom();
 
 /* Debug handle for automated verification only (not part of the UI). */
 window.__cps = {
   get W(){ return W; }, get H(){ return H; },
   get taps(){ return taps; }, get done(){ return doneFlag; },
   get mask(){ return mask; },
+  get zoom(){ return { scale: zoom.scale, tx: zoom.tx, ty: zoom.ty }; },
+  setZoom(s){ zoom.scale = s; applyZoom(); },
   fillPixel(x, y){
     const d = fctx.getImageData(x, y, 1, 1).data;
     return [d[0], d[1], d[2], d[3]];
