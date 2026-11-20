@@ -215,25 +215,49 @@
     transition:opacity .25s ease, transform .25s ease; z-index:80; max-width:88vw; text-align:center;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  /* ---------- welcome screen ---------- */
-  .welcome-box{text-align:center; display:flex; flex-direction:column; align-items:center;}
-  .welcome-note{width:110px; height:110px; border-radius:50%; background:#FFD60A;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 12px 28px rgba(50,25,0,.4); margin:26px 0 18px;
-    animation:bob 2.4s ease-in-out infinite;}
-  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);}}
-  .welcome-song-line{color:#FFE9B8; font-size:16px; font-weight:700; margin:10px 0 0;
-    text-shadow:0 1px 4px rgba(60,30,5,.6);}
-  .play-song-btn{min-height:68px; min-width:250px; padding:0 30px; border-radius:999px;
+  /* ---------- welcome screen (showcase, not a music screen) ---------- */
+  #welcomeView{position:relative;}
+  .welcome-box{text-align:center; display:flex; flex-direction:column; align-items:center; width:100%;}
+  .welcome-mute-btn{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:14px;
+    width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.22); color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.55); display:flex; align-items:center; justify-content:center; z-index:5;}
+  .showcase{position:relative; width:100%; max-width:560px; background:#fff; border-radius:18px;
+    padding:10px 10px 8px; box-shadow:0 14px 30px rgba(50,25,0,.4); margin-top:16px;}
+  .showcase-img{position:relative; aspect-ratio:3/2; border-radius:12px; overflow:hidden; background:#fff;}
+  .showcase-img img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+    opacity:0; transition:opacity .6s ease;}
+  .showcase-img img.show-active{opacity:1;}
+  .show-arrow{position:absolute; top:36%; width:44px; height:44px; border-radius:50%;
+    background:rgba(255,255,255,.95); color:#5C4632; box-shadow:0 4px 12px rgba(0,0,0,.3);
+    display:flex; align-items:center; justify-content:center; z-index:3;}
+  .show-arrow.left{left:8px;}
+  .show-arrow.right{right:8px;}
+  .show-caption{display:flex; align-items:center; justify-content:center; gap:8px; padding-top:8px;
+    font-size:17px; font-weight:800; color:#2B2118;}
+  .show-caption .phase{background:#FFD60A; color:#4A2E00; font-size:12px; letter-spacing:.06em;
+    text-transform:uppercase; padding:3px 10px; border-radius:999px;}
+  .show-dots{display:flex; gap:8px; justify-content:center; margin-top:12px;}
+  .show-dots .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.45);
+    box-shadow:0 1px 3px rgba(0,0,0,.3); padding:0;}
+  .show-dots .dot.on{background:#FFD60A; transform:scale(1.25);}
+  .start-btn{min-height:68px; min-width:250px; padding:0 30px; border-radius:999px;
     background:#FF6B4A; color:#fff; font-size:21px; font-weight:800;
     box-shadow:0 8px 22px rgba(255,107,74,.5), inset 0 -3px 0 rgba(0,0,0,.12);
-    display:flex; align-items:center; justify-content:center; gap:12px; margin-top:26px;}
-  .play-song-btn:hover{background:#FF7A5C;}
+    display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px;}
+  .start-btn:hover{background:#FF7A5C;}
+  .welcome-hint{color:#FFE9B8; font-size:14px; font-weight:700; margin:12px 0 0;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
 
   /* ---------- stage replay button ---------- */
   .song-replay-btn{flex:0 0 60px; min-height:60px; border-radius:50%;
     background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);
     display:flex; align-items:center; justify-content:center;}
+
+  /* ---------- stage background-music row (hidden until tracks exist) ---------- */
+  .bg-music-row{width:100%; display:flex; gap:12px; margin-top:12px;}
+  .bg-change-btn{flex:1; min-height:56px; border-radius:16px; background:rgba(255,255,255,.22);
+    color:#fff; font-size:17px; font-weight:800; box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);
+    display:flex; align-items:center; justify-content:center; gap:8px;}
 
   /* ---------- desk volume controls ---------- */
   .vol-row{width:100%; max-width:640px; display:flex; gap:10px; margin-top:12px;}
@@ -254,24 +278,39 @@
 </head>
 <body>
 
-<!-- ============ WELCOME SCREEN ============ -->
+<!-- ============ WELCOME SCREEN (showcase of the pictures) ============ -->
 <div class="screen" id="welcomeView">
+  <button class="welcome-mute-btn" id="welcomeMuteBtn" aria-label="Mute or unmute the music" aria-pressed="false">
+    <svg class="ico-sound" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="#fff" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+    <svg class="ico-muted hidden" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="#fff" stroke="none"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>
+  </button>
   <div class="welcome-box">
-    <div class="welcome-note" aria-hidden="true">
-      <svg width="54" height="54" viewBox="0 0 24 24" fill="#4A2E00"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-    </div>
     <h1>Color &amp; Play</h1>
     <p class="sub">Let's make something colorful!</p>
-    <p class="welcome-song-line">Hear our official Color &amp; Play song!</p>
-    <button class="play-song-btn" id="welcomePlayBtn">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-      Play the song
+    <div class="showcase" id="showcase">
+      <div class="showcase-img">
+        <img id="showLine" src="assets/lion-line-2x.jpg" alt="Lion, uncolored picture" class="show-active">
+        <img id="showGuide" src="assets/lion-guide.jpg" alt="Lion, finished colored picture">
+      </div>
+      <button class="show-arrow left" id="showPrev" aria-label="Previous picture">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="show-arrow right" id="showNext" aria-label="Next picture">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div class="show-caption"><span id="showName">Lion</span><span class="phase" id="showLabel">Color it!</span></div>
+    </div>
+    <div class="show-dots" id="showDots" aria-label="Choose a picture"></div>
+    <button class="start-btn" id="startBtn">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      Start
     </button>
-    <button class="ghost-btn" id="welcomeSkipBtn">Skip the song</button>
+    <p class="welcome-hint">Watch the pictures come to life!</p>
   </div>
 </div>
 
 <audio id="welcomeAudio" src="assets/welcome-song.mp3" preload="auto"></audio>
+<audio id="bgAudio" preload="auto"></audio>
 
 <!-- ============ STAGE SCREEN ============ -->
 <div class="screen" id="stageView">
@@ -296,6 +335,17 @@
     <button class="parents-btn" id="parentsBtn">For Parents</button>
     <button class="song-replay-btn" id="replaySongBtn" aria-label="Hear the welcome song again">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    </button>
+  </div>
+  <div class="bg-music-row hidden" id="bgMusicRow">
+    <button class="bg-change-btn" id="changeBgBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      Change music
+    </button>
+    <button class="stop-btn music-toggle" id="stageMusicToggleBtn" aria-label="Stop the music">
+      <svg class="ico-stop" width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      <svg class="ico-play hidden" width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <span class="toggle-label">Stop</span>
     </button>
   </div>
   <p class="home-note">Your paintings stay here in the app.</p>
@@ -360,9 +410,10 @@
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
       Quiet
     </button>
-    <button class="stop-btn" id="volStopBtn" aria-label="Stop the music">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-      Stop
+    <button class="stop-btn music-toggle" id="volStopBtn" aria-label="Stop the music">
+      <svg class="ico-stop" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      <svg class="ico-play hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <span class="toggle-label">Stop</span>
     </button>
   </div>
 </div>
@@ -615,16 +666,36 @@ function saveParentPrefs(){
   catch(e){ storageFailed = true; }
 }
 
-/* ================= WELCOME SONG ================= */
-/* Godwin's own "Color & Play official song" (assets/welcome-song.mp3, 1:49,
-   normalized to -16 LUFS). It plays ONCE at the start — it ends with a
-   goodbye verse, so it never loops. Browsers block sound before a tap, so
-   the song only starts from the welcome Play button or the stage replay
-   button (both real taps). */
+/* ================= MUSIC ================= */
+/* Two players, only one ever plays at a time:
+   - Welcome song: Godwin's own "Color & Play official song"
+     (assets/welcome-song.mp3, 1:49, normalized to -16 LUFS). It plays ONCE
+     at the start — it ends with a goodbye verse, so it never loops.
+   - Background music: 5 gentle tracks on the stage screen, with a
+     change-music button. Godwin generated all 5 himself (no copyright
+     risk). They live in assets/ as bg-1 ... bg-5, listed in BG_TRACKS
+     below in cycle order; each track loops until changed or stopped.
+   Browsers block sound before a tap, so the welcome song only starts from
+   the first tap on the welcome screen (see the welcome listeners below). */
 const LS_VOLUME = 'cps-proto:volume';
+const LS_MUTED = 'cps-proto:muted';
 const VOL = { high: 1.0, low: 0.35 };
+const BG_GAIN = 0.4;   /* background music plays gently, never loud */
+/* Godwin's 5 background tracks, in cycle order (all normalized to -16 LUFS,
+   true peak -1.5, same as the welcome song). Names are used in the
+   change-music toast only. */
+const BG_TRACKS = ['assets/bg-1-happy-ukulele.mp3', 'assets/bg-2-gentle-flutes.mp3',
+  'assets/bg-3-bouncy-cartoon.mp3', 'assets/bg-4-sunny-pop.mp3', 'assets/bg-5-quiet-and-calm.mp3'];
+const BG_NAMES = ['Happy Ukulele', 'Gentle Flutes', 'Bouncy Cartoon', 'Sunny Pop', 'Quiet and Calm'];
 const song = $('welcomeAudio');
+const bgAudio = $('bgAudio');
 let volumePref = loadVolumePref();
+let muted = loadMutedPref();
+let bgIndex = 0;
+let bgEnabled = true;   /* false after the user stops background music */
+let lastAudio = null;   /* 'song' | 'bg' — which one the Play toggle resumes */
+let welcomeSongStarted = false;
+
 function loadVolumePref(){
   try {
     const v = localStorage.getItem(LS_VOLUME);
@@ -632,12 +703,27 @@ function loadVolumePref(){
   } catch(e){}
   return 'high';
 }
-function applyVolume(){ song.volume = VOL[volumePref] || 1; }
+function loadMutedPref(){
+  try { return localStorage.getItem(LS_MUTED) === '1'; } catch(e){ return false; }
+}
+function applyVolume(){
+  song.volume = VOL[volumePref] || 1;
+  bgAudio.volume = (VOL[volumePref] || 1) * BG_GAIN;
+  song.muted = muted;
+  bgAudio.muted = muted;
+}
 function syncVolumeUI(){
   $('volHighBtn').classList.toggle('sel', volumePref === 'high');
   $('volLowBtn').classList.toggle('sel', volumePref === 'low');
   $('volHighBtn').setAttribute('aria-pressed', volumePref === 'high' ? 'true' : 'false');
   $('volLowBtn').setAttribute('aria-pressed', volumePref === 'low' ? 'true' : 'false');
+}
+function syncMuteUI(){
+  const btn = $('welcomeMuteBtn');
+  btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+  const on = btn.querySelector('.ico-sound'), off = btn.querySelector('.ico-muted');
+  if (on) on.classList.toggle('hidden', muted);
+  if (off) off.classList.toggle('hidden', !muted);
 }
 function setVolume(level){
   if (level !== 'high' && level !== 'low') return;
@@ -646,23 +732,178 @@ function setVolume(level){
   applyVolume();
   syncVolumeUI();
 }
-function playSong(){
+function setMuted(m){
+  muted = !!m;
+  try { localStorage.setItem(LS_MUTED, muted ? '1' : '0'); } catch(e){}
+  applyVolume();
+  syncMuteUI();
+}
+
+/* --- welcome song --- */
+function playSong(){          /* restart from the beginning */
+  stopBg();
   applyVolume();
   try { song.currentTime = 0; } catch(e){}
   const p = song.play();
-  if (p && p.catch) p.catch(() => toast('Tap the music note to hear the song.'));
+  if (p && p.catch) p.catch(() => {});
 }
-function stopSong(){
+function pauseSong(){ song.pause(); lastAudio = 'song'; syncMusicToggle(); }
+function resumeSong(){
+  applyVolume();
+  const p = song.play();
+  if (p && p.catch) p.catch(() => {});
+}
+function stopSong(){          /* stop entirely (Start button, switching to bg) */
   song.pause();
   try { song.currentTime = 0; } catch(e){}
 }
+
+/* --- background music --- */
+function playBg(i){
+  if (!BG_TRACKS.length) return;
+  stopSong();
+  bgIndex = ((i % BG_TRACKS.length) + BG_TRACKS.length) % BG_TRACKS.length;
+  bgEnabled = true;
+  bgAudio.src = BG_TRACKS[bgIndex];
+  bgAudio.loop = true;   /* each track loops until changed or stopped */
+  applyVolume();
+  const p = bgAudio.play();
+  if (p && p.catch) p.catch(() => {});
+  syncMusicToggle();
+}
+function nextBg(){
+  if (!BG_TRACKS.length) return;
+  playBg(bgIndex + 1);
+  toast('Now playing: ' + BG_NAMES[bgIndex] + ' (' + (bgIndex + 1) + ' of ' + BG_TRACKS.length + ').');
+}
+function pauseBg(){ bgAudio.pause(); lastAudio = 'bg'; syncMusicToggle(); }
+function resumeBg(){
+  applyVolume();
+  const p = bgAudio.play();
+  if (p && p.catch) p.catch(() => {});
+}
+function stopBg(){
+  bgAudio.pause();
+  try { bgAudio.currentTime = 0; } catch(e){}
+}
+function maybeStartBg(){
+  if (!BG_TRACKS.length || !bgEnabled) return;
+  if (!song.paused || !bgAudio.paused) return;   /* something is already playing */
+  playBg(bgIndex);
+}
+song.addEventListener('ended', () => {
+  syncMusicToggle();
+  if (!$('stageView').classList.contains('hidden')) maybeStartBg();
+});
+
+/* --- one Play/Stop toggle for all music --- */
+/* While music is playing the toggle shows Stop; when stopped it shows Play,
+   and Play resumes the same music from where it stopped. */
+function musicPlaying(){ return !song.paused || !bgAudio.paused; }
+function toggleMusic(){
+  if (!song.paused){ pauseSong(); return; }
+  if (!bgAudio.paused){ pauseBg(); return; }
+  if (lastAudio === 'song' && song.currentTime > 0 && !song.ended){ resumeSong(); return; }
+  if (lastAudio === 'bg' && bgAudio.currentTime > 0 && !bgAudio.ended){ resumeBg(); return; }
+  if (BG_TRACKS.length){ playBg(bgIndex); return; }
+  playSong();
+}
+function syncMusicToggle(){
+  const playing = musicPlaying();
+  document.querySelectorAll('.music-toggle').forEach(btn => {
+    btn.setAttribute('aria-label', playing ? 'Stop the music' : 'Play the music');
+    const lbl = btn.querySelector('.toggle-label');
+    if (lbl) lbl.textContent = playing ? 'Stop' : 'Play';
+    const stopIco = btn.querySelector('.ico-stop'), playIco = btn.querySelector('.ico-play');
+    if (stopIco) stopIco.classList.toggle('hidden', !playing);
+    if (playIco) playIco.classList.toggle('hidden', playing);
+  });
+}
+song.addEventListener('play', syncMusicToggle);
+song.addEventListener('pause', syncMusicToggle);
+bgAudio.addEventListener('play', syncMusicToggle);
+bgAudio.addEventListener('pause', syncMusicToggle);
+
 function showWelcome(){ showView('welcomeView'); }
-$('welcomePlayBtn').addEventListener('click', () => { playSong(); showStage(); });
-$('welcomeSkipBtn').addEventListener('click', () => showStage());
 $('replaySongBtn').addEventListener('click', () => { playSong(); toast('Playing our song!'); });
 $('volHighBtn').addEventListener('click', () => setVolume('high'));
 $('volLowBtn').addEventListener('click', () => setVolume('low'));
-$('volStopBtn').addEventListener('click', () => { stopSong(); toast('Song stopped.'); });
+$('volStopBtn').addEventListener('click', () => toggleMusic());
+$('stageMusicToggleBtn').addEventListener('click', () => toggleMusic());
+$('changeBgBtn').addEventListener('click', () => nextBg());
+$('welcomeMuteBtn').addEventListener('click', () => setMuted(!muted));
+
+/* ================= WELCOME SHOWCASE ================= */
+/* The welcome screen is about the pictures, not the music: it shows every
+   character page uncolored, then colored, one at a time. Each slide shows
+   the line art ("Color it!"), then cross-fades to the finished guide
+   ("Finished!"), then moves to the next character. Arrows, dots and swipe
+   change the picture by hand. */
+const SHOWCASE = PAGES.map(p => ({ name: p.name, line: p.line, guide: p.guide }));
+const SHOW_MS = 2600;
+let showIdx = 0, showPhase = 'line', showTimer = null;
+function renderShowcase(){
+  const s = SHOWCASE[showIdx];
+  $('showLine').src = s.line;
+  $('showGuide').src = s.guide;
+  $('showLine').alt = s.name + ', uncolored picture';
+  $('showGuide').alt = s.name + ', finished colored picture';
+  $('showLine').classList.toggle('show-active', showPhase === 'line');
+  $('showGuide').classList.toggle('show-active', showPhase === 'guide');
+  $('showName').textContent = s.name;
+  $('showLabel').textContent = showPhase === 'line' ? 'Color it!' : 'Finished!';
+  document.querySelectorAll('#showDots .dot').forEach((d, i) =>
+    d.classList.toggle('on', i === showIdx));
+}
+function scheduleShowcase(){
+  clearTimeout(showTimer);
+  showTimer = setTimeout(() => {
+    if (showPhase === 'line') showPhase = 'guide';
+    else { showPhase = 'line'; showIdx = (showIdx + 1) % SHOWCASE.length; }
+    renderShowcase();
+    scheduleShowcase();
+  }, SHOW_MS);
+}
+function goSlide(i){
+  showIdx = ((i % SHOWCASE.length) + SHOWCASE.length) % SHOWCASE.length;
+  showPhase = 'line';
+  renderShowcase();
+  scheduleShowcase();
+}
+(function buildShowDots(){
+  const dots = $('showDots');
+  SHOWCASE.forEach((s, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.setAttribute('aria-label', 'Show the ' + s.name.toLowerCase());
+    d.addEventListener('click', () => goSlide(i));
+    dots.appendChild(d);
+  });
+})();
+$('showPrev').addEventListener('click', () => goSlide(showIdx - 1));
+$('showNext').addEventListener('click', () => goSlide(showIdx + 1));
+let swipeX = null;
+$('showcase').addEventListener('touchstart', e => { swipeX = e.changedTouches[0].clientX; }, { passive: true });
+$('showcase').addEventListener('touchend', e => {
+  if (swipeX === null) return;
+  const dx = e.changedTouches[0].clientX - swipeX;
+  swipeX = null;
+  if (Math.abs(dx) > 40) goSlide(showIdx + (dx < 0 ? 1 : -1));
+}, { passive: true });
+renderShowcase();
+scheduleShowcase();
+
+/* First tap anywhere on the welcome screen starts the welcome song (it keeps
+   playing while the child looks at the pictures). Taps on Start or the mute
+   button do not start it: Start goes straight to the stage with no music,
+   and mute is just a control. */
+$('welcomeView').addEventListener('pointerdown', e => {
+  if (welcomeSongStarted) return;
+  if (e.target.closest('#startBtn') || e.target.closest('#welcomeMuteBtn')) return;
+  welcomeSongStarted = true;
+  playSong();
+}, true);
+$('startBtn').addEventListener('click', () => { stopSong(); showStage(); });
 
 /* ================= GRAIN TILES ================= */
 /* Wax grain (Phase 0, proven): 256x256 noise, box-blurred twice, -1..1. */
@@ -790,7 +1031,9 @@ function buildStageCards(){
 }
 function showStage(){
   buildStageCards();
+  $('bgMusicRow').classList.toggle('hidden', BG_TRACKS.length === 0);
   showView('stageView');
+  maybeStartBg();
   /* If the unlock happened but the ceremony never got shown (e.g. reload
      between Done and ceremony), show it now — exactly once. */
   if (progress.unlocked && !progress.ceremonyShown) showCeremony();
@@ -1493,6 +1736,8 @@ function restoreProgress(){
 /* ================= INIT ================= */
 applyVolume();
 syncVolumeUI();
+syncMuteUI();
+syncMusicToggle();
 showWelcome();
 updateUndoBtn();
 applyZoom();
@@ -1506,8 +1751,11 @@ window.__cps = {
   get progress(){ return JSON.parse(JSON.stringify(progress)); },
   get storageFailed(){ return storageFailed; },
   get song(){ return { paused: song.paused, currentTime: song.currentTime, duration: song.duration, volume: song.volume, ended: song.ended, readyState: song.readyState }; },
+  get bg(){ return { tracks: BG_TRACKS.length, track: BG_TRACKS.length ? bgIndex + 1 : 0, paused: bgAudio.paused, currentTime: bgAudio.currentTime, duration: bgAudio.duration, volume: bgAudio.volume, ended: bgAudio.ended, src: bgAudio.currentSrc || '' }; },
+  get bgTracks(){ return BG_TRACKS.slice(); },
   get volumePref(){ return volumePref; },
-  playSong, stopSong, setVolume, showWelcome,
+  get muted(){ return muted; },
+  playSong, stopSong, setVolume, showWelcome, toggleMusic, nextBg, playBg,
   get zoom(){ return { scale: zoom.scale, tx: zoom.tx, ty: zoom.ty }; },
   setZoom(s){ zoom.scale = s; applyZoom(); },
   openPage,
