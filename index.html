@@ -222,6 +222,7 @@
 <div class="gallery hidden" id="galleryView">
   <h2>My Lion</h2>
   <p>Look what you made!</p>
+  <p>Your paintings stay here in the app.</p>
   <div class="frame"><img id="galleryImg" alt="Your finished colored lion"></div>
   <div class="gallery-btns">
     <button class="save-btn" id="saveBtn">
@@ -650,18 +651,37 @@ $('againBtn').addEventListener('click', () => {
   $('deskView').classList.remove('hidden');
   window.scrollTo({ top: 0 });
 });
+/* Save = share first, download only as a fallback.
+   A web page cannot choose the browser's download folder, so a download
+   lands in Downloads and the phone's gallery picks it up. Sharing instead
+   sends the picture straight to wherever the parent chooses (WhatsApp,
+   Drive, print...) without ever touching Downloads or the gallery. */
 $('saveBtn').addEventListener('click', () => {
   if (!lineImg) return;
-  compositeCanvas().toBlob(blob => {
+  compositeCanvas().toBlob(async blob => {
     if (!blob){ toast('Could not save right now.'); return; }
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'my-lion-color-and-play.png';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-    toast('Picture saved! Find it in your downloads.');
+    const file = new File([blob], 'my-lion-color-and-play.png', { type: 'image/png' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
+      try {
+        await navigator.share({ files: [file] });
+        toast('Picture shared!');
+      } catch (err){
+        if (err && err.name === 'AbortError') return;   // share sheet cancelled: do nothing
+        downloadPainting(blob);                          // share failed: fall back to download
+      }
+      return;
+    }
+    downloadPainting(blob);                              // no share support: download
   }, 'image/png');
 });
+function downloadPainting(blob){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'my-lion-color-and-play.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast('Picture saved! Find it in your downloads.');
+}
 
 /* ================= PERSISTENCE (localStorage) ================= */
 function scheduleSave(){
