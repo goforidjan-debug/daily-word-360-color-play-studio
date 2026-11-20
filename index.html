@@ -740,12 +740,13 @@ function setMuted(m){
 }
 
 /* --- welcome song --- */
-function playSong(){          /* restart from the beginning */
+function playSong(){          /* restart from the beginning; returns the play promise (or null) */
   stopBg();
   applyVolume();
   try { song.currentTime = 0; } catch(e){}
   const p = song.play();
   if (p && p.catch) p.catch(() => {});
+  return p || null;
 }
 function pauseSong(){ song.pause(); lastAudio = 'song'; syncMusicToggle(); }
 function resumeSong(){
@@ -904,6 +905,22 @@ $('welcomeView').addEventListener('pointerdown', e => {
   playSong();
 }, true);
 $('startBtn').addEventListener('click', () => { stopSong(); showStage(); });
+
+/* Try to greet the user with the official song the moment the app opens.
+   Most browsers block sound until the first tap, so on a brand-new visit
+   this attempt is usually refused — then the first-tap handler above starts
+   the song instead, exactly as before. But when the browser allows it (the
+   user has opened the app before, or the browser permits autoplay), the song
+   is already playing on load; mark it started so a later tap does NOT
+   restart it from the beginning. */
+(function tryAutoplaySong(){
+  let p = null;
+  try { p = playSong(); } catch(e){ p = null; }
+  if (p && p.then){
+    p.then(() => { welcomeSongStarted = true; lastAudio = 'song'; syncMusicToggle(); })
+     .catch(() => { /* blocked until a tap — first-tap handler above takes over */ });
+  }
+})();
 
 /* ================= GRAIN TILES ================= */
 /* Wax grain (Phase 0, proven): 256x256 noise, box-blurred twice, -1..1. */
