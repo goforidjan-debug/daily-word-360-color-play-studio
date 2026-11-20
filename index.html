@@ -256,6 +256,19 @@
   .welcome-hint{color:#FFE9B8; font-size:14px; font-weight:700; margin:12px 0 0;
     text-shadow:0 1px 4px rgba(60,30,5,.6);}
 
+  /* ---------- opening loading screen (fake progress, ~2.5 s) ---------- */
+  .load-overlay{position:absolute; inset:0; z-index:4; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:20px; padding:20px;
+    background:#C89B6A url("assets/desk-wood.jpg") center/cover no-repeat;
+    transition:opacity .4s ease;}
+  .load-overlay.done{opacity:0; pointer-events:none;}
+  .load-bar{width:min(280px,78vw); height:16px; border-radius:999px;
+    background:rgba(255,255,255,.35); box-shadow:inset 0 2px 6px rgba(60,30,5,.35); overflow:hidden;}
+  .load-fill{height:100%; width:0; border-radius:999px;
+    background:linear-gradient(90deg,#FFE45C,#FFC400); transition:width 2.5s linear;}
+  .load-note{color:#FFE9B8; font-size:15px; font-weight:700; margin:0; text-align:center;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+
   /* ---------- stage replay button ---------- */
   .song-replay-btn{flex:0 0 60px; min-height:60px; border-radius:50%;
     background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);
@@ -314,6 +327,11 @@
       Start
     </button>
     <p class="welcome-hint">Watch the pictures come to life!</p>
+  </div>
+  <div class="load-overlay" id="loadOverlay" role="status" aria-label="Loading">
+    <h1>Color &amp; Play</h1>
+    <div class="load-bar"><div class="load-fill" id="loadFill"></div></div>
+    <p class="load-note">Loading your coloring desk…</p>
   </div>
 </div>
 
@@ -998,8 +1016,7 @@ $('showcase').addEventListener('touchend', e => {
   swipeX = null;
   if (Math.abs(dx) > 40) goSlide(showIdx + (dx < 0 ? 1 : -1));
 }, { passive: true });
-renderShowcase();
-scheduleShowcase();
+renderShowcase();   /* first slide shown statically; auto-advance starts after the loading screen finishes */
 
 /* First tap anywhere on the welcome screen starts the welcome song (it keeps
    playing while the child looks at the pictures). Taps on Start or the mute
@@ -1013,20 +1030,53 @@ $('welcomeView').addEventListener('pointerdown', e => {
 }, true);
 $('startBtn').addEventListener('click', () => { stopSong(); showStage(); });
 
-/* Try to greet the user with the official song the moment the app opens.
-   Most browsers block sound until the first tap, so on a brand-new visit
-   this attempt is usually refused — then the first-tap handler above starts
-   the song instead, exactly as before. But when the browser allows it (the
-   user has opened the app before, or the browser permits autoplay), the song
-   is already playing on load; mark it started so a later tap does NOT
-   restart it from the beginning. */
-(function tryAutoplaySong(){
+/* Try to greet the user with the official song. Most browsers block sound
+   until the first tap, so on a brand-new visit this attempt is usually
+   refused — then the first-tap handler above starts the song instead,
+   exactly as before. But when the browser allows it (the user has opened
+   the app before, or the browser permits autoplay), the song is already
+   playing; mark it started so a later tap does NOT restart it from the
+   beginning. Called once, when the opening loading screen finishes. */
+function tryAutoplaySong(){
+  if (welcomeSongStarted) return;   /* a tap already started it — don't restart */
   let p = null;
   try { p = playSong(); } catch(e){ p = null; }
   if (p && p.then){
     p.then(() => { welcomeSongStarted = true; lastAudio = 'song'; syncMusicToggle(); })
      .catch(() => { /* blocked until a tap — first-tap handler above takes over */ });
   }
+}
+
+/* ================= OPENING LOADING SCREEN ================= */
+/* When the app opens, a short fake loading bar (~2.5 s) gives the app a
+   moment before the pictures start changing and the song tries to play.
+   The showcase stays on its first slide until the bar finishes, and the
+   song attempt happens then, not at page load. A tap anywhere during
+   loading still starts the song through the welcomeView pointerdown
+   handler above (the overlay sits inside #welcomeView, below the mute
+   button, so the mute button stays tappable and Start stays covered).
+   Runs once, on first open only — coming back to the welcome screen
+   later does not show it again. */
+const LOADING_MS = 2500;
+let loadingDone = false;
+function finishLoading(){
+  if (loadingDone) return;
+  loadingDone = true;
+  const ov = $('loadOverlay');
+  if (ov) ov.classList.add('done');
+  setTimeout(() => { if (ov) ov.classList.add('hidden'); }, 450);
+  /* Only start the welcome if it is still the visible screen. */
+  if ($('welcomeView').classList.contains('hidden')) return;
+  scheduleShowcase();
+  tryAutoplaySong();
+}
+(function startLoading(){
+  const fill = $('loadFill');
+  /* Kick the gold bar off on the next frame so its CSS transition runs. */
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (fill) fill.style.width = '100%';
+  }));
+  setTimeout(finishLoading, LOADING_MS);
 })();
 
 /* ================= GRAIN TILES ================= */
