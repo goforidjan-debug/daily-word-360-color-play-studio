@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#C89B6A">
 <title>Color &amp; Play Studio — Prototype</title>
-<meta name="description" content="Color & Play Studio prototype: 5 crayon pages, unlock colored pencils, gallery, parent area.">
+<meta name="description" content="Color & Play Studio prototype: 10 crayon pages, 10 colored-pencil pages, gallery, parent area.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FF6B4A'/%3E%3Ccircle cx='22' cy='26' r='8' fill='%23FFD93D'/%3E%3Ccircle cx='42' cy='26' r='8' fill='%232EC4B6'/%3E%3Ccircle cx='32' cy='44' r='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
 <style>
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -37,6 +37,14 @@
   .stage-pill{background:#FFD60A; color:#4A2E00; font-size:12px; font-weight:800; letter-spacing:.08em;
     text-transform:uppercase; padding:5px 11px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
   .stage-pill.pencil{background:#7ED6FF; color:#0B3D5C;}
+  .complete-badge{background:linear-gradient(180deg,#FFE45C,#FFC400); color:#4A2E00; font-size:12px;
+    font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:5px 11px; border-radius:999px;
+    box-shadow:0 3px 10px rgba(60,30,5,.35); display:inline-flex; align-items:center; gap:5px;}
+  .bonus-sec{margin-top:16px;}
+  .bonus-head{display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:0 2px;}
+  .bonus-head h3{margin:0; font-size:14px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:#FFE9B8; text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .bonus-head .line{flex:1; height:2px; background:rgba(255,233,184,.5); border-radius:2px;}
   .cards{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .card{background:#fff; border-radius:16px; padding:8px 8px 10px; text-align:center;
     box-shadow:0 10px 24px rgba(50,25,0,.38); position:relative; overflow:hidden;}
@@ -318,13 +326,21 @@
   <p class="sub">Pick a picture and color it in!</p>
 
   <div class="stage-sec">
-    <div class="stage-sec-head"><h2>Stage 1</h2><span class="stage-pill">Crayons</span></div>
+    <div class="stage-sec-head"><h2>Stage 1</h2><span class="stage-pill">Crayons</span><span class="complete-badge hidden" id="stage1Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>
     <div class="cards" id="stage1Cards"></div>
+    <div class="bonus-sec" id="stage1BonusSec">
+      <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
+      <div class="cards" id="stage1BonusCards"></div>
+    </div>
   </div>
 
   <div class="stage-sec">
-    <div class="stage-sec-head"><h2>Stage 2</h2><span class="stage-pill pencil">Colored Pencils</span></div>
+    <div class="stage-sec-head"><h2>Stage 2</h2><span class="stage-pill pencil">Colored Pencils</span><span class="complete-badge hidden" id="stage2Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>
     <div class="cards" id="stage2Cards"></div>
+    <div class="bonus-sec" id="stage2BonusSec">
+      <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
+      <div class="cards" id="stage2BonusCards"></div>
+    </div>
   </div>
 
   <div class="home-btns">
@@ -540,7 +556,7 @@
     </div>
     <div class="pencil-fan" id="pencilFan" aria-hidden="true"></div>
     <h2>You unlocked Colored Pencils!</h2>
-    <p>Five pictures done — now you can color with pencils, just like a big artist!</p>
+    <p>Six pictures done — now you can color with pencils, just like a big artist!</p>
     <button class="big-btn" id="tryPencilsBtn">Color the Fire Truck!</button>
     <button class="ghost-btn" id="ceremonyLaterBtn">Maybe later</button>
   </div>
@@ -553,7 +569,11 @@
 /* ================= PAGE CONFIG ================= */
 /* Palettes are guide-exact medians from each page's *-ART-REPORT.md.
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
-   per the report's §8.5 lion precedent (palette IS the guide's medians). */
+   per the report's §8.5 lion precedent (palette IS the guide's medians).
+   20 pages: 10 per stage — 6 required + 4 bonus. A page is required unless
+   it carries `required:false` (bonus). `square:true` pages are 1600x1600
+   (elephant, robot); every other page is 1920x1280. The canvas is sized
+   from the line art's natural size, never stretched. */
 const PAGES = [
   { id:'lion', name:'Lion', title:'Color the Lion!', stage:1, tool:'crayon',
     line:'assets/lion-line-2x.jpg', guide:'assets/lion-guide.jpg',
@@ -563,7 +583,7 @@ const PAGES = [
     line:'assets/ladybug-line-2x.jpg', guide:'assets/ladybug-guide.jpg',
     palette:[['Green','#00D235'],['Pink','#FF5FB5'],['Yellow','#FFDE39'],['Red','#F11F1D'],
              ['Light Pink','#FFC7CF'],['Hot Pink','#FC1995'],['Black','#000000']] },
-  { id:'elephant', name:'Elephant', title:'Color the Elephant!', stage:1, tool:'crayon',
+  { id:'elephant', name:'Elephant', title:'Color the Elephant!', stage:1, tool:'crayon', square:true,
     line:'assets/elephant-line-2x.jpg', guide:'assets/elephant-guide.jpg',
     palette:[['Elephant Blue','#5BBAEE'],['Ear Blue','#3BA4DA'],['Puddle Blue','#2B9DDC'],
              ['Cloud Blue','#D1EEFE'],['Umbrella Pink','#FF399C'],['Handle Tan','#CC884F'],
@@ -585,7 +605,87 @@ const PAGES = [
     line:'assets/fire-truck-line-2x.jpg', guide:'assets/fire-truck-guide.jpg',
     palette:[['Red','#FC3B32'],['Red-Orange','#FB552D'],['Yellow','#FED337'],
              ['Light Blue','#A3D1E8'],['Orange','#FE7517'],['Medium Blue','#018AD8'],
-             ['Dark Gray','#484848'],['Medium Gray','#8D8D8D']] }
+             ['Dark Gray','#484848'],['Medium Gray','#8D8D8D']] },
+  /* --- Stage 1, required (crayons) --- */
+  { id:'superhero-pup', name:'Superhero Pup', title:'Color the Superhero Pup!', stage:1, tool:'crayon',
+    line:'assets/superhero-pup-line-2x.jpg', guide:'assets/superhero-pup-guide.jpg',
+    palette:[['Puppy Tan','#F2CA9C'],['Cloud Blue','#D7EAF6'],['Cape Red','#E32A28'],
+             ['Ear Brown','#A76E3D'],['Mask Blue','#1973BA'],['Star Yellow','#FED820'],
+             ['Paw Pink-Tan','#E8B088'],['Gray Detail','#696967'],['Speck Gray','#B7B7B7'],
+             ['Black','#000000']] },
+  /* --- Stage 1, bonus (crayons) --- */
+  { id:'penguin', name:'Penguin', title:'Color the Penguin!', stage:1, tool:'crayon', required:false,
+    line:'assets/penguin-line-2x.jpg', guide:'assets/penguin-guide.jpg',
+    palette:[['Igloo Pale Blue','#D5E7F3'],['Black','#000000'],['Scarf Red','#CE3E3A'],
+             ['Igloo Blue','#A0C4DA'],['Igloo Light Blue','#AED1E7'],['Beak Orange','#F89636'],
+             ['Beak Dark Orange','#E2782E'],['Scarf Dark Red','#AB272C'],['Cheek Pink','#F8B4B3']] },
+  { id:'unicorn', name:'Unicorn', title:'Color the Unicorn!', stage:1, tool:'crayon', required:false,
+    line:'assets/unicorn-line-2x.jpg', guide:'assets/unicorn-guide.jpg',
+    palette:[['Cloud Blue','#D8EBF7'],['Mane Pink','#F6ABBF'],['Mane Purple','#9B74B3'],
+             ['Rainbow Yellow','#FCDC52'],['Rainbow Red','#EE5969'],['Rainbow Orange','#FA9F54'],
+             ['Rainbow Green','#71BC7A'],['Cheek Pink','#F58BA1']] },
+  { id:'space-cat', name:'Space Cat', title:'Color the Space Cat!', stage:1, tool:'crayon', required:false,
+    line:'assets/space-cat-line-2x.jpg', guide:'assets/space-cat-guide.jpg',
+    palette:[['Cat Orange','#F9A253'],['Moon Pale Yellow','#FAE6A2'],['Helmet Gold','#FDD255'],
+             ['Suit Blue','#5293C9'],['Suit Pale Gray-Blue','#E2ECEC'],['Backpack Gray','#A3A09E'],
+             ['Inner Ear Coral','#F68C65'],['Rock Light Gray','#CCCCCC'],['Suit Dark Blue','#3B7AA6'],
+             ['Planet Orange','#DE7C34'],['Rock Gray','#706D6E'],['Helmet Gray','#B9BEBE'],
+             ['Moon Yellow','#F8D67A'],['Black','#000000'],['Crater Brown','#AE4B42'],
+             ['Speck Blue','#114B7B']] },
+  { id:'dolphin', name:'Dolphin', title:'Color the Dolphin!', stage:1, tool:'crayon', required:false,
+    line:'assets/dolphin-line-2x.jpg', guide:'assets/dolphin-guide.jpg',
+    palette:[['Dolphin Blue','#1F99D5'],['Sun Yellow','#FEB628'],['Droplet Light Blue','#82CBE9']] },
+  /* --- Stage 2, required (colored pencils) --- */
+  { id:'pirate-ship', name:'Pirate Ship', title:'Color the Pirate Ship!', stage:2, tool:'pencil',
+    line:'assets/pirate-ship-line-2x.jpg', guide:'assets/pirate-ship-guide.jpg',
+    palette:[['Hull Brown','#A36233'],['Black','#000000'],['Patch Red','#EB3F3C'],
+             ['Map Tan','#BE9962'],['Hull Dark Brown','#82562C'],['Skull Gray','#A2A2A2']] },
+  { id:'train', name:'Train', title:'Color the Train!', stage:2, tool:'pencil',
+    line:'assets/train-line-2x.jpg', guide:'assets/train-guide.jpg',
+    palette:[['Engine Red','#FC3B32'],['Window Blue','#A3D1E8'],['Carriage Green','#53AC42'],
+             ['Wheel Dark Gray','#484848'],['Carriage Blue','#2B9DDC'],['Yellow','#FED337'],
+             ['Carriage Orange','#FE7517'],['Brown','#AF6123'],['Medium Gray','#8D8D8D'],
+             ['Pink','#FEA4A8']] },
+  { id:'seahorse', name:'Seahorse', title:'Color the Seahorse!', stage:2, tool:'pencil',
+    line:'assets/seahorse-line-2x.jpg', guide:'assets/seahorse-guide.jpg',
+    palette:[['Seahorse Pink','#F8A2BF'],['Belly Orange','#FA8C3D'],['Seaweed Green','#48AD5A'],
+             ['Fin Yellow','#FDD449'],['Seaweed Dark Green','#478A52'],['Bubble Blue','#4394D7'],
+             ['Shell Purple','#895BA2'],['Shell Light Purple','#A97CB8'],
+             ['Starfish Cheek Pink','#EA6094'],['Dark Bubble Blue','#294865']] },
+  { id:'owl', name:'Owl', title:'Color the Owl!', stage:2, tool:'pencil',
+    line:'assets/owl-line-2x.jpg', guide:'assets/owl-guide.jpg',
+    palette:[['Owl Brown','#C1793E'],['Leaf Green','#50A540'],['Wing Brown','#A5622E'],
+             ['Star Yellow','#FBD440'],['Beak Orange','#ED7C29'],['Black','#000000']] },
+  { id:'skater-pup', name:'Skater Pup', title:'Color the Skater Pup!', stage:2, tool:'pencil',
+    line:'assets/skater-pup-line-2x.jpg', guide:'assets/skater-pup-guide.jpg',
+    palette:[['Puppy Tan','#CB9869'],['Cap Red','#E23D3B'],['Black','#000000'],
+             ['Wheel Yellow','#FCD13C'],['Board Dark Blue','#2570A8'],['Board Blue','#408EC6'],
+             ['Ear Brown','#784B32'],['Cap Dark Red','#A62125'],['Light Brown','#B37F54'],
+             ['Board Teal','#246D68'],['Tongue Pink','#F19394'],['Gold','#E2B321'],
+             ['Pale Cream','#FDD89C']] },
+  /* --- Stage 2, bonus (colored pencils) --- */
+  { id:'robot', name:'Robot', title:'Color the Robot!', stage:2, tool:'pencil', required:false, square:true,
+    line:'assets/robot-line-2x.jpg', guide:'assets/robot-guide.jpg',
+    palette:[['Robot Blue','#97CBEB'],['Balloon Red','#EA2224'],['Gear Gray','#9FA3A6'],
+             ['Face Gray','#C5C5C5'],['Heart Pink','#F7AEC2'],['Chest Heart Yellow','#FCD637']] },
+  { id:'dragon', name:'Dragon', title:'Color the Dragon!', stage:2, tool:'pencil', required:false,
+    line:'assets/dragon-line-2x.jpg', guide:'assets/dragon-guide.jpg',
+    palette:[['Dragon Green','#59C650'],['Chestnut Brown','#BD7239'],['Treasure Brown','#7C4B2F'],
+             ['Wing Pink','#EE6194'],['Coin Brown','#9B603B'],['Black','#000000'],
+             ['Wing Dark Green','#496547'],['Chest Dark Brown','#68472F'],['Coin Gold','#FAC534'],
+             ['Gem Blue','#218EDC'],['Horn Orange','#F29637'],['Dark Olive','#564218'],
+             ['Dark Green','#458442']] },
+  { id:'koala', name:'Koala', title:'Color the Koala!', stage:2, tool:'pencil', required:false,
+    line:'assets/koala-line-2x.jpg', guide:'assets/koala-guide.jpg',
+    palette:[['Koala Gray','#BBBDBD'],['Leaf Green','#5DB34A'],['Branch Brown','#99653C'],
+             ['Inner Ear Pink','#F4B9C2'],['Black','#000000']] },
+  { id:'teddy-bear', name:'Teddy Bear', title:'Color the Teddy Bear!', stage:2, tool:'pencil', required:false,
+    line:'assets/teddy-bear-line-2x.jpg', guide:'assets/teddy-bear-guide.jpg',
+    palette:[['Blanket Red','#F46C69'],['Bear Brown','#BB7D5A'],['Basket Yellow','#FACF4B'],
+             ['Cupcake Pink','#FEA6B4'],['Cupcake Deep Pink','#F88098'],['Thermos Blue','#428CC7'],
+             ['Apple Red','#E23532'],['Sandwich Tan','#E8A962'],['Thermos Dark Blue','#3272AB'],
+             ['Black','#000000'],['Flower Pink','#ED92A3'],['Blanket Deep Red','#E55551'],
+             ['Leaf Green','#84A34D'],['Dark Flower Brown','#4E2E03']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -643,14 +743,20 @@ function showView(id){
 }
 
 /* ================= PERSISTENCE ================= */
+/* Progress format (cps-proto:progress), version 2: { finished: [page ids],
+   unlocked, ceremonyShown, version }. The finished list is authoritative;
+   required vs bonus is derived from the page config, so a version-1 record
+   (no `version` field, from the 6-page prototype) loads as-is and its
+   already-finished pages count exactly as before. */
 function loadProgress(){
   try {
     const raw = localStorage.getItem(LS_PROGRESS);
-    if (raw){ const p = JSON.parse(raw); return { finished: p.finished || [], unlocked: !!p.unlocked, ceremonyShown: !!p.ceremonyShown }; }
+    if (raw){ const p = JSON.parse(raw); return { finished: p.finished || [], unlocked: !!p.unlocked, ceremonyShown: !!p.ceremonyShown, version: p.version || 1 }; }
   } catch(e){}
-  return { finished: [], unlocked: false, ceremonyShown: false };
+  return { finished: [], unlocked: false, ceremonyShown: false, version: 2 };
 }
 function saveProgressState(){
+  progress.version = 2;
   try { localStorage.setItem(LS_PROGRESS, JSON.stringify(progress)); }
   catch(e){ storageFailed = true; }
 }
@@ -836,11 +942,12 @@ $('welcomeMuteBtn').addEventListener('click', () => setMuted(!muted));
 
 /* ================= WELCOME SHOWCASE ================= */
 /* The welcome screen is about the pictures, not the music: it shows every
-   character page uncolored, then colored, one at a time. Each slide shows
+   REQUIRED character page uncolored, then colored, one at a time (12 slides:
+   6 per stage). Bonus pages are not in the showcase. Each slide shows
    the line art ("Color it!"), then cross-fades to the finished guide
    ("Finished!"), then moves to the next character. Arrows, dots and swipe
    change the picture by hand. */
-const SHOWCASE = PAGES.map(p => ({ name: p.name, line: p.line, guide: p.guide }));
+const SHOWCASE = PAGES.filter(p => p.required !== false).map(p => ({ name: p.name, line: p.line, guide: p.guide }));
 const SHOW_MS = 2600;
 let showIdx = 0, showPhase = 'line', showTimer = null;
 function renderShowcase(){
@@ -1017,34 +1124,48 @@ function starSVG(filled){
     (filled ? ' stroke="#E8A800" stroke-width="0.7"' : '') +
     '><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>';
 }
+/* Required vs bonus: a page is required unless `required:false` in its
+   config. The unlock counts required Stage 1 pages only; Stage Complete
+   needs all 10 pages of a stage (6 required + 4 bonus). */
+function isRequired(p){ return p.required !== false; }
+function requiredDoneCount(stage){
+  return PAGES.filter(p => p.stage === stage && isRequired(p) && progress.finished.includes(p.id)).length;
+}
+function bonusDoneCount(stage){
+  return PAGES.filter(p => p.stage === stage && !isRequired(p) && progress.finished.includes(p.id)).length;
+}
+function stageComplete(stage){
+  return requiredDoneCount(stage) === 6 && bonusDoneCount(stage) === 4;
+}
+function makeStageCard(p, locked){
+  const done = progress.finished.includes(p.id);
+  const card = document.createElement('button');
+  card.className = 'card' + (locked ? ' locked' : '');
+  card.setAttribute('aria-label', locked ? p.name + ', locked' : 'Color the ' + p.name);
+  card.innerHTML = '<img src="' + p.guide + '" alt="Finished ' + p.name.toLowerCase() + ' picture" style="aspect-ratio:' + (p.square ? '1/1' : '3/2') + ';object-fit:cover;">' +
+    '<div class="name">' + p.name + '</div>' +
+    '<div class="stars-row">' + starSVG(done) + starSVG(done) + starSVG(done) + '</div>' +
+    (locked ?
+      '<div class="lock-veil"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Finish 6 pages to unwrap colored pencils!</span></div>' : '');
+  card.addEventListener('click', () => {
+    if (locked) toast('Finish 6 Stage 1 pages to unwrap colored pencils!');
+    else openPage(p.id);
+  });
+  return card;
+}
 function buildStageCards(){
   const s1 = $('stage1Cards'), s2 = $('stage2Cards');
-  s1.innerHTML = ''; s2.innerHTML = '';
-  PAGES.filter(p => p.stage === 1).forEach(p => {
-    const done = progress.finished.includes(p.id);
-    const card = document.createElement('button');
-    card.className = 'card';
-    card.setAttribute('aria-label', 'Color the ' + p.name);
-    card.innerHTML = '<img src="' + p.guide + '" alt="Finished ' + p.name.toLowerCase() + ' picture" style="aspect-ratio:' + (p.id === 'elephant' ? '1/1' : '3/2') + ';object-fit:cover;">' +
-      '<div class="name">' + p.name + '</div>' +
-      '<div class="stars-row">' + starSVG(done) + starSVG(done) + starSVG(done) + '</div>';
-    card.addEventListener('click', () => openPage(p.id));
-    s1.appendChild(card);
-  });
-  const ft = PAGE_BY_ID['fire-truck'];
-  const card = document.createElement('button');
-  card.className = 'card' + (progress.unlocked ? '' : ' locked');
-  card.setAttribute('aria-label', progress.unlocked ? 'Color the Fire Truck' : 'Fire Truck, locked');
-  card.innerHTML = '<img src="' + ft.guide + '" alt="Finished fire truck picture" style="aspect-ratio:3/2;object-fit:cover;">' +
-    '<div class="name">Fire Truck</div>' +
-    '<div class="stars-row">' + starSVG(progress.finished.includes('fire-truck')) + starSVG(progress.finished.includes('fire-truck')) + starSVG(progress.finished.includes('fire-truck')) + '</div>' +
-    (progress.unlocked ? '' :
-      '<div class="lock-veil"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Finish 5 pages to unwrap colored pencils!</span></div>');
-  card.addEventListener('click', () => {
-    if (progress.unlocked) openPage('fire-truck');
-    else toast('Finish 5 Stage 1 pages to unwrap colored pencils!');
-  });
-  s2.appendChild(card);
+  const b1 = $('stage1BonusCards'), b2 = $('stage2BonusCards');
+  s1.innerHTML = ''; s2.innerHTML = ''; b1.innerHTML = ''; b2.innerHTML = '';
+  PAGES.filter(p => p.stage === 1 && isRequired(p)).forEach(p => s1.appendChild(makeStageCard(p, false)));
+  PAGES.filter(p => p.stage === 1 && !isRequired(p)).forEach(p => b1.appendChild(makeStageCard(p, false)));
+  /* Stage 2 stays locked — all 10 cards — until Stage 1's 6 required
+     pages are done. */
+  const s2Locked = !progress.unlocked;
+  PAGES.filter(p => p.stage === 2 && isRequired(p)).forEach(p => s2.appendChild(makeStageCard(p, s2Locked)));
+  PAGES.filter(p => p.stage === 2 && !isRequired(p)).forEach(p => b2.appendChild(makeStageCard(p, s2Locked)));
+  $('stage1Badge').classList.toggle('hidden', !stageComplete(1));
+  $('stage2Badge').classList.toggle('hidden', !stageComplete(2));
 }
 function showStage(){
   buildStageCards();
@@ -1067,7 +1188,7 @@ function openPage(id){
   st.classList.toggle('pencil', currentPage.stage === 2);
   $('guideThumbImg').src = currentPage.guide;
   $('guideThumbImg').alt = 'Color guide: the finished ' + currentPage.name.toLowerCase();
-  $('guideThumbImg').style.aspectRatio = currentPage.id === 'elephant' ? '1/1' : '3/2';
+  $('guideThumbImg').style.aspectRatio = currentPage.square ? '1/1' : '3/2';
   $('guideFullImg').src = currentPage.guide;
   $('hint').innerHTML = currentPage.tool === 'pencil'
     ? '<b>Pick a pencil</b>, then tap the picture! Tap again and again to make the color darker, like a real pencil.'
@@ -1452,10 +1573,10 @@ $('doneBtn').addEventListener('click', () => {
   doneFlag = true;
   const isNewFinish = !progress.finished.includes(currentPage.id);
   if (isNewFinish) progress.finished.push(currentPage.id);
-  /* Unlock: the 5th distinct Stage 1 page finished (prototype stand-in for
-     the full app's 10-page rule). */
-  if (isNewFinish && currentPage.stage === 1 && !progress.unlocked &&
-      progress.finished.filter(id => PAGE_BY_ID[id].stage === 1).length >= 5){
+  /* Unlock: the 6th distinct REQUIRED Stage 1 page finished. Bonus pages
+     never count toward the unlock. */
+  if (isNewFinish && currentPage.stage === 1 && isRequired(currentPage) && !progress.unlocked &&
+      requiredDoneCount(1) >= 6){
     progress.unlocked = true;
     ceremonyPending = true;
   }
