@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C89B6A">
+<title>Color the Lion! — Color &amp; Play Studio</title>
+<meta name="description" content="Phase 0 sample: color the friendly lion with waxy crayons on a painting desk.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FF6B4A'/%3E%3Ccircle cx='22' cy='26' r='8' fill='%23FFD93D'/%3E%3Ccircle cx='42' cy='26' r='8' fill='%232EC4B6'/%3E%3Ccircle cx='32' cy='44' r='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:#2B2118; min-height:100dvh;
+    background:#C89B6A url("assets/desk-wood.jpg") center/cover no-repeat fixed;
+    font-size:16px; line-height:1.4;
+  }
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; padding:0;}
+  button:active{transform:scale(.96);}
+  .hidden{display:none !important;}
+
+  /* ---------- desk screen ---------- */
+  .desk{min-height:100dvh; display:flex; flex-direction:column; align-items:center;
+    padding:calc(10px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom));
+    max-width:720px; margin:0 auto; width:100%;}
+
+  .topbar{width:100%; display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    padding:2px 2px 0;}
+  .titleblock{padding-top:2px;}
+  h1{margin:0; font-size:31px; line-height:1.05; font-weight:800; letter-spacing:-.01em; color:#fff;
+    text-shadow:0 2px 10px rgba(60,30,5,.55), 0 1px 2px rgba(60,30,5,.6);}
+  .stage{display:inline-block; margin-top:8px; background:#FFD60A; color:#4A2E00;
+    font-size:13.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+    padding:6px 13px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
+  .guide-thumb{flex:0 0 auto; width:88px; background:#fff; border-radius:10px; padding:5px 5px 4px;
+    box-shadow:0 6px 18px rgba(60,30,5,.45); transform:rotate(2.5deg); transition:transform .15s ease;}
+  .guide-thumb:hover{transform:rotate(0deg) scale(1.04);}
+  .guide-thumb img{width:100%; aspect-ratio:3/2; object-fit:cover; display:block; border-radius:6px;}
+  .guide-thumb span{display:block; text-align:center; font-size:10.5px; font-weight:800;
+    letter-spacing:.14em; color:#8A6D3B; padding-top:4px;}
+
+  /* ---------- paper sheet ---------- */
+  .paper{margin-top:14px; width:100%; max-width:640px; background:#fff; border-radius:16px;
+    padding:10px; box-shadow:0 20px 44px rgba(50,25,0,.42), 0 2px 6px rgba(50,25,0,.25);}
+  .paper canvas{display:block; width:100%; height:auto; max-height:46dvh; margin:0 auto;
+    border-radius:10px; touch-action:none; background:#fff;}
+  .paper.loading canvas{opacity:.25;}
+  .loading-note{text-align:center; font-size:13px; color:#8A6D3B; padding:6px 0 0;}
+
+  .hint{margin:14px 4px 0; text-align:center; font-size:15px; font-weight:700; color:#fff;
+    text-shadow:0 1px 6px rgba(60,30,5,.6), 0 1px 2px rgba(60,30,5,.6);}
+  .hint b{color:#FFE45C;}
+
+  /* ---------- controls row: undo + done ---------- */
+  .controls{width:100%; max-width:640px; display:flex; gap:12px; margin-top:14px; align-items:stretch;}
+  .undo-btn{flex:0 0 60px; min-height:60px; border-radius:16px; background:rgba(255,255,255,.94);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    box-shadow:0 6px 16px rgba(50,25,0,.35); font-size:11px; font-weight:800; color:#5C4632;}
+  .undo-btn:disabled{opacity:.45;}
+  .done-btn{flex:1; min-height:60px; border-radius:16px; background:#FF6B4A; color:#fff;
+    font-size:22px; font-weight:800; letter-spacing:.02em;
+    box-shadow:0 8px 20px rgba(255,107,74,.5), inset 0 -3px 0 rgba(0,0,0,.12);
+    display:flex; align-items:center; justify-content:center; gap:10px;}
+  .done-btn:hover{background:#FF7A5C;}
+
+  /* ---------- crayon tray ---------- */
+  .tray{width:100%; max-width:640px; margin-top:12px; background:rgba(255,251,242,.96);
+    border-radius:18px; padding:10px 8px 8px; box-shadow:0 10px 26px rgba(50,25,0,.38);}
+  .tray-label{text-align:center; font-size:11px; font-weight:800; letter-spacing:.16em;
+    text-transform:uppercase; color:#8A6D3B; margin-bottom:6px;}
+  .crayons{display:flex; gap:2px;}
+  .crayon{flex:1 1 0; min-width:0; min-height:60px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center; position:relative;
+    transition:transform .16s ease;}
+  .crayon svg{width:100%; max-width:52px; height:auto; display:block;
+    filter:drop-shadow(0 3px 3px rgba(50,25,0,.28)); transition:transform .16s ease;}
+  .crayon.sel{transform:translateY(-8px);}
+  .crayon.sel svg{transform:scale(1.16) rotate(-4deg);
+    filter:drop-shadow(0 8px 8px rgba(50,25,0,.4));}
+  .crayon.sel::after{content:""; position:absolute; left:50%; bottom:-2px; transform:translateX(-50%);
+    width:26px; height:6px; border-radius:999px; background:#FFD60A;
+    box-shadow:0 0 0 2px rgba(255,255,255,.9);}
+
+  /* ---------- guide viewer ---------- */
+  .overlay{position:fixed; inset:0; z-index:60; background:rgba(30,18,5,.95);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px;}
+  .overlay img{max-width:96vw; max-height:82dvh; width:auto; height:auto; border-radius:14px;
+    background:#fff; padding:8px; box-shadow:0 24px 60px rgba(0,0,0,.5);}
+  .overlay .cap{color:#fff; font-size:16px; font-weight:700; margin:14px 0 0; text-align:center;
+    text-shadow:0 1px 4px rgba(0,0,0,.6);}
+  .close-btn{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:14px;
+    width:56px; height:56px; border-radius:50%; background:#fff; color:#2B2118;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);}
+
+  /* ---------- stars celebration ---------- */
+  .stars-box{text-align:center; padding:0 20px;}
+  .stars{display:flex; gap:10px; justify-content:center; align-items:flex-end;}
+  .stars svg{filter:drop-shadow(0 6px 14px rgba(0,0,0,.45)); animation:pop .5s cubic-bezier(.2,1.6,.4,1) backwards;}
+  .stars svg:nth-child(1){animation-delay:.05s;}
+  .stars svg:nth-child(2){animation-delay:.22s;}
+  .stars svg:nth-child(3){animation-delay:.39s;}
+  @keyframes pop{from{transform:scale(0) rotate(-30deg); opacity:0;} to{transform:scale(1) rotate(0deg); opacity:1;}}
+  .stars-box h2{color:#fff; font-size:32px; margin:18px 0 4px; text-shadow:0 2px 10px rgba(0,0,0,.5);}
+  .stars-box p{color:#FFE9B8; font-size:17px; font-weight:700; margin:0 0 22px;}
+  .big-btn{min-height:60px; min-width:230px; padding:0 28px; border-radius:999px; background:#FFD60A;
+    color:#4A2E00; font-size:19px; font-weight:800; box-shadow:0 8px 22px rgba(0,0,0,.4);}
+
+  /* ---------- gallery ---------- */
+  .gallery{min-height:100dvh; display:flex; flex-direction:column; align-items:center;
+    padding:calc(14px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+    max-width:720px; margin:0 auto; width:100%;}
+  .gallery h2{color:#fff; font-size:28px; margin:6px 0 2px; text-align:center;
+    text-shadow:0 2px 10px rgba(60,30,5,.55);}
+  .gallery p{color:#FFE9B8; font-size:15px; font-weight:700; margin:0 0 14px; text-align:center;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .frame{width:100%; max-width:640px; background:#fff; border-radius:16px; padding:12px;
+    box-shadow:0 20px 44px rgba(50,25,0,.42);}
+  .frame img{width:100%; height:auto; display:block; border-radius:10px;}
+  .gallery-btns{display:flex; gap:12px; margin-top:18px; width:100%; max-width:640px;}
+  .gallery-btns .done-btn{font-size:18px;}
+  .save-btn{flex:1; min-height:60px; border-radius:16px; background:#fff; color:#5C4632;
+    font-size:18px; font-weight:800; box-shadow:0 8px 20px rgba(50,25,0,.35);
+    display:flex; align-items:center; justify-content:center; gap:8px;}
+
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
+    background:#2B2118; color:#fff; font-size:15px; font-weight:700; padding:12px 22px; border-radius:999px;
+    box-shadow:0 10px 26px rgba(0,0,0,.35); opacity:0; pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease; z-index:80; max-width:88vw; text-align:center;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media (min-width:700px){
+    h1{font-size:38px;}
+    .guide-thumb{width:104px;}
+    .paper canvas{max-height:52dvh;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ DESK VIEW ============ -->
+<div class="desk" id="deskView">
+  <div class="topbar">
+    <div class="titleblock">
+      <h1>Color the Lion!</h1>
+      <span class="stage">Stage 1 &middot; Crayons</span>
+    </div>
+    <button class="guide-thumb" id="guideThumb" aria-label="Open the color guide">
+      <img src="assets/lion-guide.jpg" alt="Color guide: the lion finished in bright colors">
+      <span>GUIDE</span>
+    </button>
+  </div>
+
+  <div class="paper loading" id="paper">
+    <canvas id="art" width="1920" height="1280"></canvas>
+    <div class="loading-note" id="loadingNote">Loading your lion&hellip;</div>
+  </div>
+
+  <p class="hint"><b>Pick a crayon</b>, then tap the picture to color it in!</p>
+
+  <div class="controls">
+    <button class="undo-btn" id="undoBtn" aria-label="Undo last color" disabled>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+      Undo
+    </button>
+    <button class="done-btn" id="doneBtn">
+      Done!
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
+    </button>
+  </div>
+
+  <div class="tray">
+    <div class="tray-label">Your crayons</div>
+    <div class="crayons" id="crayons" role="radiogroup" aria-label="Choose a crayon color"></div>
+  </div>
+</div>
+
+<!-- ============ GUIDE VIEWER ============ -->
+<div class="overlay hidden" id="guideOverlay" role="dialog" aria-label="Color guide">
+  <button class="close-btn" id="guideClose" aria-label="Close guide">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 5l14 14M19 5 5 19"/></svg>
+  </button>
+  <img src="assets/lion-guide.jpg" alt="Finished lion: golden face, orange mane, yellow sun, blue clouds, green grass, pink and purple flowers">
+  <p class="cap">This is your color guide &mdash; match the colors, or make up your own!</p>
+</div>
+
+<!-- ============ STARS CELEBRATION ============ -->
+<div class="overlay hidden" id="starsOverlay" role="dialog" aria-label="Great job">
+  <div class="stars-box">
+    <div class="stars" aria-hidden="true">
+      <svg width="72" height="72" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
+      <svg width="104" height="104" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
+      <svg width="72" height="72" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
+    </div>
+    <h2>Great job!</h2>
+    <p>You colored the whole lion!</p>
+    <button class="big-btn" id="seePictureBtn">See my picture</button>
+  </div>
+</div>
+
+<!-- ============ GALLERY VIEW ============ -->
+<div class="gallery hidden" id="galleryView">
+  <h2>My Lion</h2>
+  <p>Look what you made!</p>
+  <div class="frame"><img id="galleryImg" alt="Your finished colored lion"></div>
+  <div class="gallery-btns">
+    <button class="save-btn" id="saveBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+      Save picture
+    </button>
+    <button class="done-btn" id="againBtn">Color Again</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+/* ================= CONFIG ================= */
+/* 8 vivid crayons — saturated colors that pop on white paper */
+const CRAYONS = [
+  ['Red',    '#FF3838'],
+  ['Orange', '#FF8C1A'],
+  ['Yellow', '#FFD60A'],
+  ['Green',  '#2FD44F'],
+  ['Blue',   '#2E7DFF'],
+  ['Purple', '#8A3FFC'],
+  ['Pink',   '#FF4FA3'],
+  ['Brown',  '#8B5A2B']
+];
+const WALL = 200;                       // wall threshold — verified leak-proof on this lion page
+const LS_KEY = 'cps-phase0:lion';       // single-page sample save key
+const MAX_UNDO = 10;
+
+/* ================= STATE ================= */
+let currentColor = CRAYONS[0][1];
+let lineImg = null, W = 0, H = 0, mask = null;
+let undoStack = [];
+let saveTimer = null;
+let taps = 0;
+let doneFlag = false;
+
+/* ================= HELPERS ================= */
+const $ = id => document.getElementById(id);
+const viewCanvas = $('art');
+const vctx = viewCanvas.getContext('2d');
+/* baseCanvas: flat fills only (the "truth" layer — flood fill works on this) */
+const baseCanvas = document.createElement('canvas');
+const bctx = baseCanvas.getContext('2d', { willReadFrequently: true });
+/* fillCanvas: base + waxy texture (what the child sees) */
+const fillCanvas = document.createElement('canvas');
+const fctx = fillCanvas.getContext('2d', { willReadFrequently: true });
+
+function hexToRgb(hex){ const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function clamp255(v){ return v < 0 ? 0 : v > 255 ? 255 : v | 0; }
+function shade(hex, amt){ /* amt -100..100: darken/lighten */
+  const [r, g, b] = hexToRgb(hex);
+  const f = amt < 0 ? (100 + amt) / 100 : 1;
+  const t = amt < 0 ? 0 : amt * 2.55;
+  return 'rgb(' + clamp255(r * f + t) + ',' + clamp255(g * f + t) + ',' + clamp255(b * f + t) + ')';
+}
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ================= WAX GRAIN TILE ================= */
+/* Tileable 256x256 grain field: random noise, box-blurred twice so it reads as
+   clumpy wax grain (not digital static), normalized to -1..1. Sampled with a
+   vertically squashed y so the grain streaks slightly sideways, like crayon strokes. */
+const NT = 256;
+const noiseTile = new Float32Array(NT * NT);
+(function buildNoise(){
+  let tmp = new Float32Array(NT * NT);
+  for (let i = 0; i < tmp.length; i++) tmp[i] = Math.random() * 2 - 1;
+  for (let p = 0; p < 2; p++){
+    const out = new Float32Array(NT * NT);
+    for (let y = 0; y < NT; y++) for (let x = 0; x < NT; x++){
+      let s = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++)
+        s += tmp[((y + dy + NT) % NT) * NT + ((x + dx + NT) % NT)];
+      out[y * NT + x] = s / 9;
+    }
+    tmp = out;
+  }
+  let m = 0;
+  for (let i = 0; i < tmp.length; i++) m = Math.max(m, Math.abs(tmp[i]));
+  for (let i = 0; i < tmp.length; i++) noiseTile[i] = tmp[i] / m;
+})();
+
+/* ================= CRAYON TRAY (SVG crayons, lying flat) ================= */
+(function buildCrayons(){
+  const tray = $('crayons');
+  CRAYONS.forEach(([name, hex], i) => {
+    const b = document.createElement('button');
+    b.className = 'crayon' + (i === 0 ? ' sel' : '');
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-label', name + ' crayon');
+    b.title = name;
+    /* chunky crayon lying flat, tip pointing right */
+    b.innerHTML =
+      '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+      '<rect x="2" y="4" width="35" height="16" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<path d="M37 4 L47 12 L37 20 Z" fill="' + shade(hex, 38) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+      '<rect x="9" y="4" width="11" height="16" fill="rgba(0,0,0,0.14)"/>' +
+      '<rect x="9" y="4" width="1.6" height="16" fill="rgba(255,255,255,0.45)"/>' +
+      '<rect x="18.4" y="4" width="1.6" height="16" fill="rgba(255,255,255,0.45)"/>' +
+      '<rect x="4" y="6.2" width="31" height="3" rx="1.5" fill="rgba(255,255,255,0.32)"/>' +
+      '</svg>';
+    b.addEventListener('click', () => {
+      currentColor = hex;
+      document.querySelectorAll('.crayon').forEach(c => {
+        c.classList.remove('sel'); c.setAttribute('aria-checked', 'false');
+      });
+      b.classList.add('sel'); b.setAttribute('aria-checked', 'true');
+    });
+    tray.appendChild(b);
+  });
+})();
+
+/* ================= LOAD LINE ART ================= */
+function loadArt(){
+  const img = new Image();
+  img.onload = () => {
+    lineImg = img; W = img.naturalWidth; H = img.naturalHeight;
+    viewCanvas.width = W; viewCanvas.height = H;
+    baseCanvas.width = W; baseCanvas.height = H;
+    fillCanvas.width = W; fillCanvas.height = H;
+    buildMask(img);
+    bctx.fillStyle = '#FFFFFF'; bctx.fillRect(0, 0, W, H);
+    fctx.fillStyle = '#FFFFFF'; fctx.fillRect(0, 0, W, H);
+    restoreProgress();
+    $('paper').classList.remove('loading');
+    $('loadingNote').classList.add('hidden');
+    render();
+  };
+  img.onerror = () => { $('loadingNote').textContent = 'Could not load the lion. Please reload the page.'; };
+  img.src = 'assets/lion-line-2x.jpg';
+}
+function buildMask(img){
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.drawImage(img, 0, 0);
+  const d = x.getImageData(0, 0, W, H).data;
+  mask = new Uint8Array(W * H);
+  for (let i = 0, j = 0; i < d.length; i += 4, j++){
+    const g = (d[i] * 3 + d[i + 1] * 6 + d[i + 2]) / 10;
+    mask[j] = g < WALL ? 1 : 0;
+  }
+}
+function render(){
+  vctx.clearRect(0, 0, W, H);
+  vctx.drawImage(fillCanvas, 0, 0);
+  vctx.globalCompositeOperation = 'multiply';
+  vctx.drawImage(lineImg, 0, 0);
+  vctx.globalCompositeOperation = 'source-over';
+}
+
+/* ================= TAP TO FILL (scanline flood fill, 4-connected) ================= */
+/* Reused from the proven Color & Play app: works on the flat baseCanvas layer,
+   so re-tapping a region always matches its flat color exactly (the wax grain
+   lives only on the display layer and can never break a re-fill). */
+viewCanvas.addEventListener('pointerdown', e => {
+  if (!lineImg || !mask) return;
+  e.preventDefault();
+  const r = viewCanvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - r.left) / r.width * W);
+  const y = Math.floor((e.clientY - r.top) / r.height * H);
+  if (x < 0 || y < 0 || x >= W || y >= H) return;
+  pushUndo();
+  const [cr, cg, cb] = hexToRgb(currentColor);
+  const box = floodFill(x, y, cr, cg, cb);
+  if (box){
+    taps++;
+    syncFillRegion(box);   // copy the flat fill to the display layer + add wax grain
+    render();
+    scheduleSave();
+  } else {
+    undoStack.pop(); // nothing changed; drop the snapshot
+  }
+});
+function floodFill(sx, sy, r, g, b){
+  const w = W, h = H;
+  const start = sy * w + sx;
+  if (mask[start]) return null;              // tapped a black line
+  const img = bctx.getImageData(0, 0, w, h);
+  const px = new Uint32Array(img.data.buffer);
+  const target = px[start];
+  const fill = ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0;   // >>> 0: keep unsigned so target === fill works
+  if (target === fill) return null;
+  const stack = [[sx, sy]];
+  let bx0 = sx, bx1 = sx, by0 = sy, by1 = sy;
+  while (stack.length){
+    const cur = stack.pop();
+    const x = cur[0], y = cur[1];
+    let x0 = x;
+    while (x0 >= 0 && !mask[y * w + x0] && px[y * w + x0] === target) x0--;
+    x0++;
+    let x1 = x;
+    while (x1 < w && !mask[y * w + x1] && px[y * w + x1] === target) x1++;
+    x1--;
+    for (let i = x0; i <= x1; i++) px[y * w + i] = fill;
+    if (x0 < bx0) bx0 = x0; if (x1 > bx1) bx1 = x1;
+    if (y < by0) by0 = y; if (y > by1) by1 = y;
+    for (let k = 0; k < 2; k++){
+      const ny = k === 0 ? y - 1 : y + 1;
+      if (ny < 0 || ny >= h) continue;
+      let i = x0;
+      while (i <= x1){
+        while (i <= x1 && (mask[ny * w + i] || px[ny * w + i] !== target)) i++;
+        if (i > x1) break;
+        stack.push([i, ny]);
+        while (i <= x1 && !mask[ny * w + i] && px[ny * w + i] === target) i++;
+      }
+    }
+  }
+  bctx.putImageData(img, 0, 0);
+  return { x0: bx0, y0: by0, x1: bx1, y1: by1 };
+}
+
+/* ================= WAXY CRAYON TEXTURE ================= */
+/* The display layer gets the flat fill copied over, then each filled pixel is
+   modulated by the grain tile (+/-8%), with a sparse darker speckle and a
+   slight darkening right against the black outlines — the uneven, hand-colored
+   look of a real wax crayon. White paper is never touched. */
+function waxRegion(box){
+  const x0 = Math.max(0, box.x0), y0 = Math.max(0, box.y0);
+  const x1 = Math.min(W - 1, box.x1), y1 = Math.min(H - 1, box.y1);
+  const w = x1 - x0 + 1, h = y1 - y0 + 1;
+  if (w <= 0 || h <= 0) return;
+  const base = bctx.getImageData(x0, y0, w, h);
+  const img = fctx.getImageData(x0, y0, w, h);
+  const bd = base.data, d = img.data;
+  for (let j = 0; j < h; j++){
+    const y = y0 + j;
+    for (let i = 0; i < w; i++){
+      const x = x0 + i, k = (j * w + i) * 4;
+      if (bd[k] === 255 && bd[k + 1] === 255 && bd[k + 2] === 255) continue; // uncolored paper
+      const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
+      let f = 1 + 0.08 * n;
+      const hh = ((x * 374761393 + y * 668265263) ^ (x * y * 974634)) >>> 0;
+      if (hh % 97 < 2) f *= 0.86;                       // sparse darker speckle
+      if (x > 0 && x < W - 1 && y > 0 && y < H - 1 &&
+          (mask[y * W + x - 1] || mask[y * W + x + 1] ||
+           mask[(y - 1) * W + x] || mask[(y + 1) * W + x])) f *= 0.93;  // darker at the outline
+      d[k]     = clamp255(bd[k] * f);
+      d[k + 1] = clamp255(bd[k + 1] * f);
+      d[k + 2] = clamp255(bd[k + 2] * f);
+      d[k + 3] = 255;
+    }
+  }
+  fctx.putImageData(img, x0, y0);
+}
+function syncFillRegion(box){
+  fctx.drawImage(baseCanvas, box.x0, box.y0, box.x1 - box.x0 + 1, box.y1 - box.y0 + 1,
+                             box.x0, box.y0, box.x1 - box.x0 + 1, box.y1 - box.y0 + 1);
+  waxRegion(box);
+}
+function waxAll(){
+  fctx.drawImage(baseCanvas, 0, 0);
+  waxRegion({ x0: 0, y0: 0, x1: W - 1, y1: H - 1 });
+}
+
+/* ================= UNDO ================= */
+function pushUndo(){
+  try {
+    undoStack.push(baseCanvas.toDataURL('image/png'));
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+  } catch(e){}
+  updateUndoBtn();
+}
+function updateUndoBtn(){
+  const btn = $('undoBtn');
+  btn.disabled = undoStack.length === 0;
+  btn.style.opacity = undoStack.length ? '1' : '.45';
+}
+$('undoBtn').addEventListener('click', () => {
+  const snap = undoStack.pop();
+  if (!snap) return;
+  const img = new Image();
+  img.onload = () => {
+    bctx.fillStyle = '#FFFFFF'; bctx.fillRect(0, 0, W, H);
+    bctx.drawImage(img, 0, 0, W, H);
+    waxAll();                       // re-apply the same deterministic wax grain
+    taps = Math.max(0, taps - 1);
+    render(); scheduleSave(); updateUndoBtn();
+  };
+  img.src = snap;
+});
+
+/* ================= GUIDE VIEWER ================= */
+$('guideThumb').addEventListener('click', () => $('guideOverlay').classList.remove('hidden'));
+$('guideClose').addEventListener('click', () => $('guideOverlay').classList.add('hidden'));
+$('guideOverlay').addEventListener('click', e => {
+  if (e.target === $('guideOverlay')) $('guideOverlay').classList.add('hidden');
+});
+
+/* ================= DONE / STARS / GALLERY ================= */
+function compositeCanvas(){
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, W, H);
+  x.drawImage(fillCanvas, 0, 0);
+  x.globalCompositeOperation = 'multiply';
+  x.drawImage(lineImg, 0, 0);
+  x.globalCompositeOperation = 'source-over';
+  return c;
+}
+$('doneBtn').addEventListener('click', () => {
+  doneFlag = true;
+  saveProgress(true);
+  $('starsOverlay').classList.remove('hidden');
+});
+$('seePictureBtn').addEventListener('click', () => {
+  $('starsOverlay').classList.add('hidden');
+  $('galleryImg').src = compositeCanvas().toDataURL('image/png');
+  $('deskView').classList.add('hidden');
+  $('galleryView').classList.remove('hidden');
+  window.scrollTo({ top: 0 });
+});
+$('againBtn').addEventListener('click', () => {
+  $('galleryView').classList.add('hidden');
+  $('deskView').classList.remove('hidden');
+  window.scrollTo({ top: 0 });
+});
+$('saveBtn').addEventListener('click', () => {
+  if (!lineImg) return;
+  compositeCanvas().toBlob(blob => {
+    if (!blob){ toast('Could not save right now.'); return; }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'my-lion-color-and-play.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    toast('Picture saved! Find it in your downloads.');
+  }, 'image/png');
+});
+
+/* ================= PERSISTENCE (localStorage) ================= */
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveProgress(false), 400);
+}
+function saveProgress(immediate){
+  if (!lineImg) return;
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      taps: taps, done: doneFlag,
+      data: baseCanvas.toDataURL('image/png'), at: Date.now()
+    }));
+  } catch(e){
+    if (immediate) toast('Storage is full — this page could not be saved.');
+  }
+}
+function restoreProgress(){
+  let raw = null;
+  try { raw = localStorage.getItem(LS_KEY); } catch(e){}
+  if (!raw) return;
+  try {
+    const saved = JSON.parse(raw);
+    if (!saved || !saved.data) return;
+    const img = new Image();
+    img.onload = () => {
+      bctx.drawImage(img, 0, 0, W, H);
+      waxAll();
+      taps = saved.taps || 0;
+      doneFlag = !!saved.done;
+      render();
+      if (doneFlag){
+        $('galleryImg').src = compositeCanvas().toDataURL('image/png');
+        $('deskView').classList.add('hidden');
+        $('galleryView').classList.remove('hidden');
+      } else if (taps > 0){
+        toast('Welcome back — your lion was saved!');
+      }
+    };
+    img.src = saved.data;
+  } catch(e){}
+}
+
+/* ================= INIT ================= */
+loadArt();
+updateUndoBtn();
+
+/* Debug handle for automated verification only (not part of the UI). */
+window.__cps = {
+  get W(){ return W; }, get H(){ return H; },
+  get taps(){ return taps; }, get done(){ return doneFlag; },
+  get mask(){ return mask; },
+  fillPixel(x, y){
+    const d = fctx.getImageData(x, y, 1, 1).data;
+    return [d[0], d[1], d[2], d[3]];
+  },
+  basePixel(x, y){
+    const d = bctx.getImageData(x, y, 1, 1).data;
+    return [d[0], d[1], d[2], d[3]];
+  }
+};
+</script>
+</body>
+</html>
