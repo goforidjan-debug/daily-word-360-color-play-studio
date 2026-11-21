@@ -34,6 +34,9 @@
     will-change:transform;}
   .logo-hanger img{display:block; width:100%; height:auto;
     filter:drop-shadow(0 12px 16px rgba(60,30,5,.35));}
+  /* small sign: same hanging spot on inner screens (stage, gallery, parent),
+     about half the welcome size; tap it to go back home */
+  .logo-hanger.small{width:min(48vw,180px); margin:-12px auto 14px; cursor:pointer;}
   .screen .sub{color:#FFE9B8; font-size:15px; font-weight:700; margin:6px 0 0; text-align:center;
     text-shadow:0 1px 4px rgba(60,30,5,.6);}
 
@@ -356,7 +359,9 @@
 
 <!-- ============ STAGE SCREEN ============ -->
 <div class="screen" id="stageView">
-  <h1>My Little Studio</h1>
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
   <p class="sub">Pick a picture and color it in!</p>
 
   <div class="stage-sec">
@@ -470,6 +475,9 @@
 
 <!-- ============ GALLERY: GRID ============ -->
 <div class="screen hidden" id="galleryGridView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
   <div class="back-row">
     <button class="back-btn" id="galleryBackBtn" aria-label="Back to all pages">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -485,6 +493,9 @@
 
 <!-- ============ GALLERY: SINGLE PAINTING ============ -->
 <div class="screen hidden" id="galleryView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
   <div class="back-row">
     <button class="back-btn" id="singleBackBtn" aria-label="Back to gallery">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -518,6 +529,9 @@
 
 <!-- ============ PARENT SCREEN ============ -->
 <div class="screen hidden" id="parentView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
   <div class="back-row">
     <button class="back-btn" id="parentBackBtn" aria-label="Back to all pages">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -630,7 +644,7 @@
    screen and swings: gentle idle sway, tilts against the phone's tilt
    (deviceorientation), and wobbles when the phone is shaken (devicemotion).
    iOS needs permission for motion events — requested on first tap. */
-const logoHanger = document.getElementById('logoHanger');
+const signHangers = Array.from(document.querySelectorAll('.logo-hanger'));
 let signAngle = 0, signVel = 0, signTarget = 0, signLastT = performance.now();
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function signTick(now){
@@ -639,10 +653,19 @@ function signTick(now){
   const goal = signTarget + idle;
   const acc = (goal - signAngle) * 18 - signVel * 2.2;
   signVel += acc * dt; signAngle += signVel * dt;
-  logoHanger.style.transform = 'rotate(' + signAngle.toFixed(2) + 'deg)';
+  const rot = 'rotate(' + signAngle.toFixed(2) + 'deg)';
+  for (const h of signHangers) h.style.transform = rot;
   requestAnimationFrame(signTick);
 }
-if (logoHanger) requestAnimationFrame(signTick);
+if (signHangers.length) requestAnimationFrame(signTick);
+/* Small signs on inner screens are the way home: tap one to go back
+   to the welcome screen. */
+for (const h of document.querySelectorAll('.logo-hanger.small')) {
+  h.addEventListener('click', showWelcome);
+  h.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showWelcome(); }
+  });
+}
 function signEnableMotion(){
   if (typeof DeviceOrientationEvent !== 'undefined' &&
       typeof DeviceOrientationEvent.requestPermission === 'function') {
