@@ -1056,7 +1056,10 @@ function firstRequiredPage(n){
    20 pages: 10 per stage — 6 required + 4 bonus. A page is required unless
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
-   from the line art's natural size, never stretched. */
+   from the line art's natural size, never stretched.
+   Stage 3 (Markers) landed 2026-11-21: 30 pages total. White is never a
+   tray crayon (the guide shows what stays white); sailboat's white sail
+   stripes are left uncolored, per the frog precedent. */
 const PAGES = [
   { id:'lion', name:'Lion', title:'Color the Lion!', stage:1, tool:'crayon',
     line:'assets/lion-line-2x.jpg', guide:'assets/lion-guide.jpg',
@@ -1168,7 +1171,48 @@ const PAGES = [
              ['Cupcake Pink','#FEA6B4'],['Cupcake Deep Pink','#F88098'],['Thermos Blue','#428CC7'],
              ['Apple Red','#E23532'],['Sandwich Tan','#E8A962'],['Thermos Dark Blue','#3272AB'],
              ['Black','#000000'],['Flower Pink','#ED92A3'],['Blanket Deep Red','#E55551'],
-             ['Leaf Green','#84A34D'],['Dark Flower Brown','#4E2E03']] }
+             ['Leaf Green','#84A34D'],['Dark Flower Brown','#4E2E03']] },
+  /* ---- Stage 3: Markers (6 required + 4 bonus) ---- */
+  { id:'zoom-race-car', name:'Race Car', title:'Color the Race Car!', stage:3, tool:'marker',
+    line:'assets/zoom-race-car-line-2x.jpg', guide:'assets/zoom-race-car-guide.jpg',
+    palette:[['Race Yellow','#FED632'],['Tire Navy','#394A5F'],['Black','#000000'],['Race Red','#C7401C'],
+             ['Sky Blue','#01ABE6'],['Hub Blue','#3F73A5'],['Grass Green','#5AC04B'],['Cheek Pink','#FFADA0']] },
+  { id:'school-bus', name:'School Bus', title:'Color the School Bus!', stage:3, tool:'marker',
+    line:'assets/school-bus-line-2x.jpg', guide:'assets/school-bus-guide.jpg',
+    palette:[['School Bus Yellow','#FFCF1B'],['Leaf Green','#57B739'],['Sky Blue','#C9E3F0'],['Tire Black','#262626'],
+             ['Tree Trunk Brown','#965E2F'],['Stop Sign Red','#D13632'],['Hubcap Silver','#B4B8BB']] },
+  { id:'farm-tractor', name:'Farm Tractor', title:'Color the Farm Tractor!', stage:3, tool:'marker',
+    line:'assets/farm-tractor-line-2x.jpg', guide:'assets/farm-tractor-guide.jpg',
+    palette:[['Sunny Yellow','#FFCD19'],['Tractor Red','#F92524'],['Fence Brown','#C67524'],['Tire Black','#333333'],
+             ['Sky Blue','#D5E8F2'],['Grass Green','#4BD637'],['Hub Gray','#C7C7C7'],['Sun Orange','#FE9927'],
+             ['Flower Pink','#FD87BA']] },
+  { id:'jet-plane', name:'Jet Plane', title:'Color the Jet Plane!', stage:3, tool:'marker',
+    line:'assets/jet-plane-line-2x.jpg', guide:'assets/jet-plane-guide.jpg',
+    palette:[['Sunny Yellow','#FED92D'],['Jet Red','#ED3837'],['Sunset Orange','#FA8324'],['Sky Blue','#98D5E7']] },
+  { id:'sailboat-adventure', name:'Sailboat', title:'Color the Sailboat!', stage:3, tool:'marker',
+    line:'assets/sailboat-adventure-line-2x.jpg', guide:'assets/sailboat-adventure-guide.jpg',
+    palette:[['Sail Yellow','#FED724'],['Hull Red','#EF3D35'],['Cloud Blue','#D6E8F2'],['Bird Blue','#6CBFE7'],
+             ['Mast Brown','#A35F2C'],['Sunray Orange','#F08E27'],['Beak Orange','#F87923']] },
+  { id:'rocket', name:'Rocket', title:'Color the Rocket!', stage:3, tool:'marker',
+    line:'assets/rocket-line-2x.jpg', guide:'assets/rocket-guide.jpg',
+    palette:[['Rocket Red','#EB342F'],['Cloud Blue','#B0D6EB'],['Moon Yellow','#FCE796'],['Flame Orange','#F68B23'],
+             ['Rocket Blue','#137FC0'],['Sunny Yellow','#FFC935'],['Window Ring Blue','#267CA6'],['Smile Pink','#C53B3A']] },
+  { id:'hot-air-balloon', name:'Hot-Air Balloon', title:'Color the Hot-Air Balloon!', stage:3, tool:'marker', required:false,
+    line:'assets/hot-air-balloon-line-2x.jpg', guide:'assets/hot-air-balloon-guide.jpg',
+    palette:[['Cloud Blue','#D7E9F3'],['Sunny Yellow','#FDDF2D'],['Balloon Red','#F3312D'],['Sun Orange','#FC8D31'],
+             ['Bird Blue','#A5D5E6'],['Basket Brown','#975C30'],['Cheek Pink','#FBDBD8']] },
+  { id:'birthday-cake', name:'Birthday Cake', title:'Color the Birthday Cake!', stage:3, tool:'marker', required:false,
+    line:'assets/birthday-cake-line-2x.jpg', guide:'assets/birthday-cake-guide.jpg',
+    palette:[['Cake Pink','#FF95BD'],['Sunny Yellow','#FEE236'],['Orange','#FD9639'],['Cherry Red','#EF3E44'],
+             ['Purple','#B582DA'],['Sky Blue','#4B9FDF'],['Leaf Green','#6FC257'],['Light Blue','#ACD9EB'],
+             ['Black','#000000']] },
+  { id:'kitten-yarn', name:'Kitten', title:'Color the Kitten!', stage:3, tool:'marker', required:false,
+    line:'assets/kitten-yarn-line-2x.jpg', guide:'assets/kitten-yarn-guide.jpg',
+    palette:[['Kitten Orange','#FA9124'],['Yarn Pink','#F684A1'],['Sunny Yellow','#FEDB35'],['Basket Brown','#A56735'],
+             ['Sky Blue','#0079BA'],['Yarn Red','#F45049'],['Basket Dark Brown','#7E4A25']] },
+  { id:'sunny-sunflower', name:'Sunflower', title:'Color the Sunflower!', stage:3, tool:'marker', required:false,
+    line:'assets/sunny-sunflower-line-2x.jpg', guide:'assets/sunny-sunflower-guide.jpg',
+    palette:[['Sunny Yellow','#FDE02A'],['Sunflower Brown','#AB652A'],['Leaf Green','#64C043'],['Cloud Blue','#DAEBF2']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1260,7 +1304,17 @@ const PAGE_FACTS = {
   'robot': { fact: 'A robot is a machine that people build to help with jobs, like lifting heavy things.', prompt: 'Can you find the robot\'s heart?' },
   'dragon': { fact: 'In stories, dragons are gentle giants with big wings who love to fly above the clouds.', prompt: 'Can you find 2 wings?' },
   'koala': { fact: 'A koala is a sleepy animal from Australia that loves to munch on eucalyptus leaves.', prompt: 'Can you find 2 round fluffy ears?' },
-  'teddy-bear': { fact: 'Teddy bears were named after President Theodore Roosevelt, who was called Teddy.', prompt: 'Can you count 2 little arms giving a hug?' }
+  'teddy-bear': { fact: 'Teddy bears were named after President Theodore Roosevelt, who was called Teddy.', prompt: 'Can you count 2 little arms giving a hug?' },
+  'zoom-race-car': { fact: 'When a car race is finished, a black-and-white checkered flag is waved to tell the drivers the race is over — and the first car past the flag is the winner!', prompt: 'Can you find the checkered flag? And how many clouds can you count? (There are 4!)' },
+  'school-bus': { fact: 'A school bus is painted bright yellow so drivers can see it from far away. When the bus pops out its red stop sign, all the cars must stop so children can get on and off safely!', prompt: 'Count the sides of the red stop sign — there are 8! A shape with 8 sides is called an octagon.' },
+  'farm-tractor': { fact: 'Hay is grass that farmers cut, dry in the sun, and stack into bales to feed their animals in winter.', prompt: 'How many hay bales can you count? There are 10 — five on each side of the tractor!' },
+  'jet-plane': { fact: 'A jet plane flies so high it can fly right above the clouds — even higher than the tallest mountain on Earth!', prompt: 'Can you count the clouds? There are 3 big puffy clouds! Now can you find the round sun — and the round wheel under the plane?' },
+  'sailboat-adventure': { fact: 'A sailboat does not need an engine — the wind pushes on its big sails and moves the boat across the water! People have sailed with the wind for thousands of years.', prompt: 'How many rays does the smiling sun have? Count them — there are 20!' },
+  'rocket': { fact: 'A rocket blasts off by pushing hot fire down — and that big push lifts it way up into the sky!', prompt: 'Can you count all 15 yellow stars in the sky? Can you find the 3 round windows on the rocket?' },
+  'hot-air-balloon': { fact: 'A hot-air balloon floats because the hot air inside it is lighter than the cool air outside — so it rises way up into the sky!', prompt: 'Can you count all 4 puffy clouds in the sky? Can you find the diamond shapes woven into the basket?' },
+  'birthday-cake': { fact: 'A long, long time ago in Germany, children woke up on their birthday to a cake with one candle for every year of their life — plus one extra candle called the "light of life." The candles burned all day, and in the evening the child blew them all out while making a secret wish!', prompt: 'Can you count the 5 candles and the 6 presents? And can you find all 9 stars?' },
+  'kitten-yarn': { fact: 'A kitten\'s whiskers are about as wide as its body. They help the kitten feel its way around and tell if it can fit through a small space!', prompt: 'The pink yarn makes 2 curly loops on the floor — can you find them both? And can you spot the big circle? The ball of yarn is round like a circle!' },
+  'sunny-sunflower': { fact: 'Young sunflowers turn their faces to follow the sun across the sky during the day!', prompt: 'Can you count 3 sunflowers and 3 clouds? Every sunflower has 16 petals — count the big one\'s petals!' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -1298,7 +1352,7 @@ let replaying = false;     /* true while a replay is running: no taps, no saves 
 let sessionDone = 0;       /* pictures finished this session (BB5 gentle ending) */
 let gatePurpose = 'parent';/* 'parent' | 'send' | 'print' — what the hold gate unlocks */
 let gateAfter = null;      /* callback to run when the gate opens for send/print */
-let currentFillKind = 'flat'; /* 'flat' | 'magic' | 'eraser' */
+let currentFillKind = 'flat'; /* 'flat' | 'magic' | 'eraser' | 'glitter-brush' */
 let currentMagic = null;   /* magic fill id when currentFillKind === 'magic' */
 let doodleColorIdx = 0;
 let doodleMirror = false;
@@ -1933,8 +1987,11 @@ function selectTool(btn, kind, idx, magic){
   let label = '';
   if (kind === 'eraser') label = 'Eraser';
   else if (kind === 'magic') label = (MAGIC_FILLS.find(m => m.id === magic) || {}).name + ' magic';
+  else if (kind === 'glitter-brush') label = 'Glitter Brush';
   else label = currentPage.palette[currentToolIdx][0] + ' ' + toolWord;
-  $('hint').innerHTML = '<b>' + label + '</b> — tap the picture to color it in!';
+  $('hint').innerHTML = kind === 'glitter-brush'
+    ? '<b>Glitter Brush</b> — tap a colored part to make it sparkle!'
+    : '<b>' + label + '</b> — tap the picture to color it in!';
 }
 function buildTray(){
   const tray = $('tools');
@@ -1969,6 +2026,19 @@ function buildTray(){
   eb.innerHTML = eraserSVG() + '<span class="tool-name">Eraser</span>';
   eb.addEventListener('click', () => selectTool(eb, 'eraser', 0, null));
   tray.appendChild(eb);
+  /* Glitter Brush (Stage 3 ceremony gift): adds sparkle to already-colored
+     regions. Earned once Stage 3 unlocks; usable on any picture after that. */
+  if (progress.unlockedStages && progress.unlockedStages[3]){
+    const gb = document.createElement('button');
+    gb.className = 'tool';
+    gb.setAttribute('role', 'radio');
+    gb.setAttribute('aria-checked', 'false');
+    gb.setAttribute('aria-label', 'Glitter Brush');
+    gb.title = 'Glitter Brush';
+    gb.innerHTML = magicSVG('glitter') + '<span class="tool-name">Glitter Brush</span>';
+    gb.addEventListener('click', () => selectTool(gb, 'glitter-brush', 0, null));
+    tray.appendChild(gb);
+  }
   /* Magic fills row (QW2): a named second row under the palette. */
   let mrow = document.querySelector('.magic-row');
   if (mrow) mrow.remove();
@@ -2079,7 +2149,7 @@ function showStage(){
   /* If an unlock happened but its ceremony never got shown (e.g. reload
      between Done and ceremony), show it now — exactly once per stage. */
   for (let n = 2; n <= 10; n++){
-    if (isStageUnlocked(n) && !progress.ceremoniesShown[n]){ showCeremony(n); break; }
+    if (isStageUnlocked(n) && !progress.ceremoniesShown[n] && PAGES.some(p => p.stage === n)){ showCeremony(n); break; }
   }
 }
 
@@ -2171,11 +2241,13 @@ function floodFillMask(sx, sy){
   const w = W, h = H;
   const start = sy * w + sx;
   if (mask[start]) return null;              // tapped a black line
-  const img = bctx.getImageData(0, 0, w, h);
-  const px = new Uint32Array(img.data.buffer);
-  const target = px[start];
+  /* Flood the whole enclosed component (bounded by walls), whatever color
+     it currently holds. Flooding by exact pixel color instead broke
+     re-taps on marker/gel/glitter pages, whose fills bake a sheen or
+     sparkle into the base — a re-tap then only covered the thin band of
+     pixels matching the tap pixel's exact shade, not the region. */
   const region = new Uint8Array(w * h);
-  const isT = (x, y) => !mask[y * w + x] && !region[y * w + x] && px[y * w + x] === target;
+  const isT = (x, y) => !mask[y * w + x] && !region[y * w + x];
   const stack = [[sx, sy]];
   let bx0 = sx, bx1 = sx, by0 = sy, by1 = sy;
   while (stack.length){
@@ -2226,7 +2298,7 @@ function tapToFill(clientX, clientY){
     if (d[0] === cr && d[1] === cg && d[2] === cb) return;
   }
   const res = floodFillMask(x, y);
-  if (!res) return;                          // black line or same color (crayon)
+  if (!res) return;                          // tapped a black line
   /* Stay-inside (QW6, parent setting for ages 3-4): a region that spans
      most of the canvas and touches an edge is the background — don't flood
      it, just nudge the child to tap inside the picture. */
@@ -2234,8 +2306,17 @@ function tapToFill(clientX, clientY){
     toast('Tap inside the picture!');
     return;
   }
+  if (currentFillKind === 'glitter-brush'){
+    /* The brush only sparkles color that is already there. */
+    const d = bctx.getImageData(x, y, 1, 1).data;
+    if (d[0] === 255 && d[1] === 255 && d[2] === 255){
+      toast('Color this part first, then add sparkle!');
+      return;
+    }
+  }
   pushUndo();
   if (currentFillKind === 'eraser') applyErase(res);
+  else if (currentFillKind === 'glitter-brush') applyGlitterBrush(res);
   else applyFill(res);
   fillLog.push({ kind: currentFillKind, colorIdx: currentToolIdx, magic: currentMagic, x: x, y: y });
   if (fillLog.length > 300) fillLog.shift();
@@ -2315,6 +2396,33 @@ function applyErase(res){
       const k = (j * w + i) * 4, p = y * W + x;
       d[k] = 255; d[k + 1] = 255; d[k + 2] = 255; d[k + 3] = 255;
       passArr[p] = 0; colorArr[p] = 0;
+    }
+  }
+  bctx.putImageData(img, box.x0, box.y0);
+  syncFillRegion(box);
+}
+
+/* ================= GLITTER BRUSH (Stage 3 ceremony gift) ================= */
+/* Adds deterministic sparkle on top of color that is already there: white
+   and gold glints (same hash and thresholds as the glitter fill mode), so
+   the sparkle is identical on every load. Baked into the base canvas, so
+   it saves, undos and replays exactly like a fill. Uncolored (white)
+   pixels are untouched; the tap guard above keeps the brush off bare paper. */
+function applyGlitterBrush(res){
+  const box = res.box, region = res.mask;
+  const w = box.x1 - box.x0 + 1, h = box.y1 - box.y0 + 1;
+  const img = bctx.getImageData(box.x0, box.y0, w, h);
+  const d = img.data;
+  for (let j = 0; j < h; j++){
+    const y = box.y0 + j;
+    for (let i = 0; i < w; i++){
+      const x = box.x0 + i;
+      if (!region[y * W + x]) continue;
+      const k = (j * w + i) * 4;
+      if (d[k] === 255 && d[k + 1] === 255 && d[k + 2] === 255) continue;
+      const rr = hash2(x, y);
+      if (rr < 0.06){ d[k] = 255; d[k + 1] = 255; d[k + 2] = 255; }
+      else if (rr < 0.10){ d[k] = 255; d[k + 1] = 214; d[k + 2] = 10; }
     }
   }
   bctx.putImageData(img, box.x0, box.y0);
@@ -2639,7 +2747,10 @@ $('doneBtn').addEventListener('click', () => {
     if (next <= 10 && !isStageUnlocked(next)){
       progress.unlockedStages[next] = true;
       if (next === 2) progress.unlocked = true; /* keep the legacy flag in step */
-      ceremonyPending = next;
+      /* The ceremony waits until the next stage's pages land — a stage
+         with no pages yet is not shown, and its ceremony fires on the
+         next showStage once the pages exist. */
+      if (PAGES.some(p => p.stage === next)) ceremonyPending = next;
     }
   }
   sessionDone++;
@@ -2696,6 +2807,7 @@ function showCeremony(stageN){
   if (stageN === 2) progress.ceremonyShown = true; /* keep the legacy flag in step */
   saveProgressState();
   ceremonyStage = stageN;
+  buildToolFan(stageN);
   $('ceremonyTitle').textContent = st.ceremony.title;
   $('ceremonyText').textContent = st.ceremony.text;
   const first = firstRequiredPage(stageN);
@@ -2717,21 +2829,93 @@ $('ceremonyLaterBtn').addEventListener('click', () => {
   $('ceremonyOverlay').classList.add('hidden');
   showStage();
 });
-/* Pencil fan for the ceremony (four colored pencils, SVG). */
-(function buildPencilFan(){
-  const fan = $('pencilFan');
-  const cols = ['#FC3B32', '#FED337', '#22A2E4', '#5EC338'];
-  cols.forEach(hex => {
-    const s = document.createElement('span');
-    s.innerHTML = '<svg width="34" height="120" viewBox="0 0 24 120" aria-hidden="true">' +
-      '<rect x="5" y="34" width="14" height="82" rx="2" fill="' + hex + '"/>' +
-      '<rect x="5" y="34" width="14" height="10" fill="' + shade(hex, 30) + '" opacity="0.6"/>' +
-      '<path d="M5 34 L12 4 L19 34 Z" fill="#E8C49A"/>' +
-      '<path d="M10.4 12 L12 4 L13.6 12 Z" fill="' + hex + '"/>' +
+/* Ceremony tool fan: four upright tools of the stage being unwrapped
+   (pencils for Stage 2, markers for Stage 3, and so on). Rebuilt every
+   time a ceremony shows, so the fan always matches the gift. */
+function toolFanSVG(tool, hex){
+  const open = '<svg width="34" height="120" viewBox="0 0 24 120" aria-hidden="true">';
+  if (tool === 'marker'){
+    return open +
+      '<rect x="5" y="10" width="14" height="66" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<rect x="5" y="10" width="14" height="12" rx="4" fill="rgba(255,255,255,0.4)"/>' +
+      '<rect x="5" y="10" width="5" height="66" rx="2" fill="rgba(0,0,0,0.15)"/>' +
+      '<path d="M5 76 L12 108 L19 76 Z" fill="' + shade(hex, -25) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
       '</svg>';
+  }
+  if (tool === 'watercolor'){
+    return open +
+      '<rect x="9" y="8" width="6" height="58" rx="3" fill="#C98A4B" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<rect x="8" y="66" width="8" height="12" rx="1.5" fill="#C0C0C0" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<path d="M8 78 C 8 96 12 112 12 112 C 12 112 16 96 16 78 Z" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
+      '<circle cx="12" cy="100" r="1.6" fill="rgba(255,255,255,0.6)"/>' +
+      '</svg>';
+  }
+  if (tool === 'pastel'){
+    return open +
+      '<rect x="5" y="20" width="14" height="80" rx="7" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<rect x="5" y="20" width="14" height="14" rx="7" fill="rgba(255,255,255,0.35)"/>' +
+      '<rect x="8" y="34" width="2" height="52" fill="rgba(255,255,255,0.25)"/>' +
+      '</svg>';
+  }
+  if (tool === 'sticker'){
+    return open +
+      '<path d="M12 26l4.7 9.5 10.5 1.5-7.6 7.4 1.8 10.4L12 49.9l-9.4 4.9 1.8-10.4-7.6-7.4 10.5-1.5z" fill="' + hex + '" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M12 62l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z" fill="' + shade(hex, 30) + '" stroke="#fff" stroke-width="1" stroke-linejoin="round"/>' +
+      '</svg>';
+  }
+  if (tool === 'gel'){
+    return open +
+      '<rect x="7" y="12" width="10" height="76" rx="5" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<rect x="7" y="12" width="10" height="10" rx="5" fill="rgba(255,255,255,0.5)"/>' +
+      '<path d="M7 88 L12 110 L17 88 Z" fill="#E8E8E8" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+      '<circle cx="20" cy="30" r="1.8" fill="#FFD60A"/><circle cx="4" cy="48" r="1.4" fill="#fff"/>' +
+      '</svg>';
+  }
+  if (tool === 'glitter'){
+    return open +
+      '<path d="M12 6 L13.8 18.2 L22 20 L13.8 21.8 L12 34 L10.2 21.8 L2 20 L10.2 18.2 Z" fill="#FFD60A" stroke="rgba(0,0,0,0.1)" stroke-width="0.8"/>' +
+      '<path d="M19 38 L20 43 L25 44 L20 45 L19 50 L18 45 L13 44 L18 43 Z" fill="#fff"/>' +
+      '<rect x="10.5" y="52" width="3" height="56" rx="1.5" fill="#8A5A2B" stroke="rgba(0,0,0,0.18)" stroke-width="0.8"/>' +
+      '</svg>';
+  }
+  if (tool === 'stamp'){
+    return open +
+      '<rect x="9" y="8" width="6" height="42" rx="3" fill="#8A5A2B" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<circle cx="12" cy="10" r="4" fill="#6B4423"/>' +
+      '<rect x="6" y="50" width="12" height="10" rx="2" fill="#5A5A5A"/>' +
+      '<ellipse cx="12" cy="72" rx="10" ry="9" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<path d="M12 66l1.6 3.2 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z" fill="#fff"/>' +
+      '</svg>';
+  }
+  if (tool === 'crayon'){
+    return open +
+      '<rect x="5" y="34" width="14" height="72" rx="3" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+      '<rect x="5" y="34" width="14" height="10" fill="rgba(255,255,255,0.35)"/>' +
+      '<path d="M5 34 L12 8 L19 34 Z" fill="' + shade(hex, 38) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+      '</svg>';
+  }
+  /* pencil (default) */
+  return open +
+    '<rect x="5" y="34" width="14" height="82" rx="2" fill="' + hex + '"/>' +
+    '<rect x="5" y="34" width="14" height="10" fill="' + shade(hex, 30) + '" opacity="0.6"/>' +
+    '<path d="M5 34 L12 4 L19 34 Z" fill="#E8C49A"/>' +
+    '<path d="M10.4 12 L12 4 L13.6 12 Z" fill="' + hex + '"/>' +
+    '</svg>';
+}
+function buildToolFan(stageN){
+  const fan = $('pencilFan');
+  fan.innerHTML = '';
+  const st = STAGE_BY_N[stageN] || STAGE_BY_N[2];
+  const tool = st.tool;
+  const cols = tool === 'glitter' ? ['#FFD60A', '#FF8BA8', '#B982D2', '#00E5FF']
+                                  : ['#FC3B32', '#FED337', '#22A2E4', '#5EC338'];
+  const tools = tool === 'master' ? ['crayon', 'pencil', 'marker', 'glitter'] : [tool, tool, tool, tool];
+  tools.forEach((t, i) => {
+    const s = document.createElement('span');
+    s.innerHTML = toolFanSVG(t, cols[i]);
     fan.appendChild(s);
   });
-})();
+}
 
 /* ================= SIGN YOUR PICTURE (QW3) ================= */
 /* Flow: Finish → celebration → "Sign your picture" → parent-gated "Send to
@@ -3127,6 +3311,7 @@ function startReplay(pageId){
       const res = floodFillMask(f.x, f.y);
       if (res){
         if (currentFillKind === 'eraser') applyErase(res);
+        else if (currentFillKind === 'glitter-brush') applyGlitterBrush(res);
         else applyFill(res);
         render();
       }
@@ -3381,12 +3566,18 @@ function renderProgressView(){
   const p = profiles.profiles.find(x => x.id === activeProfileId) || profiles.profiles[0];
   const rows = [
     ['Coloring as', '<b>' + escapeHtml(p.name || 'Player') + '</b>'],
-    ['Pictures finished', '<b>' + progress.finished.length + ' of 20</b>'],
-    ['Stage 1 · Crayons', '<b>' + requiredDoneCount(1) + ' of 6 to finish · ' + bonusDoneCount(1) + ' of 4 bonus</b>' + (stageComplete(1) ? ' · Stage Complete!' : '')],
-    ['Stage 2 · Colored Pencils', '<b>' + requiredDoneCount(2) + ' of 6 to finish · ' + bonusDoneCount(2) + ' of 4 bonus</b>' + (stageComplete(2) ? ' · Stage Complete!' : '')],
+    ['Pictures finished', '<b>' + progress.finished.length + ' of ' + PAGES.length + '</b>']
+  ];
+  /* One row per stage that has pages (grows as stages land). */
+  STAGES.forEach(st => {
+    if (!PAGES.some(pg => pg.stage === st.n)) return;
+    rows.push(['Stage ' + st.n + ' · ' + st.name,
+      '<b>' + requiredDoneCount(st.n) + ' of 6 to finish · ' + bonusDoneCount(st.n) + ' of 4 bonus</b>' + (stageComplete(st.n) ? ' · Stage Complete!' : '')]);
+  });
+  rows.push(
     ['Sunshine Stars', '<b>' + meta.welcomeStars + '</b>'],
     ['Last visit', '<b>' + (meta.lastVisit || 'today') + '</b>']
-  ];
+  );
   box.innerHTML = rows.map(r => '<div class="row"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>').join('');
 }
 /* ---- Rating card (QW12): DORMANT — shown at most once per version,
