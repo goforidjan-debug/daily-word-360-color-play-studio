@@ -76,8 +76,9 @@
     padding:calc(10px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom));
     max-width:720px; margin:0 auto; width:100%;}
   .back-row{width:100%; display:flex; justify-content:flex-start; padding-bottom:2px;}
-  .back-btn{display:inline-flex; align-items:center; gap:6px; color:#fff; font-size:15px; font-weight:800;
-    text-shadow:0 1px 4px rgba(60,30,5,.6); padding:6px 10px 6px 4px; border-radius:10px;}
+  .back-btn{display:inline-flex; align-items:center; gap:4px; color:#fff; font-size:13px; font-weight:800;
+    text-shadow:0 1px 4px rgba(60,30,5,.6); padding:4px 8px 4px 2px; border-radius:10px;}
+  .back-btn svg{width:16px; height:16px;}
   .topbar{width:100%; display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
     padding:2px 2px 0;}
   .titleblock{padding-top:2px;}
@@ -215,6 +216,9 @@
     font-size:14.5px; font-weight:700; color:#6B4E00;}
   .parent-line{margin-top:16px; color:#FFE9B8; font-size:14px; font-weight:700; text-align:center;
     text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .parent-sec{width:100%; max-width:640px; margin:18px 0 0; font-size:14px; font-weight:800;
+    letter-spacing:.1em; text-transform:uppercase; color:#FFE9B8;
+    text-shadow:0 1px 4px rgba(60,30,5,.6); text-align:left;}
   .hold-ring{width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center;
     background:conic-gradient(#FFD60A calc(var(--p,0)*1%), rgba(255,255,255,.22) 0);
     margin:10px auto;}
@@ -514,18 +518,43 @@
     </button>
   </div>
   <h1>For Parents</h1>
-  <p class="sub">Settings for grown-ups.</p>
+  <p class="sub">Parental Control</p>
+  <h2 class="parent-sec">Optional Pages</h2>
   <div class="parent-card">
-    <h2>Bible-story pages</h2>
+    <h2>Bible-Story Pages</h2>
     <p>An optional pack of 7 Bible-story coloring pages. Off by default — only a parent can turn it on.</p>
     <div class="switch-row">
       <div>
-        <div class="lbl">Bible-story pack</div>
+        <div class="lbl">Bible-Story Pages</div>
         <div class="desc">7 extra pages, parent-enabled</div>
       </div>
-      <button class="switch" id="bibleSwitch" role="switch" aria-checked="false" aria-label="Bible-story pack"></button>
+      <button class="switch" id="bibleSwitch" role="switch" aria-checked="false" aria-label="Bible-Story Pages"></button>
     </div>
     <div class="parent-note hidden" id="bibleNote">Bible pages are not in this prototype yet — the switch is ready for the full app.</div>
+  </div>
+  <div class="parent-card">
+    <h2>Mythical Creatures Pages</h2>
+    <p>An optional pack of mythical creature coloring pages. Off by default — only a parent can turn it on.</p>
+    <div class="switch-row">
+      <div>
+        <div class="lbl">Mythical Creatures Pages</div>
+        <div class="desc">Extra pages, parent-enabled</div>
+      </div>
+      <button class="switch" id="mythicalSwitch" role="switch" aria-checked="false" aria-label="Mythical Creatures Pages"></button>
+    </div>
+    <div class="parent-note hidden" id="mythicalNote">Mythical creature pages are not in this prototype yet — the switch is ready for the full app.</div>
+  </div>
+  <div class="parent-card">
+    <h2>Superhero Pages</h2>
+    <p>An optional pack of superhero coloring pages — original heroes only, no Marvel or DC characters. Off by default — only a parent can turn it on.</p>
+    <div class="switch-row">
+      <div>
+        <div class="lbl">Superhero Pages</div>
+        <div class="desc">Extra pages, parent-enabled</div>
+      </div>
+      <button class="switch" id="heroSwitch" role="switch" aria-checked="false" aria-label="Superhero Pages"></button>
+    </div>
+    <div class="parent-note hidden" id="heroNote">Superhero pages are not in this prototype yet — the switch is ready for the full app.</div>
   </div>
   <p class="parent-line">Paintings stay in this app — they are never saved to the phone's photo gallery.</p>
 </div>
@@ -786,9 +815,9 @@ function saveProgressState(){
 function loadParentPrefs(){
   try {
     const raw = localStorage.getItem(LS_PARENT);
-    if (raw) return { bible: !!JSON.parse(raw).bible };
+    if (raw) { const p = JSON.parse(raw); return { bible: !!p.bible, mythical: !!p.mythical, superhero: !!p.superhero }; }
   } catch(e){}
-  return { bible: false };
+  return { bible: false, mythical: false, superhero: false };
 }
 function saveParentPrefs(){
   try { localStorage.setItem(LS_PARENT, JSON.stringify(parentPrefs)); }
@@ -1852,9 +1881,23 @@ $('holdBtn').addEventListener('pointerdown', e => {
 function syncParentScreen(){
   $('bibleSwitch').setAttribute('aria-checked', parentPrefs.bible ? 'true' : 'false');
   $('bibleNote').classList.toggle('hidden', !parentPrefs.bible);
+  $('mythicalSwitch').setAttribute('aria-checked', parentPrefs.mythical ? 'true' : 'false');
+  $('mythicalNote').classList.toggle('hidden', !parentPrefs.mythical);
+  $('heroSwitch').setAttribute('aria-checked', parentPrefs.superhero ? 'true' : 'false');
+  $('heroNote').classList.toggle('hidden', !parentPrefs.superhero);
 }
 $('bibleSwitch').addEventListener('click', () => {
   parentPrefs.bible = !parentPrefs.bible;
+  saveParentPrefs();
+  syncParentScreen();
+});
+$('mythicalSwitch').addEventListener('click', () => {
+  parentPrefs.mythical = !parentPrefs.mythical;
+  saveParentPrefs();
+  syncParentScreen();
+});
+$('heroSwitch').addEventListener('click', () => {
+  parentPrefs.superhero = !parentPrefs.superhero;
   saveParentPrefs();
   syncParentScreen();
 });
