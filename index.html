@@ -322,8 +322,14 @@
   .fact-line{margin:12px 4px 0; text-align:center; font-size:14px; font-weight:700; color:#FFE9B8;
     text-shadow:0 1px 4px rgba(60,30,5,.6); line-height:1.45;}
   .fact-line b{color:#FFE45C;}
-  .alive{animation:alive-wiggle 1.1s ease-in-out infinite;}
-  @keyframes alive-wiggle{0%,100%{transform:rotate(-1.5deg) scale(1);} 50%{transform:rotate(1.5deg) scale(1.03);}}
+  .alive{animation:alive-dance 1.2s ease-in-out infinite;}
+  @keyframes alive-dance{
+    0%,100%{transform:rotate(-5deg) scale(1) translateY(0);}
+    25%{transform:rotate(4deg) scale(1.06) translateY(-10px);}
+    50%{transform:rotate(-4deg) scale(1.08) translateY(-4px);}
+    75%{transform:rotate(5deg) scale(1.05) translateY(-10px);}}
+  .sparkle{position:absolute; pointer-events:none; animation:twinkle 1.1s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.25; transform:scale(.7) rotate(0deg);} 50%{opacity:1; transform:scale(1.25) rotate(25deg);}}
   .new-badge{background:#FF6B4A; color:#fff; font-size:11px; font-weight:800; letter-spacing:.06em;
     text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap;}
   /* left-handed: controls flip sides so the child's hand never covers the work */
@@ -629,6 +635,7 @@
   <p class="sub">Look what you made!</p>
   <p class="sub">Your paintings stay here in the app.</p>
   <div class="frame"><img id="galleryImg" alt="Your finished painting"></div>
+  <p class="sub">Tap your picture to make it dance!</p>
   <div class="gallery-btns">
     <button class="save-btn" id="signItBtn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -847,7 +854,13 @@
 <div class="overlay hidden" id="starsOverlay" role="dialog" aria-label="Great job">
   <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
   <div class="stars-box">
-    <img id="starsPainting" class="hidden" alt="Your finished painting" style="width:150px; height:auto; border-radius:12px; border:4px solid #fff; box-shadow:0 10px 24px rgba(0,0,0,.4); margin:0 auto 12px; display:block;">
+    <div style="position:relative; width:260px; margin:0 auto 12px;">
+      <img id="starsPainting" class="hidden" alt="Your finished painting" style="width:260px; height:auto; border-radius:12px; border:4px solid #fff; box-shadow:0 10px 24px rgba(0,0,0,.4); display:block;">
+      <svg class="sparkle" style="top:-10px; left:-16px;" width="26" height="26" viewBox="0 0 24 24" fill="#FFE45C" aria-hidden="true"><path d="M12 0l2.4 9.6L24 12l-9.6 2.4L12 24l-2.4-9.6L0 12l9.6-2.4z"/></svg>
+      <svg class="sparkle" style="top:6px; right:-18px; animation-delay:.35s;" width="20" height="20" viewBox="0 0 24 24" fill="#FFE45C" aria-hidden="true"><path d="M12 0l2.4 9.6L24 12l-9.6 2.4L12 24l-2.4-9.6L0 12l9.6-2.4z"/></svg>
+      <svg class="sparkle" style="bottom:-6px; left:-8px; animation-delay:.7s;" width="18" height="18" viewBox="0 0 24 24" fill="#FFE45C" aria-hidden="true"><path d="M12 0l2.4 9.6L24 12l-9.6 2.4L12 24l-2.4-9.6L0 12l9.6-2.4z"/></svg>
+    </div>
+    <p style="color:#FFE45C; font-weight:800; font-size:15px; margin:0 0 2px; text-shadow:0 1px 6px rgba(0,0,0,.5);">Look &mdash; your picture came alive!</p>
     <div class="stars" aria-hidden="true">
       <svg width="72" height="72" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
       <svg width="104" height="104" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
@@ -2808,10 +2821,14 @@ $('againBtn').addEventListener('click', () => {
   const id = $('galleryImg').dataset.pageId || (currentPage && currentPage.id) || 'lion';
   openPage(id);
 });
-/* Tap the picture to watch it come alive (BB1): one gentle wiggle. */
+/* Tap the picture to watch it come alive (BB1): a big joyful dance. */
 $('galleryImg').addEventListener('click', () => {
   if (calmMotionOn()) return;
-  $('galleryImg').classList.toggle('alive');
+  const img = $('galleryImg');
+  img.classList.remove('alive');
+  void img.offsetWidth; /* restart the dance from the beginning */
+  img.classList.add('alive');
+  toast('It came alive!');
 });
 /* Save / Share = share sheet first, download only as a fallback.
    Sharing never lands in Downloads or the phone gallery; a cancelled
