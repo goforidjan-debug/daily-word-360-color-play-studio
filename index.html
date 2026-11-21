@@ -3439,10 +3439,13 @@ async function paintingDataURL(pageId){
 /* ================= GALLERY: STACKS BY STAGE ================= */
 /* My Gallery shows one Polaroid stack per stage (2 per row), built from
    the child's REAL saved paintings. Tap a stack to see only that stage's
-   paintings. Doodles live in the Master Studio (Stage 10) stack. A locked
-   stage's stack can't be opened — same rule as the Stages screen. Saving a
-   doodle opens Stage 10's paintings right away so the child sees what
-   they just made, even while Stage 10 is still locked. */
+   paintings. Doodles live in the Master Studio (Stage 10) stack.
+   Godwin (2026-11-21): a LOCKED gallery stack that HAS paintings can be
+   opened to LOOK at them (view-only) — the Locked badge stays, and
+   coloring stays gated by the unlock rule on the Stages screen. A locked
+   stack with NO paintings still shows the unlock toast and won't open.
+   Saving a doodle opens Stage 10's paintings right away so the child sees
+   what they just made, even while Stage 10 is still locked. */
 let currentGalleryStage = 1;
 async function showGalleryStacks(){
   const wrap = $('galleryStacksList');
@@ -3463,23 +3466,25 @@ async function showGalleryStacks(){
     const count = ids.length + (n === 10 ? doodles.length : 0);
     const btn = document.createElement('button');
     btn.className = 'stack' + (locked ? ' locked' : '');
-    btn.setAttribute('aria-label', 'Stage ' + n + ' paintings, ' + st.name + (locked ? ', locked' : ', ' + count + ' painting' + (count === 1 ? '' : 's')));
-    /* Faces: the stage's real paintings (up to 3). Empty slots stay blank. */
+    btn.setAttribute('aria-label', 'Stage ' + n + ' paintings, ' + st.name + (locked ? ', locked' : '') + (count ? ', ' + count + ' painting' + (count === 1 ? '' : 's') : ''));
+    /* Faces: the stage's real paintings (up to 3) — shown even on a locked
+       stack when it has paintings, so the child can see their own work.
+       Empty slots stay blank. */
     const faces = [ null, null, null ];
-    if (!locked){
-      for (let i = 0; i < Math.min(3, ids.length); i++){
-        const url = await paintingDataURL(ids[i]);
-        if (url) faces[i] = { img: url, name: PAGE_BY_ID[ids[i]].name };
-      }
-      if (n === 10){
-        for (let i = ids.length; i < Math.min(3, count); i++){
-          faces[i] = { img: doodles[i - ids.length].data, name: 'Doodle' };
-        }
+    for (let i = 0; i < Math.min(3, ids.length); i++){
+      const url = await paintingDataURL(ids[i]);
+      if (url) faces[i] = { img: url, name: PAGE_BY_ID[ids[i]].name };
+    }
+    if (n === 10){
+      for (let i = ids.length; i < Math.min(3, count); i++){
+        faces[i] = { img: doodles[i - ids.length].data, name: 'Doodle' };
       }
     }
-    const blankCap = locked ? 'Coming soon' : 'No paintings yet';
-    const prog = locked ? stackProgressText(n)
-      : (count ? count + (count === 1 ? ' painting' : ' paintings') : 'No paintings yet');
+    const blankCap = (locked && !count) ? 'Coming soon' : 'No paintings yet';
+    /* The count is always real (doodles included for Stage 10): a locked
+       stack with a doodle reads "1 painting", never "No paintings yet". */
+    const prog = count ? count + (count === 1 ? ' painting' : ' paintings')
+      : (locked ? stackProgressText(n) : 'No paintings yet');
     btn.innerHTML =
       '<span class="stack-fan">' +
         polaroidHTML(faces[2], 'back2', blankCap) +
@@ -3493,7 +3498,9 @@ async function showGalleryStacks(){
         '<span class="stack-progress">' + prog + '</span>' +
       '</span>';
     btn.addEventListener('click', () => {
-      if (locked) toast(stackLockText(n));
+      /* Locked stacks open for LOOKING when they have paintings; empty
+         locked stacks still toast the unlock and won't open. */
+      if (locked && !count) toast(stackLockText(n));
       else showGalleryStage(n);
     });
     wrap.appendChild(btn);
