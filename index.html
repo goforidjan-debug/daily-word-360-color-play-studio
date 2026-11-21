@@ -1057,7 +1057,8 @@ function firstRequiredPage(n){
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
    from the line art's natural size, never stretched.
-   Stage 3 (Markers) landed 2026-11-21: 30 pages total. White is never a
+   Stage 3 (Markers) landed 2026-11-21: 30 pages total. Stage 4 (Watercolors)
+   landed 2026-11-21: 40 pages total. White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
 const PAGES = [
@@ -1212,7 +1213,51 @@ const PAGES = [
              ['Sky Blue','#0079BA'],['Yarn Red','#F45049'],['Basket Dark Brown','#7E4A25']] },
   { id:'sunny-sunflower', name:'Sunflower', title:'Color the Sunflower!', stage:3, tool:'marker', required:false,
     line:'assets/sunny-sunflower-line-2x.jpg', guide:'assets/sunny-sunflower-guide.jpg',
-    palette:[['Sunny Yellow','#FDE02A'],['Sunflower Brown','#AB652A'],['Leaf Green','#64C043'],['Cloud Blue','#DAEBF2']] }
+    palette:[['Sunny Yellow','#FDE02A'],['Sunflower Brown','#AB652A'],['Leaf Green','#64C043'],['Cloud Blue','#DAEBF2']] },
+  /* ---- Stage 4: Watercolors (6 required + 4 bonus) ---- */
+  { id:'turtle-friend', name:'Turtle', title:'Color the Turtle!', stage:4, tool:'watercolor',
+    line:'assets/turtle-friend-line-2x.jpg', guide:'assets/turtle-friend-guide.jpg',
+    palette:[['Pond Blue','#A6DCF7'],['Shell Yellow-Green','#CEE181'],['Leaf Green','#92C947'],
+             ['Cattail Brown','#BB8352'],['Flower Pink','#FBB8C0']] },
+  { id:'polar-bear', name:'Polar Bear', title:'Color the Polar Bear!', stage:4, tool:'watercolor',
+    line:'assets/polar-bear-line-2x.jpg', guide:'assets/polar-bear-guide.jpg',
+    palette:[['Ice Blue','#D2E5EF'],['Fish Orange','#FBB570'],['Steel Blue','#81AECD'],['Gray','#868686']] },
+  { id:'happy-hippo', name:'Hippo', title:'Color the Hippo!', stage:4, tool:'watercolor',
+    line:'assets/happy-hippo-line-2x.jpg', guide:'assets/happy-hippo-guide.jpg',
+    palette:[['Hippo Lavender','#D8CCD8'],['Lily Green','#B5D196'],['Splash Blue','#DBEAF1'],
+             ['Bird Yellow','#FCED91'],['Mauve','#A79AB2'],['Beak Orange','#F8D448'],['Mouth Pink','#C38DAA']] },
+  { id:'sleepy-sloth', name:'Sloth', title:'Color the Sloth!', stage:4, tool:'watercolor',
+    line:'assets/sleepy-sloth-line-2x.jpg', guide:'assets/sleepy-sloth-guide.jpg',
+    palette:[['Sloth Tan','#D4A57B'],['Leaf Green','#599855'],['Cream','#F6E5C8'],
+             ['Leaf Light Green','#B6CC63'],['Nose Brown','#554A47']] },
+  { id:'fairy-garden', name:'Fairy Garden', title:'Color the Fairy Garden!', stage:4, tool:'watercolor',
+    line:'assets/fairy-garden-line-2x.jpg', guide:'assets/fairy-garden-guide.jpg',
+    palette:[['Mushroom Red','#EC5759'],['Skin','#FAD8CE'],['Hair Brown','#9B6A4D'],
+             ['Wing Blue','#D3E8F2'],['Dress Lavender','#CCA7CD'],['Leaf Green','#9CBE77'],
+             ['Sunny Yellow','#FAD969'],['Bow Pink','#F6A8B5'],['Butterfly Orange','#F4B37C']] },
+  { id:'butterfly', name:'Butterfly', title:'Color the Butterfly!', stage:4, tool:'watercolor',
+    line:'assets/butterfly-line-2x.jpg', guide:'assets/butterfly-guide.jpg',
+    palette:[['Sun Yellow','#FDE25A'],['Wing Pink','#FCA4C5'],['Wing Purple','#BEA4D9'],
+             ['Body Orange','#FCA55A'],['Leaf Green','#A0D187'],['Wing Blue','#9BC3E4'],
+             ['Deep Purple','#7051B6'],['Deep Blue','#5194D1']] },
+  { id:'koi-fish-pond', name:'Koi Fish', title:'Color the Koi Fish!', stage:4, tool:'watercolor', required:false,
+    line:'assets/koi-fish-pond-line-2x.jpg', guide:'assets/koi-fish-pond-guide.jpg',
+    palette:[['Water Blue','#CBE6F1'],['Pond Green','#A5C77E'],['Koi Orange','#F8954E'],
+             ['Cattail Brown','#B97A4D'],['Lotus Pink','#F8CACC'],['Lotus Yellow','#FADB5E'],['Stem Green','#67724F']] },
+  { id:'cherry-blossom-tree', name:'Cherry Blossom Tree', title:'Color the Cherry Blossom Tree!', stage:4, tool:'watercolor', required:false,
+    line:'assets/cherry-blossom-tree-line-2x.jpg', guide:'assets/cherry-blossom-tree-guide.jpg',
+    palette:[['Trunk Brown','#C1936F'],['Sky Blue','#CDE4EF'],['Blossom Yellow','#F7DD69'],
+             ['Grass Green','#8BB86D'],['Blossom Pink','#F6C5D0'],['Bud Brown','#A6785A'],
+             ['Dark Brown','#7A5745'],['Dusty Pink','#E3A8B6']] },
+  { id:'mermaid-splash', name:'Mermaid', title:'Color the Mermaid!', stage:4, tool:'watercolor', required:false,
+    line:'assets/mermaid-splash-line-2x.jpg', guide:'assets/mermaid-splash-guide.jpg',
+    palette:[['Rock Grey','#A29487'],['Skin Peach','#F8BD93'],['Tail Teal','#65ABB3'],
+             ['Hair Red','#E1522C'],['Pale Blue','#BEDAEA'],['Shell Orange','#F5A56B'],
+             ['Dark Red','#882920'],['Sun Yellow','#FCE175']] },
+  { id:'puddle-jump-duck', name:'Duck', title:'Color the Duck!', stage:4, tool:'watercolor', required:false,
+    line:'assets/puddle-jump-duck-line-2x.jpg', guide:'assets/puddle-jump-duck-guide.jpg',
+    palette:[['Duck Yellow','#FDDE3A'],['Puddle Blue','#89C9E7'],['Umbrella Red','#E43532'],
+             ['Beak Orange','#F29034'],['Grass Green','#7CC54F'],['Pole Brown','#AA6638']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1314,7 +1359,17 @@ const PAGE_FACTS = {
   'hot-air-balloon': { fact: 'A hot-air balloon floats because the hot air inside it is lighter than the cool air outside — so it rises way up into the sky!', prompt: 'Can you count all 4 puffy clouds in the sky? Can you find the diamond shapes woven into the basket?' },
   'birthday-cake': { fact: 'A long, long time ago in Germany, children woke up on their birthday to a cake with one candle for every year of their life — plus one extra candle called the "light of life." The candles burned all day, and in the evening the child blew them all out while making a secret wish!', prompt: 'Can you count the 5 candles and the 6 presents? And can you find all 9 stars?' },
   'kitten-yarn': { fact: 'A kitten\'s whiskers are about as wide as its body. They help the kitten feel its way around and tell if it can fit through a small space!', prompt: 'The pink yarn makes 2 curly loops on the floor — can you find them both? And can you spot the big circle? The ball of yarn is round like a circle!' },
-  'sunny-sunflower': { fact: 'Young sunflowers turn their faces to follow the sun across the sky during the day!', prompt: 'Can you count 3 sunflowers and 3 clouds? Every sunflower has 16 petals — count the big one\'s petals!' }
+  'sunny-sunflower': { fact: 'Young sunflowers turn their faces to follow the sun across the sky during the day!', prompt: 'Can you count 3 sunflowers and 3 clouds? Every sunflower has 16 petals — count the big one\'s petals!' },
+  'turtle-friend': { fact: 'A turtle\'s shell is part of its body — it is made of bone and joined to the turtle\'s backbone and ribs, so a turtle can never come out of its shell, and its shell grows with it!', prompt: 'How many lily pads are floating on the pond? (There are 3!) And how many tall cattails can you find? (There are 4!)' },
+  'polar-bear': { fact: 'A polar bear\'s fur looks white, but each hair is actually a clear, hollow tube — and underneath all that white fur, a polar bear\'s skin is black!', prompt: 'How many snowflakes can you count? (There are 10!) And can you find the little orange fish?' },
+  'happy-hippo': { fact: 'Hippos cannot swim! They walk and bounce along the bottom of rivers — and they can hold their breath underwater for about five minutes.', prompt: 'Can you find the little yellow bird? And how many lily pads can you count? (There are 4!)' },
+  'sleepy-sloth': { fact: 'Sloths move so slowly that tiny green algae grows on their fur — it helps them hide among the leaves, like a built-in camouflage coat!', prompt: 'How many leaves can you count? (There are 13!) And can you spot the sloth\'s little tail?' },
+  'fairy-garden': { fact: 'A mushroom is not a plant at all — it is a fungus! The mushroom you see is just the top. Under the ground it grows a wide net of tiny threads called mycelium, which can stretch further than the mushroom is tall.', prompt: 'Can you find the 3 butterflies — orange, blue and purple? And how many yellow stars can you count? (There are 15!)' },
+  'butterfly': { fact: 'A butterfly tastes with its feet! It has tiny taste sensors on its feet that tell it if a leaf is a good place to lay its eggs.', prompt: 'Can you count the sun\'s rays? (There are 16!) And how many flowers can you find? (There are 4!)' },
+  'koi-fish-pond': { fact: 'Koi fish can live a very long time — some live more than 100 years!', prompt: 'Can you count the 9 brown cattails around the pond? And can you find the 3 green lily pads floating on the water?' },
+  'cherry-blossom-tree': { fact: 'Cherry blossom trees are called sakura in Japan, and every spring people have picnics underneath them just to enjoy the pink flowers!', prompt: 'Can you find the little brown bird sitting on a branch? And how many grass tufts can you count? (There are 8!) How many clouds are in the sky? (There are 2!)' },
+  'mermaid-splash': { fact: 'A starfish can grow back one of its arms if it loses one — amazing!', prompt: 'Can you find the smiling starfish? And how many big seashells are on the sand? (There are 3 — two scallop shells and one cone shell!) Can you find the spiral shell in the mermaid\'s hand?' },
+  'puddle-jump-duck': { fact: 'A duck\'s feathers are waterproof! A duck spreads a special oil from a tiny gland near its tail all over its feathers, so the rain rolls right off — that is why this little duck can jump in puddles and stay cosy and dry underneath!', prompt: 'Can you count the raindrops? (There are 26!) And can you find the little red umbrella?' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
