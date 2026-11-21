@@ -105,21 +105,22 @@
   .stack-title{font-size:19px; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(60,30,5,.55);}
   .stack-progress{color:#FFE9B8; font-size:14px; font-weight:700; text-shadow:0 1px 4px rgba(60,30,5,.6);}
 
-  /* ---------- Stages screen: 2 stacks per row (5 rows of 2) ----------
-     Scoped to #stacksList only — the Gallery keeps the single-column look.
+  /* ---------- Stages + Gallery screens: 2 stacks per row (5 rows of 2) ----------
+     Scoped to #stacksList and #galleryStacksList — the same treatment Godwin
+     approved for the Stages screen, now on My Gallery too.
      Sizes are proportional (aspect ratios + % translates) so the stacks
      scale down cleanly to fit two across on a phone. */
-  #stacksList{display:grid; grid-template-columns:1fr 1fr; gap:18px 12px;}
-  #stacksList .stack-fan{width:100%; max-width:300px; height:auto; aspect-ratio:300/235;}
-  #stacksList .polaroid{width:80%;}
-  #stacksList .polaroid img{height:auto; aspect-ratio:8/5;}
-  #stacksList .polaroid.blank .blank-area{height:auto; aspect-ratio:8/5;}
-  #stacksList .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(7%,6%);}
-  #stacksList .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-7%,5%);}
-  #stacksList .stack-lock{right:4px;}
-  #stacksList .stack-title{font-size:17px;}
-  #stacksList .stack-progress{font-size:13px;}
-  #stacksList .stack-label .stage-pill{font-size:11px; padding:4px 9px; white-space:nowrap;}
+  #stacksList, #galleryStacksList{display:grid; grid-template-columns:1fr 1fr; gap:18px 12px;}
+  #stacksList .stack-fan, #galleryStacksList .stack-fan{width:100%; max-width:300px; height:auto; aspect-ratio:300/235;}
+  #stacksList .polaroid, #galleryStacksList .polaroid{width:80%;}
+  #stacksList .polaroid img, #galleryStacksList .polaroid img{height:auto; aspect-ratio:8/5;}
+  #stacksList .polaroid.blank .blank-area, #galleryStacksList .polaroid.blank .blank-area{height:auto; aspect-ratio:8/5;}
+  #stacksList .polaroid.back2, #galleryStacksList .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(7%,6%);}
+  #stacksList .polaroid.back1, #galleryStacksList .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-7%,5%);}
+  #stacksList .stack-lock, #galleryStacksList .stack-lock{right:4px;}
+  #stacksList .stack-title, #galleryStacksList .stack-title{font-size:17px;}
+  #stacksList .stack-progress, #galleryStacksList .stack-progress{font-size:13px;}
+  #stacksList .stack-label .stage-pill, #galleryStacksList .stack-label .stage-pill{font-size:11px; padding:4px 9px; white-space:nowrap;}
 </style>
 </head>
 <body>
