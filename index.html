@@ -279,6 +279,9 @@
     font-size:17px; font-weight:800; color:#2B2118;}
   .show-caption .phase{background:#FFD60A; color:#4A2E00; font-size:12px; letter-spacing:.06em;
     text-transform:uppercase; padding:3px 10px; border-radius:999px;}
+  .show-lock{position:absolute; top:10px; right:10px; z-index:2; display:flex; align-items:center; gap:5px;
+    background:#2B2118; color:#FFD60A; font-size:12px; font-weight:800; letter-spacing:.06em;
+    text-transform:uppercase; padding:5px 10px; border-radius:999px; box-shadow:0 2px 8px rgba(0,0,0,.35);}
   .show-dots{display:flex; gap:8px; justify-content:center; margin-top:12px;}
   .show-dots .dot{width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.45);
     box-shadow:0 1px 3px rgba(0,0,0,.3); padding:0;}
@@ -432,6 +435,7 @@
       <div class="showcase-img">
         <img id="showLine" src="assets/lion-line-2x.jpg" alt="Lion, uncolored picture" class="show-active">
         <img id="showGuide" src="assets/lion-guide.jpg" alt="Lion, finished colored picture">
+        <span class="show-lock hidden" id="showLock"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Locked</span>
       </div>
       <button class="show-arrow left" id="showPrev" aria-label="Previous picture">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
@@ -446,7 +450,7 @@
       <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       Start
     </button>
-    <p class="welcome-hint">Watch the pictures come to life!</p>
+    <p class="welcome-hint">Watch the pictures come to life! A fresh set every day.</p>
   </div>
   <div class="load-overlay" id="loadOverlay" role="status" aria-label="Loading">
     <h1>My Little Studio</h1>
@@ -1053,12 +1057,15 @@ function firstRequiredPage(n){
 /* Palettes are guide-exact medians from each page's *-ART-REPORT.md.
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
    per the report's §8.5 lion precedent (palette IS the guide's medians).
-   20 pages: 10 per stage — 6 required + 4 bonus. A page is required unless
+   40 pages: stages 1–4 are 10 per stage (6 required + 4 bonus). Stage 5
+   (Pastels) lands 2026-11-21 with 7 pages (3 required + 4 bonus — the
+   cheeky-monkey page is blocked, see its ART-REPORT). A page is required unless
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
    from the line art's natural size, never stretched.
    Stage 3 (Markers) landed 2026-11-21: 30 pages total. Stage 4 (Watercolors)
-   landed 2026-11-21: 40 pages total. White is never a
+   landed 2026-11-21: 40 pages total. Stage 5 (Pastels) lands 2026-11-21:
+   47 pages total. White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
 const PAGES = [
@@ -1257,7 +1264,56 @@ const PAGES = [
   { id:'puddle-jump-duck', name:'Duck', title:'Color the Duck!', stage:4, tool:'watercolor', required:false,
     line:'assets/puddle-jump-duck-line-2x.jpg', guide:'assets/puddle-jump-duck-guide.jpg',
     palette:[['Duck Yellow','#FDDE3A'],['Puddle Blue','#89C9E7'],['Umbrella Red','#E43532'],
-             ['Beak Orange','#F29034'],['Grass Green','#7CC54F'],['Pole Brown','#AA6638']] }
+             ['Beak Orange','#F29034'],['Grass Green','#7CC54F'],['Pole Brown','#AA6638']] },
+  /* ---- Stage 5: Pastels (6 required + 4 bonus; cheeky-monkey blocked — see its ART-REPORT) ---- */
+  { id:'tiger-cub', name:'Tiger Cub', title:'Color the Tiger Cub!', stage:5, tool:'pastel',
+    line:'assets/tiger-cub-line-2x.jpg', guide:'assets/tiger-cub-guide.jpg',
+    palette:[['Grass Green','#51AB49'],['Tiger Orange','#F99F51'],['Cream','#FBDAAA'],
+             ['Stripe Brown','#2E2523'],['Butterfly Yellow','#FDE61F'],['Tongue Pink','#FCAEBA']] },
+  { id:'ice-cream-truck', name:'Ice Cream Truck', title:'Color the Ice Cream Truck!', stage:5, tool:'pastel',
+    line:'assets/ice-cream-truck-line-2x.jpg', guide:'assets/ice-cream-truck-guide.jpg',
+    palette:[['Truck Blue','#D8EAF4'],['Scoop Pink','#FECBE1'],['Deep Blue','#ABC3E1'],
+             ['Tire Grey','#8D8C9E'],['Sunny Yellow','#FDE2AA'],['Cloud Lavender','#D8CFF3'],
+             ['Cloud Blue','#C5E5F0'],['Mint','#B6E2E8'],['Smile Pink','#F88CA9']] },
+  { id:'bunny', name:'Bunny', title:'Color the Bunny!', stage:5, tool:'pastel',
+    line:'assets/bunny-line-2x.jpg', guide:'assets/bunny-guide.jpg',
+    palette:[['Bunny Grey','#E2DFDD'],['Leaf Green','#C8D8A6'],['Pink','#FCCBCE'],
+             ['Daisy Yellow','#FDD067'],['Butterfly Blue','#AED4E5'],['Butterfly Orange','#F8B87B'],
+             ['Tulip Purple','#D2B9E1'],['Mushroom Red','#F17C7E']] },
+  { id:'busy-bee', name:'Busy Bee', title:'Color the Busy Bee!', stage:5, tool:'pastel',
+    line:'assets/busy-bee-line-2x.jpg', guide:'assets/busy-bee-guide.jpg',
+    palette:[['Bee Yellow','#FDE685'],['Honey Gold','#F3C216'],['Pot Terracotta','#D67843'],
+             ['Leaf Green','#89C16D'],['Flower Pink','#F7C2D2'],['Wing Blue','#DEF0F6'],
+             ['Stripe Brown','#A36233']] },
+  { id:'giraffe', name:'Giraffe', title:'Color the Giraffe!', stage:5, tool:'pastel',
+    line:'assets/giraffe-line-2x.jpg', guide:'assets/giraffe-guide.jpg',
+    palette:[['Sunny Yellow','#FDE781'],['Spot Brown','#BD7F4D'],['Leaf Green','#81BF5B'],
+             ['Mound Green','#B9D57E'],['Cloud Blue','#E4F1F8'],['Cream','#FDF1DA'],
+             ['Hoof Brown','#5D4733'],['Flower Purple','#C4A6D3'],['Flower Pink','#F6AFC0']] },
+  { id:'dino', name:'Dino', title:'Color the Dino!', stage:5, tool:'pastel',
+    line:'assets/dino-line-2x.jpg', guide:'assets/dino-guide.jpg',
+    palette:[['Dino Green','#59C04D'],['Light Green','#A6D76D'],['Deep Green','#149D4E'],
+             ['Cloud Blue','#D2E5F2'],['Egg Cream','#F4F2E3'],['Peach','#FDC4A7'],
+             ['Flower Pink','#FB96B1'],['Sunny Yellow','#FDDA48'],['Trunk Brown','#B07442']] },
+  { id:'peacock', name:'Peacock', title:'Color the Peacock!', stage:5, tool:'pastel', required:false,
+    line:'assets/peacock-line-2x.jpg', guide:'assets/peacock-guide.jpg',
+    palette:[['Feather Mint','#B5D4CB'],['Peacock Blue','#9CC7D0'],['Gold','#F4DC9C'],
+             ['Leaf Green','#BDCFA9'],['Flower Pink','#F9CAD1'],['Beak Orange','#F8B870']] },
+  { id:'rainbow', name:'Rainbow', title:'Color the Rainbow!', stage:5, tool:'pastel', required:false,
+    line:'assets/rainbow-line-2x.jpg', guide:'assets/rainbow-guide.jpg',
+    palette:[['Band Red','#F4908F'],['Band Orange','#FCBF89'],['Band Yellow','#FCE99D'],
+             ['Band Green','#C1DCAD'],['Band Blue','#B1D5E5'],['Band Purple','#CCB3D9'],
+             ['Flower Pink','#F6BAC3']] },
+  { id:'whale', name:'Whale', title:'Color the Whale!', stage:5, tool:'pastel', required:false,
+    line:'assets/whale-line-2x.jpg', guide:'assets/whale-guide.jpg',
+    palette:[['Whale Blue','#A2CFE2'],['Sun Yellow','#FEE372'],['Pale Blue','#D1ECF6'],
+             ['Starfish Orange','#FEAA64'],['Fish Green','#C9E7B3'],['Fish Lavender','#CEBAEA'],
+             ['Fish Pink','#FDA4AE']] },
+  { id:'cupcake-stand', name:'Cupcake Stand', title:'Color the Cupcake Stand!', stage:5, tool:'pastel', required:false,
+    line:'assets/cupcake-stand-line-2x.jpg', guide:'assets/cupcake-stand-guide.jpg',
+    palette:[['Light Pink','#FBC9D8'],['Pale Yellow','#FEF0A1'],['Sky Blue','#BAE0EE'],
+             ['Mint Green','#D0F2E5'],['Deep Pink','#F7A4BB'],['Gold','#E7C360'],
+             ['Cherry Red','#F13E4B'],['Medium Blue','#82BDDE'],['Leaf Green','#8BCEAA']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1369,7 +1425,17 @@ const PAGE_FACTS = {
   'koi-fish-pond': { fact: 'Koi fish can live a very long time — some live more than 100 years!', prompt: 'Can you count the 9 brown cattails around the pond? And can you find the 3 green lily pads floating on the water?' },
   'cherry-blossom-tree': { fact: 'Cherry blossom trees are called sakura in Japan, and every spring people have picnics underneath them just to enjoy the pink flowers!', prompt: 'Can you find the little brown bird sitting on a branch? And how many grass tufts can you count? (There are 8!) How many clouds are in the sky? (There are 2!)' },
   'mermaid-splash': { fact: 'A starfish can grow back one of its arms if it loses one — amazing!', prompt: 'Can you find the smiling starfish? And how many big seashells are on the sand? (There are 3 — two scallop shells and one cone shell!) Can you find the spiral shell in the mermaid\'s hand?' },
-  'puddle-jump-duck': { fact: 'A duck\'s feathers are waterproof! A duck spreads a special oil from a tiny gland near its tail all over its feathers, so the rain rolls right off — that is why this little duck can jump in puddles and stay cosy and dry underneath!', prompt: 'Can you count the raindrops? (There are 26!) And can you find the little red umbrella?' }
+  'puddle-jump-duck': { fact: 'A duck\'s feathers are waterproof! A duck spreads a special oil from a tiny gland near its tail all over its feathers, so the rain rolls right off — that is why this little duck can jump in puddles and stay cosy and dry underneath!', prompt: 'Can you count the raindrops? (There are 26!) And can you find the little red umbrella?' },
+  'tiger-cub': { fact: 'A tiger\'s stripes are like your fingerprints — no two tigers in the whole world have the same stripe pattern!', prompt: 'How many grass tufts is the tiger cub sitting in? (There are 7!) Can you find the butterfly\'s 4 wings — 2 yellow and 2 orange?' },
+  'ice-cream-truck': { fact: 'The ice cream cone became famous at a big fair in 1904, when a waffle seller rolled his warm waffles into cones so people could carry their ice cream!', prompt: 'Can you count the 5 music notes playing in the sky? And can you find the 3 yellow stars?' },
+  'bunny': { fact: 'A rabbit\'s big ears are not just for hearing — they help the rabbit stay cool on hot days, like a fan!', prompt: 'Can you count the 4 butterflies in the garden? And can you find the 2 red mushrooms?' },
+  'busy-bee': { fact: 'A honeybee flaps its wings about 200 times every second — that fast flutter is the buzz you hear!', prompt: 'Can you count the 26 honeycomb cells on the beehive? And can you find the bee\'s 2 brown stripes?' },
+  'giraffe': { fact: 'A giraffe\'s spots are like your fingerprints — no two giraffes in the whole world have the same spot pattern!', prompt: 'Can you count the giraffe\'s spots? (There are 25!) Can you find the 3 little flowers at the bottom — pink, yellow and purple?' },
+  'dino': { fact: 'A baby dinosaur is called a hatchling — it hatches out of an egg, just like a baby bird!', prompt: 'Can you count the dino\'s 3 spots? And can you find the 2 pink flowers?' },
+  'peacock': { fact: 'A peacock\'s big fancy tail is called a train, and it can grow almost 5 feet long — nearly as long as a grown-up is tall! He fans it out to show off his shiny eye-spots.', prompt: 'Can you count all 13 eye-spots on the peacock\'s tail? Can you find the peacock\'s crest — the 3 little stalks with dots on top of his head? And can you find the little mushroom hiding in the garden?' },
+  'rainbow': { fact: 'A rainbow appears when sunlight shines through rain — the sunshine bends and splits into all the colours! You can only see a rainbow when the sun is behind you and the rain is in front of you.', prompt: 'Can you count all 10 little birds flying in the sky? How many stripes does the rainbow have? (There are 6 — red, orange, yellow, green, blue and purple!)' },
+  'whale': { fact: 'A whale breathes through a blowhole on the top of its head — when it comes up for air, it blows out a tall fountain of water, just like in this picture!', prompt: 'How many little fish are swimming with the whale? (There are 4!) Can you find the 1 smiling starfish?' },
+  'cupcake-stand': { fact: 'Cupcakes got their name because the very first ones were baked in small cups, more than 200 years ago!', prompt: 'How many cupcakes are on the stand? (There are 11!) And how many balloons can you find? (There are 6!)' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -1666,14 +1732,49 @@ $('stageMusicToggleBtn').addEventListener('click', () => toggleMusic());
 $('changeBgBtn').addEventListener('click', () => nextBg());
 $('welcomeMuteBtn').addEventListener('click', () => setMuted(!muted));
 
-/* ================= WELCOME SHOWCASE ================= */
-/* The welcome screen is about the pictures, not the music: it shows every
-   REQUIRED character page uncolored, then colored, one at a time (12 slides:
-   6 per stage). Bonus pages are not in the showcase. Each slide shows
-   the line art ("Color it!"), then cross-fades to the finished guide
-   ("Finished!"), then moves to the next character. Arrows, dots and swipe
-   change the picture by hand. */
-const SHOWCASE = PAGES.filter(p => p.required !== false).map(p => ({ name: p.name, line: p.line, guide: p.guide }));
+/* ================= WELCOME SHOWCASE — DAILY 10 ================= */
+/* The welcome screen is about the pictures, not the music: every day it
+   shows 10 REQUIRED character pages — one from each stage, round-robin, so
+   with 5 live stages it picks 2 per stage and with all 10 stages exactly
+   one per stage. The set is picked from the local date (seeded shuffle),
+   so it is the same all day and fresh tomorrow. Unlocked and locked pages
+   mix freely — a locked page is a teaser (gold Locked badge; "Sneak peek"
+   on the finished side). Bonus pages are not in the showcase. Each slide
+   shows the line art, then cross-fades to the finished guide, then moves
+   to the next character. Arrows, dots and swipe change the picture by hand. */
+function dailyShowcaseSeed(){
+  const d = new Date();
+  const str = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function mulberry32(a){ return function(){ a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function pickDailyShowcase(){
+  const req = PAGES.filter(p => p.required !== false);
+  const byStage = {};
+  req.forEach(p => { (byStage[p.stage] = byStage[p.stage] || []).push(p); });
+  const stages = Object.keys(byStage).map(Number).sort((a, b) => a - b);
+  const rand = mulberry32(dailyShowcaseSeed());
+  stages.forEach(n => {
+    const arr = byStage[n];
+    for (let i = arr.length - 1; i > 0; i--){ const j = Math.floor(rand() * (i + 1)); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+  });
+  const picked = [];
+  let round = 0;
+  while (picked.length < 10){
+    let added = false;
+    for (const n of stages){
+      if (picked.length >= 10) break;
+      const p = byStage[n][round];
+      if (p){ picked.push(p); added = true; }
+    }
+    if (!added) break;
+    round++;
+  }
+  return picked.map(p => ({ name: p.name, line: p.line, guide: p.guide, stage: p.stage }));
+}
+const SHOWCASE = pickDailyShowcase();
 const SHOW_MS = 2600;
 let showIdx = 0, showPhase = 'line', showTimer = null;
 function renderShowcase(){
@@ -1685,7 +1786,11 @@ function renderShowcase(){
   $('showLine').classList.toggle('show-active', showPhase === 'line');
   $('showGuide').classList.toggle('show-active', showPhase === 'guide');
   $('showName').textContent = s.name;
-  $('showLabel').textContent = showPhase === 'line' ? 'Color it!' : 'Finished!';
+  const locked = !isStageUnlocked(s.stage);
+  $('showLabel').textContent = locked
+    ? (showPhase === 'line' ? 'Locked' : 'Sneak peek')
+    : (showPhase === 'line' ? 'Color it!' : 'Finished!');
+  $('showLock').classList.toggle('hidden', !locked);
   document.querySelectorAll('#showDots .dot').forEach((d, i) =>
     d.classList.toggle('on', i === showIdx));
 }
@@ -2129,9 +2234,17 @@ function starSVG(filled){
     '><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>';
 }
 /* Required vs bonus: a page is required unless `required:false` in its
-   config. The unlock counts required Stage 1 pages only; Stage Complete
-   needs all 10 pages of a stage (6 required + 4 bonus). */
+   config. The unlock counts required pages only; Stage Complete needs
+   every page of a stage (all required + all bonus). Counts are per-stage
+   totals, so a stage with fewer required pages (Stage 5 has 3 — the
+   cheeky-monkey page is blocked) still unlocks and completes. */
 function isRequired(p){ return p.required !== false; }
+function requiredTotal(stage){
+  return PAGES.filter(p => p.stage === stage && isRequired(p)).length;
+}
+function bonusTotal(stage){
+  return PAGES.filter(p => p.stage === stage && !isRequired(p)).length;
+}
 function requiredDoneCount(stage){
   return PAGES.filter(p => p.stage === stage && isRequired(p) && progress.finished.includes(p.id)).length;
 }
@@ -2139,11 +2252,11 @@ function bonusDoneCount(stage){
   return PAGES.filter(p => p.stage === stage && !isRequired(p) && progress.finished.includes(p.id)).length;
 }
 function stageComplete(stage){
-  return requiredDoneCount(stage) === 6 && bonusDoneCount(stage) === 4;
+  return requiredDoneCount(stage) === requiredTotal(stage) && bonusDoneCount(stage) === bonusTotal(stage);
 }
 function makeStageCard(p, locked, stageN){
   const done = progress.finished.includes(p.id);
-  const lockText = 'Finish 6 Stage ' + (stageN - 1) + ' pages to unwrap ' + STAGE_BY_N[stageN].name + '!';
+  const lockText = 'Finish ' + requiredTotal(stageN - 1) + ' Stage ' + (stageN - 1) + ' pages to unwrap ' + STAGE_BY_N[stageN].name + '!';
   const card = document.createElement('button');
   card.className = 'card' + (locked ? ' locked' : '');
   card.setAttribute('aria-label', locked ? p.name + ', locked' : 'Color the ' + p.name);
@@ -2795,9 +2908,9 @@ $('doneBtn').addEventListener('click', () => {
   doneFlag = true;
   const isNewFinish = !progress.finished.includes(currentPage.id);
   if (isNewFinish) progress.finished.push(currentPage.id);
-  /* Unlock: the 6th distinct REQUIRED page of this stage finished. Bonus
+  /* Unlock: the last distinct REQUIRED page of this stage finished. Bonus
      pages never count toward the unlock. */
-  if (isNewFinish && isRequired(currentPage) && requiredDoneCount(currentPage.stage) >= 6){
+  if (isNewFinish && isRequired(currentPage) && requiredDoneCount(currentPage.stage) >= requiredTotal(currentPage.stage)){
     const next = currentPage.stage + 1;
     if (next <= 10 && !isStageUnlocked(next)){
       progress.unlockedStages[next] = true;
@@ -2854,6 +2967,10 @@ $('restDoneBtn').addEventListener('click', () => {
   showWelcome();
 });
 let ceremonyStage = 2; /* the stage whose unwrapping is showing */
+/* Ceremony texts say "Six pictures done" — true for stages 1–4 (6 required
+   each). When the previous stage has a different required count, say that
+   number instead, so the ceremony never lies about what the child did. */
+const NUM_WORDS = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
 function showCeremony(stageN){
   const st = STAGE_BY_N[stageN];
   if (!st || !st.ceremony) return;
@@ -2864,7 +2981,10 @@ function showCeremony(stageN){
   ceremonyStage = stageN;
   buildToolFan(stageN);
   $('ceremonyTitle').textContent = st.ceremony.title;
-  $('ceremonyText').textContent = st.ceremony.text;
+  let ctext = st.ceremony.text;
+  const prevReq = requiredTotal(stageN - 1);
+  if (prevReq !== 6 && ctext.indexOf('Six pictures done') === 0) ctext = NUM_WORDS[prevReq] + ' pictures done' + ctext.slice('Six pictures done'.length);
+  $('ceremonyText').textContent = ctext;
   const first = firstRequiredPage(stageN);
   $('tryPencilsBtn').textContent = first ? 'Color the ' + PAGE_BY_ID[first].name + '!' : "Let's color!";
   $('ceremonyStep1').classList.remove('hidden');
@@ -3627,7 +3747,7 @@ function renderProgressView(){
   STAGES.forEach(st => {
     if (!PAGES.some(pg => pg.stage === st.n)) return;
     rows.push(['Stage ' + st.n + ' · ' + st.name,
-      '<b>' + requiredDoneCount(st.n) + ' of 6 to finish · ' + bonusDoneCount(st.n) + ' of 4 bonus</b>' + (stageComplete(st.n) ? ' · Stage Complete!' : '')]);
+      '<b>' + requiredDoneCount(st.n) + ' of ' + requiredTotal(st.n) + ' to finish · ' + bonusDoneCount(st.n) + ' of ' + bonusTotal(st.n) + ' bonus</b>' + (stageComplete(st.n) ? ' · Stage Complete!' : '')]);
   });
   rows.push(
     ['Sunshine Stars', '<b>' + meta.welcomeStars + '</b>'],
