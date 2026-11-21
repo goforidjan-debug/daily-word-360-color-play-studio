@@ -48,6 +48,14 @@
   .stage-pill{background:#FFD60A; color:#4A2E00; font-size:12px; font-weight:800; letter-spacing:.08em;
     text-transform:uppercase; padding:5px 11px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
   .stage-pill.pencil{background:#7ED6FF; color:#0B3D5C;}
+  .stage-pill.marker{background:#FF8FB1; color:#5C1030;}
+  .stage-pill.watercolor{background:#9BE7FF; color:#0B3D5C;}
+  .stage-pill.pastel{background:#E8C8F0; color:#4A2E5C;}
+  .stage-pill.sticker{background:#FFB84D; color:#4A2E00;}
+  .stage-pill.gel{background:#B6F36B; color:#1F4A00;}
+  .stage-pill.glitter{background:#E9B6FF; color:#4A005C;}
+  .stage-pill.stamp{background:#FF9D76; color:#4A1E00;}
+  .stage-pill.master{background:linear-gradient(90deg,#FFD60A,#FF8FB1,#7ED6FF); color:#4A2E00;}
   .complete-badge{background:linear-gradient(180deg,#FFE45C,#FFC400); color:#4A2E00; font-size:12px;
     font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:5px 11px; border-radius:999px;
     box-shadow:0 3px 10px rgba(60,30,5,.35); display:inline-flex; align-items:center; gap:5px;}
@@ -96,6 +104,14 @@
     font-size:13.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
     padding:6px 13px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
   .stage.pencil{background:#7ED6FF; color:#0B3D5C;}
+  .stage.marker{background:#FF8FB1; color:#5C1030;}
+  .stage.watercolor{background:#9BE7FF; color:#0B3D5C;}
+  .stage.pastel{background:#E8C8F0; color:#4A2E5C;}
+  .stage.sticker{background:#FFB84D; color:#4A2E00;}
+  .stage.gel{background:#B6F36B; color:#1F4A00;}
+  .stage.glitter{background:#E9B6FF; color:#4A005C;}
+  .stage.stamp{background:#FF9D76; color:#4A1E00;}
+  .stage.master{background:linear-gradient(90deg,#FFD60A,#FF8FB1,#7ED6FF); color:#4A2E00;}
   .guide-thumb{flex:0 0 auto; width:88px; background:#fff; border-radius:10px; padding:5px 5px 4px;
     box-shadow:0 6px 18px rgba(60,30,5,.45); transform:rotate(2.5deg); transition:transform .15s ease;}
   .guide-thumb:hover{transform:rotate(0deg) scale(1.04);}
@@ -449,23 +465,7 @@
   </div>
   <p class="sub">Pick a picture and color it in!</p>
 
-  <div class="stage-sec">
-    <div class="stage-sec-head"><h2>Stage 1</h2><span class="stage-pill">Crayons</span><span class="complete-badge hidden" id="stage1Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>
-    <div class="cards" id="stage1Cards"></div>
-    <div class="bonus-sec" id="stage1BonusSec">
-      <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
-      <div class="cards" id="stage1BonusCards"></div>
-    </div>
-  </div>
-
-  <div class="stage-sec">
-    <div class="stage-sec-head"><h2>Stage 2</h2><span class="stage-pill pencil">Colored Pencils</span><span class="complete-badge hidden" id="stage2Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>
-    <div class="cards" id="stage2Cards"></div>
-    <div class="bonus-sec" id="stage2BonusSec">
-      <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
-      <div class="cards" id="stage2BonusCards"></div>
-    </div>
-  </div>
+  <div id="stageSections"></div>
 
   <div class="home-btns">
     <button class="done-btn" id="galleryBtn">
@@ -947,8 +947,8 @@
       <svg width="56" height="56" viewBox="0 0 24 24" fill="#FFD60A" stroke="#E8A800" stroke-width="0.7"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>
     </div>
     <div class="pencil-fan" id="pencilFan" aria-hidden="true"></div>
-    <h2>You unlocked Colored Pencils!</h2>
-    <p>Six pictures done — now you can color with pencils, just like a big artist!</p>
+    <h2 id="ceremonyTitle">You unlocked Colored Pencils!</h2>
+    <p id="ceremonyText">Six pictures done — now you can color with pencils, just like a big artist!</p>
     <button class="big-btn" id="tryPencilsBtn">Color the Fire Truck!</button>
     <button class="ghost-btn" id="ceremonyLaterBtn">Maybe later</button>
   </div>
@@ -1006,6 +1006,49 @@ document.addEventListener('pointerdown', function onFirstTap(){
   signEnableMotion();
   document.removeEventListener('pointerdown', onFirstTap);
 }, { passive: true });
+/* ================= STAGE CONFIG ================= */
+/* One entry per stage. `tool` is the stage's main tool (also the pill
+   colour class and the tray icon style). `hint` is the desk instruction
+   line. `ceremony` is the unwrapping shown when THIS stage unlocks
+   (title + text; the button opens the stage's first required page).
+   Stage 1 has no ceremony — it is open from the start. */
+const STAGES = [
+  { n:1, tool:'crayon', name:'Crayons', trayLabel:'Your crayons',
+    hint:'<b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.' },
+  { n:2, tool:'pencil', name:'Colored Pencils', trayLabel:'Your colored pencils',
+    hint:'<b>Pick a pencil</b>, then tap the picture! Tap again and again to make the color darker, like a real pencil.',
+    ceremony:{ title:'You unlocked Colored Pencils!', text:'Six pictures done — now you can color with pencils, just like a big artist!' } },
+  { n:3, tool:'marker', name:'Markers', trayLabel:'Your markers',
+    hint:'<b>Pick a marker</b>, then tap the picture! Markers color bold and bright, just like the real ones.',
+    ceremony:{ title:'A glittery gift for you!', text:'Six pictures done — you earned the Glitter Brush! It adds sparkle to any picture, from Stage 3 on. And now you can color with markers!' } },
+  { n:4, tool:'watercolor', name:'Watercolors', trayLabel:'Your watercolors',
+    hint:'<b>Pick a watercolor</b>, then tap the picture! Tap again and again to make the wash darker, like real paint.',
+    ceremony:{ title:'You unlocked Watercolors!', text:'Six pictures done — now you can paint soft, dreamy watercolors!' } },
+  { n:5, tool:'pastel', name:'Pastels', trayLabel:'Your pastels',
+    hint:'<b>Pick a pastel</b>, then tap the picture! Pastels are soft and chalky, like drawing on a cloudy day.',
+    ceremony:{ title:'You unlocked Pastels!', text:'Six pictures done — now you can color with soft, smudgy pastels!' } },
+  { n:6, tool:'sticker', name:'Stickers', trayLabel:'Your stickers',
+    hint:'<b>Pick a sticker</b>, then tap the picture to stick it on! Stickers stay shiny, just like the real ones.',
+    ceremony:{ title:'You unlocked Stickers!', text:'Six pictures done — now you can stick shiny stickers on your pictures!' } },
+  { n:7, tool:'gel', name:'Gel Pens', trayLabel:'Your gel pens',
+    hint:'<b>Pick a gel pen</b>, then tap the picture! Gel pens are bright and shiny, with a sparkle of light.',
+    ceremony:{ title:'You unlocked Gel Pens!', text:'Six pictures done — now you can color with bright, shiny gel pens!' } },
+  { n:8, tool:'glitter', name:'Glitter Gel Pens', trayLabel:'Your glitter gel pens',
+    hint:'<b>Pick a glitter pen</b>, then tap the picture! Every color sparkles like real glitter.',
+    ceremony:{ title:'You unlocked Glitter Gel Pens!', text:'Six pictures done — now every color sparkles like real glitter!' } },
+  { n:9, tool:'stamp', name:'Stamps', trayLabel:'Your stamps',
+    hint:'<b>Pick a stamp</b>, then tap the picture to stamp it on! Like a real ink stamp, but never messy.',
+    ceremony:{ title:'You unlocked Stamps!', text:'Six pictures done — now you can stamp happy prints on your pictures!' } },
+  { n:10, tool:'master', name:'Master Studio', trayLabel:'All your tools',
+    hint:'<b>Master Studio!</b> Every tool you earned is here — pick any one and make a masterpiece. There is also a blank canvas to draw anything you like.',
+    ceremony:{ title:'You unlocked Master Studio!', text:'Six pictures done — you are a Master Artist now! Every tool is yours, plus a blank canvas to draw anything you dream up!' } },
+];
+const STAGE_BY_N = {}; STAGES.forEach(s => STAGE_BY_N[s.n] = s);
+function isStageUnlocked(n){ return n === 1 || !!(progress.unlockedStages && progress.unlockedStages[n]); }
+function firstRequiredPage(n){
+  const p = PAGES.find(p => p.stage === n && isRequired(p));
+  return p ? p.id : null;
+}
 /* ================= PAGE CONFIG ================= */
 /* Palettes are guide-exact medians from each page's *-ART-REPORT.md.
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
@@ -1228,6 +1271,13 @@ function currentMonthLabel(){ return MONTH_NAMES[new Date().getMonth()]; }
 function todayKey(d){ d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 /* Pencil: pass 1 lays down a light stroke, ~4 taps to full guide color. */
 const PENCIL_ALPHA = [0.45, 0.70, 0.90, 1.0];
+/* Watercolor builds up slower and softer than pencil: five light washes. */
+const WATERCOLOR_ALPHA = [0.35, 0.55, 0.75, 0.90, 1.0];
+function passAlphaFor(tool, pass){
+  if (tool === 'watercolor') return WATERCOLOR_ALPHA[Math.min(pass, 5) - 1];
+  return PENCIL_ALPHA[Math.min(pass, 4) - 1];
+}
+function maxPassFor(tool){ return tool === 'watercolor' ? 5 : 4; }
 
 /* ================= STATE ================= */
 let currentPage = null;
@@ -1297,9 +1347,17 @@ function showView(id){
 function loadProgress(){
   try {
     const raw = localStorage.getItem(LS_PROGRESS);
-    if (raw){ const p = JSON.parse(raw); return { finished: p.finished || [], unlocked: !!p.unlocked, ceremonyShown: !!p.ceremonyShown, version: p.version || 1 }; }
+    if (raw){
+      const p = JSON.parse(raw);
+      const out = { finished: p.finished || [], unlocked: !!p.unlocked, ceremonyShown: !!p.ceremonyShown,
+        unlockedStages: p.unlockedStages || {}, ceremoniesShown: p.ceremoniesShown || {}, version: p.version || 1 };
+      /* Migrate the old single-stage shape: `unlocked` meant Stage 2. */
+      if (out.unlocked) out.unlockedStages[2] = true;
+      if (out.ceremonyShown) out.ceremoniesShown[2] = true;
+      return out;
+    }
   } catch(e){}
-  return { finished: [], unlocked: false, ceremonyShown: false, version: 2 };
+  return { finished: [], unlocked: false, ceremonyShown: false, unlockedStages: {}, ceremoniesShown: {}, version: 2 };
 }
 function saveProgressState(){
   progress.version = 2;
@@ -1807,6 +1865,62 @@ function pencilSVG(hex){
     '<rect x="2" y="5" width="4" height="14" rx="2" fill="rgba(0,0,0,0.12)"/>' +
     '</svg>';
 }
+/* Tool icons: one SVG per tool kind. New tools (marker, watercolor,
+   pastel, gel, glitter, sticker, stamp, master) get their own icons in
+   the tools step — until then they fall back to the crayon icon. */
+function toolSVG(tool, hex){
+  if (tool === 'pencil') return pencilSVG(hex);
+  if (tool === 'marker') return markerSVG(hex);
+  if (tool === 'watercolor') return watercolorSVG(hex);
+  if (tool === 'pastel') return pastelSVG(hex);
+  if (tool === 'gel') return gelSVG(hex);
+  if (tool === 'glitter') return glitterSVG(hex);
+  return crayonSVG(hex);
+}
+/* Chunky marker: wide body, chisel tip, glossy top. */
+function markerSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<rect x="2" y="6" width="30" height="12" rx="3" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="2" y="6" width="30" height="3.5" rx="1.5" fill="rgba(255,255,255,0.45)"/>' +
+    '<rect x="2" y="6" width="6" height="12" rx="3" fill="rgba(0,0,0,0.15)"/>' +
+    '<path d="M32 6 L44 9 L44 15 L32 18 Z" fill="' + shade(hex, -25) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+    '</svg>';
+}
+/* Watercolor brush: wooden handle, silver ferrule, soft colored bristles. */
+function watercolorSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<rect x="2" y="9.5" width="24" height="5" rx="2.5" fill="#C98A4B" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="26" y="8" width="7" height="8" rx="1.5" fill="#C0C0C0" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<path d="M33 7 C 40 8 46 10 46 12 C 46 14 40 16 33 17 Z" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
+    '<circle cx="42" cy="12" r="1.6" fill="rgba(255,255,255,0.6)"/>' +
+    '</svg>';
+}
+/* Pastel stick: short, chunky, soft matte, rounded ends. */
+function pastelSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<rect x="4" y="6" width="40" height="12" rx="6" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
+    '<rect x="4" y="6" width="40" height="4" rx="2" fill="rgba(255,255,255,0.35)"/>' +
+    '<rect x="4" y="15" width="40" height="3" rx="1.5" fill="rgba(0,0,0,0.08)"/>' +
+    '</svg>';
+}
+/* Gel pen: slim pen with a shiny barrel and a sparkle at the tip. */
+function gelSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<rect x="2" y="8" width="32" height="8" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="2" y="8" width="32" height="2.6" rx="1.3" fill="rgba(255,255,255,0.55)"/>' +
+    '<path d="M34 8 L43 12 L34 16 Z" fill="#E8E8E8" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<path d="M43 6l1.2 3.8L48 11l-3.8 1.2L43 16l-1.2-3.8L38 11l3.8-1.2z" fill="#FFD60A"/>' +
+    '</svg>';
+}
+/* Glitter pen: slim pen with sparkles bursting from the tip. */
+function glitterSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<rect x="2" y="8" width="30" height="8" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="2" y="8" width="30" height="2.6" rx="1.3" fill="rgba(255,255,255,0.55)"/>' +
+    '<path d="M32 8 L40 12 L32 16 Z" fill="#E8E8E8" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<circle cx="43" cy="7" r="1.8" fill="#FFD60A"/><circle cx="46" cy="14" r="1.4" fill="#fff"/><circle cx="42" cy="17" r="1.2" fill="#FFD60A"/>' +
+    '</svg>';
+}
 function selectTool(btn, kind, idx, magic){
   currentFillKind = kind;
   currentToolIdx = idx || 0;
@@ -1825,15 +1939,15 @@ function selectTool(btn, kind, idx, magic){
 function buildTray(){
   const tray = $('tools');
   tray.innerHTML = '';
-  $('trayLabel').textContent = currentPage.tool === 'pencil' ? 'Your colored pencils' : 'Your crayons';
+  $('trayLabel').textContent = STAGE_BY_N[currentPage.stage].trayLabel;
   currentPage.palette.forEach(([name, hex], i) => {
     const b = document.createElement('button');
     b.className = 'tool' + (i === 0 ? ' sel' : '');
     b.setAttribute('role', 'radio');
     b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
-    b.setAttribute('aria-label', name + (currentPage.tool === 'pencil' ? ' pencil' : ' crayon'));
+    b.setAttribute('aria-label', name + ' ' + currentPage.tool);
     b.title = name;
-    b.innerHTML = (currentPage.tool === 'pencil' ? pencilSVG(hex) : crayonSVG(hex)) +
+    b.innerHTML = toolSVG(currentPage.tool, hex) +
       '<span class="tool-name">' + name + '</span>';
     b.addEventListener('click', () => selectTool(b, 'flat', i, null));
     /* Long-press a color to hear its name (QW5: spoken + written names). */
@@ -1902,8 +2016,9 @@ function bonusDoneCount(stage){
 function stageComplete(stage){
   return requiredDoneCount(stage) === 6 && bonusDoneCount(stage) === 4;
 }
-function makeStageCard(p, locked){
+function makeStageCard(p, locked, stageN){
   const done = progress.finished.includes(p.id);
+  const lockText = 'Finish 6 Stage ' + (stageN - 1) + ' pages to unwrap ' + STAGE_BY_N[stageN].name + '!';
   const card = document.createElement('button');
   card.className = 'card' + (locked ? ' locked' : '');
   card.setAttribute('aria-label', locked ? p.name + ', locked' : 'Color the ' + p.name);
@@ -1911,28 +2026,40 @@ function makeStageCard(p, locked){
     '<div class="name">' + p.name + '</div>' +
     '<div class="stars-row">' + starSVG(done) + starSVG(done) + starSVG(done) + '</div>' +
     (locked ?
-      '<div class="lock-veil"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Finish 6 pages to unwrap colored pencils!</span></div>' : '');
+      '<div class="lock-veil"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>' + lockText + '</span></div>' : '');
   card.addEventListener('click', () => {
-    if (locked) toast('Finish 6 Stage 1 pages to unwrap colored pencils!');
+    if (locked) toast(lockText);
     else openPage(p.id);
   });
   return card;
 }
 function buildStageCards(){
-  const s1 = $('stage1Cards'), s2 = $('stage2Cards');
-  const b1 = $('stage1BonusCards'), b2 = $('stage2BonusCards');
-  s1.innerHTML = ''; s2.innerHTML = ''; b1.innerHTML = ''; b2.innerHTML = '';
-  PAGES.filter(p => p.stage === 1 && isRequired(p)).forEach(p => s1.appendChild(makeStageCard(p, false)));
-  PAGES.filter(p => p.stage === 1 && !isRequired(p)).forEach(p => b1.appendChild(makeStageCard(p, false)));
-  /* Stage 2 stays locked — all 10 cards — until Stage 1's 6 required
-     pages are done. */
-  const s2Locked = !progress.unlocked;
-  PAGES.filter(p => p.stage === 2 && isRequired(p)).forEach(p => s2.appendChild(makeStageCard(p, s2Locked)));
-  PAGES.filter(p => p.stage === 2 && !isRequired(p)).forEach(p => b2.appendChild(makeStageCard(p, s2Locked)));
-  $('stage1Badge').classList.toggle('hidden', !stageComplete(1));
-  $('stage2Badge').classList.toggle('hidden', !stageComplete(2));
+  /* Sections are built from STAGES + PAGES, so a stage appears as soon as
+     its pages land. A stage with no pages yet is not shown. */
+  const wrap = $('stageSections');
+  wrap.innerHTML = '';
+  STAGES.forEach(st => {
+    const n = st.n;
+    if (!PAGES.some(p => p.stage === n)) return;
+    const locked = !isStageUnlocked(n);
+    const sec = document.createElement('div');
+    sec.className = 'stage-sec';
+    sec.innerHTML =
+      '<div class="stage-sec-head"><h2>Stage ' + n + '</h2><span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
+      '<span class="complete-badge' + (stageComplete(n) ? '' : ' hidden') + '" id="stage' + n + 'Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>' +
+      '<div class="cards"></div>' +
+      '<div class="bonus-sec"><div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div><div class="cards"></div></div>';
+    const lists = sec.querySelectorAll('.cards');
+    PAGES.filter(p => p.stage === n && isRequired(p)).forEach(p => lists[0].appendChild(makeStageCard(p, locked, n)));
+    PAGES.filter(p => p.stage === n && !isRequired(p)).forEach(p => lists[1].appendChild(makeStageCard(p, locked, n)));
+    wrap.appendChild(sec);
+  });
+  buildPackSections();
   tagMonthlyDrops();
 }
+/* Parent-pack sections (Phase 9): built when a pack toggle is ON. Stub
+   until the packs land — called from buildStageCards. */
+function buildPackSections(){}
 /* Monthly drops (QW9): the bonus pages are the "New in {Month}" drop. */
 function tagMonthlyDrops(){
   document.querySelectorAll('.bonus-head').forEach(h => {
@@ -1949,9 +2076,11 @@ function showStage(){
   updateStarsPill();
   showView('stageView');
   maybeStartBg();
-  /* If the unlock happened but the ceremony never got shown (e.g. reload
-     between Done and ceremony), show it now — exactly once. */
-  if (progress.unlocked && !progress.ceremonyShown) showCeremony();
+  /* If an unlock happened but its ceremony never got shown (e.g. reload
+     between Done and ceremony), show it now — exactly once per stage. */
+  for (let n = 2; n <= 10; n++){
+    if (isStageUnlocked(n) && !progress.ceremoniesShown[n]){ showCeremony(n); break; }
+  }
 }
 
 /* ================= LOAD LINE ART ================= */
@@ -1969,16 +2098,15 @@ function openPage(id){
   currentFillKind = 'flat'; currentMagic = null;
   zoom.scale = 1; zoom.tx = 0; zoom.ty = 0; applyZoom();
   $('deskTitle').textContent = currentPage.title;
-  const st = $('deskStage');
-  st.textContent = currentPage.stage === 1 ? 'Stage 1 · Crayons' : 'Stage 2 · Colored Pencils';
-  st.classList.toggle('pencil', currentPage.stage === 2);
+  const st = STAGE_BY_N[currentPage.stage];
+  const stEl = $('deskStage');
+  stEl.textContent = 'Stage ' + currentPage.stage + ' · ' + st.name;
+  stEl.className = 'stage ' + st.tool;
   $('guideThumbImg').src = currentPage.guide;
   $('guideThumbImg').alt = 'Color guide: the finished ' + currentPage.name.toLowerCase();
   $('guideThumbImg').style.aspectRatio = currentPage.square ? '1/1' : '3/2';
   $('guideFullImg').src = currentPage.guide;
-  $('hint').innerHTML = currentPage.tool === 'pencil'
-    ? '<b>Pick a pencil</b>, then tap the picture! Tap again and again to make the color darker, like a real pencil.'
-    : '<b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.';
+  $('hint').innerHTML = st.hint;
   $('paper').classList.add('loading');
   $('loadingNote').classList.remove('hidden');
   $('loadingNote').textContent = 'Loading your ' + currentPage.name.toLowerCase() + '…';
@@ -2117,7 +2245,9 @@ function tapToFill(clientX, clientY){
 }
 function applyFill(res){
   const box = res.box, region = res.mask;
-  const isPencil = currentPage.tool === 'pencil' && currentFillKind === 'flat';
+  /* Pass tools (pencil, watercolor) darken one wash per tap on the same
+     region; a different color starts over at pass 1. */
+  const isPassTool = (currentPage.tool === 'pencil' || currentPage.tool === 'watercolor') && currentFillKind === 'flat';
   const isMagic = currentFillKind === 'magic';
   const [gr, gg, gb] = isMagic ? [0, 0, 0] : hexToRgb(currentPage.palette[currentToolIdx][1]);
   const w = box.x1 - box.x0 + 1, h = box.y1 - box.y0 + 1;
@@ -2133,19 +2263,37 @@ function applyFill(res){
         const c = magicColorAt(currentMagic, x, y, box);
         d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2];
         colorArr[p] = currentToolIdx + 1; passArr[p] = 4;
-      } else if (isPencil){
-        /* Same pencil on the same region: one pass darker. A different pencil
+      } else if (isPassTool){
+        /* Same tool on the same region: one pass darker. A different color
            starts over at pass 1 with its own color. */
         let pass;
-        if (colorArr[p] === currentToolIdx + 1) pass = Math.min(4, passArr[p] + 1);
+        if (colorArr[p] === currentToolIdx + 1) pass = Math.min(maxPassFor(currentPage.tool), passArr[p] + 1);
         else { pass = 1; colorArr[p] = currentToolIdx + 1; }
         passArr[p] = pass;
-        const a = PENCIL_ALPHA[pass - 1];
+        const a = passAlphaFor(currentPage.tool, pass);
         d[k]     = Math.round(255 * (1 - a) + gr * a);
         d[k + 1] = Math.round(255 * (1 - a) + gg * a);
         d[k + 2] = Math.round(255 * (1 - a) + gb * a);
       } else {
-        d[k] = gr; d[k + 1] = gg; d[k + 2] = gb;
+        let r = gr, g = gg, b = gb;
+        const tool = currentPage.tool;
+        if (tool === 'marker' || tool === 'gel'){
+          /* A soft diagonal sheen, like light on a glossy pen stroke.
+             Gel pens get a narrower, brighter shine. */
+          const t = (x - box.x0) / Math.max(1, w) + (y - box.y0) / Math.max(1, h);
+          const width = tool === 'gel' ? 6 : 3, boost = tool === 'gel' ? 0.22 : 0.13;
+          const sheen = boost * Math.max(0, 1 - Math.abs(t - 0.5) * width);
+          r = Math.round(r + (255 - r) * sheen);
+          g = Math.round(g + (255 - g) * sheen);
+          b = Math.round(b + (255 - b) * sheen);
+        } else if (tool === 'glitter'){
+          /* Deterministic sparkle baked into the color: white and gold
+             glints, the same on every load. */
+          const rr = hash2(x, y);
+          if (rr < 0.06){ r = 255; g = 255; b = 255; }
+          else if (rr < 0.10){ r = 255; g = 214; b = 10; }
+        }
+        d[k] = r; d[k + 1] = g; d[k + 2] = b;
         colorArr[p] = currentToolIdx + 1; passArr[p] = 4;
       }
       d[k + 3] = 255;
@@ -2200,6 +2348,18 @@ function textureInto(bc, fc, mk, w0, h0, box, tool){
         if (x > 0 && x < w0 - 1 && y > 0 && y < h0 - 1 &&
             (mk[y * w0 + x - 1] || mk[y * w0 + x + 1] ||
              mk[(y - 1) * w0 + x] || mk[(y + 1) * w0 + x])) f *= 0.96;
+      } else if (tool === 'watercolor'){
+        /* A soft wash: barely-there grain (±3%), no speckle, no edge darkening. */
+        const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
+        f = 1 + 0.03 * n;
+      } else if (tool === 'pastel'){
+        /* Chunky matte grain (±10%), sampled coarse so it feels chalky. */
+        const n = noiseTile[(((y >> 2) & 255) << 8) | ((x >> 1) & 255)];
+        f = 1 + 0.10 * n;
+      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter'){
+        /* Smooth ink: almost no grain (±2%), the gloss comes from the fill. */
+        const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
+        f = 1 + 0.02 * n;
       } else {
         const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
         f = 1 + 0.08 * n;
@@ -2472,12 +2632,15 @@ $('doneBtn').addEventListener('click', () => {
   doneFlag = true;
   const isNewFinish = !progress.finished.includes(currentPage.id);
   if (isNewFinish) progress.finished.push(currentPage.id);
-  /* Unlock: the 6th distinct REQUIRED Stage 1 page finished. Bonus pages
-     never count toward the unlock. */
-  if (isNewFinish && currentPage.stage === 1 && isRequired(currentPage) && !progress.unlocked &&
-      requiredDoneCount(1) >= 6){
-    progress.unlocked = true;
-    ceremonyPending = true;
+  /* Unlock: the 6th distinct REQUIRED page of this stage finished. Bonus
+     pages never count toward the unlock. */
+  if (isNewFinish && isRequired(currentPage) && requiredDoneCount(currentPage.stage) >= 6){
+    const next = currentPage.stage + 1;
+    if (next <= 10 && !isStageUnlocked(next)){
+      progress.unlockedStages[next] = true;
+      if (next === 2) progress.unlocked = true; /* keep the legacy flag in step */
+      ceremonyPending = next;
+    }
   }
   sessionDone++;
   saveProgressState();
@@ -2497,8 +2660,9 @@ $('doneBtn').addEventListener('click', () => {
 $('seePictureBtn').addEventListener('click', () => {
   $('starsOverlay').classList.add('hidden');
   if (ceremonyPending){
+    const n = ceremonyPending;
     ceremonyPending = false;
-    showCeremony();
+    showCeremony(n);
     return;
   }
   /* Gentle ending (BB5): when the parent's picture limit is reached, the
@@ -2523,10 +2687,19 @@ $('restDoneBtn').addEventListener('click', () => {
   sessionDone = 0;
   showWelcome();
 });
-function showCeremony(){
-  if (progress.ceremonyShown) return;
-  progress.ceremonyShown = true;
+let ceremonyStage = 2; /* the stage whose unwrapping is showing */
+function showCeremony(stageN){
+  const st = STAGE_BY_N[stageN];
+  if (!st || !st.ceremony) return;
+  if (progress.ceremoniesShown[stageN]) return;
+  progress.ceremoniesShown[stageN] = true;
+  if (stageN === 2) progress.ceremonyShown = true; /* keep the legacy flag in step */
   saveProgressState();
+  ceremonyStage = stageN;
+  $('ceremonyTitle').textContent = st.ceremony.title;
+  $('ceremonyText').textContent = st.ceremony.text;
+  const first = firstRequiredPage(stageN);
+  $('tryPencilsBtn').textContent = first ? 'Color the ' + PAGE_BY_ID[first].name + '!' : "Let's color!";
   $('ceremonyStep1').classList.remove('hidden');
   $('ceremonyStep2').classList.add('hidden');
   $('ceremonyOverlay').classList.remove('hidden');
@@ -2537,7 +2710,8 @@ $('giftBtn').addEventListener('click', () => {
 });
 $('tryPencilsBtn').addEventListener('click', () => {
   $('ceremonyOverlay').classList.add('hidden');
-  openPage('fire-truck');
+  const first = firstRequiredPage(ceremonyStage || 2);
+  if (first) openPage(first);
 });
 $('ceremonyLaterBtn').addEventListener('click', () => {
   $('ceremonyOverlay').classList.add('hidden');
