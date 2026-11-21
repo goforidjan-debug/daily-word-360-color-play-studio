@@ -41,7 +41,6 @@
     text-shadow:0 1px 4px rgba(60,30,5,.6);}
 
   /* ---------- stage screen ---------- */
-  .stage-sec{width:100%; margin-top:20px;}
   .stage-sec-head{display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:0 2px;}
   .stage-sec-head h2{margin:0; font-size:19px; font-weight:800; color:#fff;
     text-shadow:0 2px 8px rgba(60,30,5,.55);}
@@ -351,6 +350,64 @@
   @keyframes twinkle{0%,100%{opacity:.25; transform:scale(.7) rotate(0deg);} 50%{opacity:1; transform:scale(1.25) rotate(25deg);}}
   .new-badge{background:#FF6B4A; color:#fff; font-size:11px; font-weight:800; letter-spacing:.06em;
     text-transform:uppercase; padding:3px 9px; border-radius:999px; white-space:nowrap;}
+  .stage-sec-head .prog{margin-left:auto; color:#FFE9B8; font-size:14px; font-weight:700;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+
+  /* ---------- stacked Polaroid stages + gallery (2 per row) ---------- */
+  /* One stack per stage: the lead page on top, two more fanned behind like
+     stacked Polaroid photos. Sizes are proportional (aspect ratios + %
+     translates) so the stacks scale down cleanly to fit two across on a phone. */
+  .stacks-list{display:grid; grid-template-columns:1fr 1fr; gap:18px 12px; width:100%; margin-top:6px;}
+  .stack{width:100%; text-align:center; padding:6px 0 10px;}
+  .stack-fan{position:relative; display:block; width:100%; max-width:300px; height:auto; aspect-ratio:300/235;
+    margin:12px auto 0; transition:transform .18s ease;}
+  .polaroid{position:absolute; left:50%; top:0; width:80%; background:#fff; padding:8px 8px 0;
+    border-radius:4px; box-shadow:0 10px 24px rgba(50,25,0,.38);
+    transition:transform .18s ease, box-shadow .18s ease;}
+  .polaroid img{display:block; width:100%; height:auto; aspect-ratio:8/5; object-fit:cover; border-radius:2px; background:#fff;}
+  .polaroid .cap{display:block; text-align:center; font-size:13px; font-weight:800; color:#8A6D3B;
+    padding:7px 0 8px; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(7%,6%); z-index:1;}
+  .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-7%,5%); z-index:2;}
+  .polaroid.front{transform:translateX(-50%) rotate(-1.5deg); z-index:3;}
+  .polaroid.blank .blank-area{display:block; height:auto; aspect-ratio:8/5; background:#FBF6EC; border-radius:2px;}
+  .stack.locked .polaroid img{filter:saturate(.35) brightness(.92);}
+  .stack-lock{position:absolute; z-index:4; top:2px; right:4px;
+    display:inline-flex; align-items:center; gap:5px;
+    background:linear-gradient(180deg,#FFE45C,#FFC400); color:#4A2E00; font-size:12px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; padding:6px 12px; border-radius:999px;
+    box-shadow:0 3px 10px rgba(60,30,5,.4);}
+  .stack-label{display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .stack-title{font-size:17px; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(60,30,5,.55);}
+  .stack-progress{font-size:13px; color:#FFE9B8; font-weight:700; text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .stack-label .stage-pill{font-size:11px; padding:4px 9px; white-space:nowrap;}
+  /* Hover (mouse) / press (touch): the stack lifts a touch and the fanned
+     pages spread a little wider, then settles back — small and calm, never
+     a shake or a big jump. Hover is scoped to real hover devices so it
+     never sticks on touch screens; :active covers the finger press. */
+  @media (hover:hover){
+    .stack:hover .stack-fan{transform:translateY(-4px);}
+    .stack:hover .polaroid.back2{transform:translateX(-50%) rotate(13deg) translate(10%,8%);}
+    .stack:hover .polaroid.back1{transform:translateX(-50%) rotate(-13deg) translate(-10%,7%);}
+    .stack:hover .polaroid.front{box-shadow:0 14px 28px rgba(50,25,0,.45);}
+  }
+  .stack:active .stack-fan{transform:translateY(-4px);}
+  .stack:active .polaroid.back2{transform:translateX(-50%) rotate(13deg) translate(10%,8%);}
+  .stack:active .polaroid.back1{transform:translateX(-50%) rotate(-13deg) translate(-10%,7%);}
+  .stack:active .polaroid.front{box-shadow:0 14px 28px rgba(50,25,0,.45);}
+  /* Reduce motion: no lift, no spread. The system setting is handled here;
+     the parent calm-motion setting already kills transitions app-wide
+     (body.calm-motion *) and gets the same no-movement override below. */
+  @media (prefers-reduced-motion: reduce){
+    .stack:hover .stack-fan, .stack:active .stack-fan{transform:none;}
+    .stack:hover .polaroid.back2, .stack:active .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(7%,6%);}
+    .stack:hover .polaroid.back1, .stack:active .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-7%,5%);}
+    .stack:hover .polaroid.front, .stack:active .polaroid.front{box-shadow:0 10px 24px rgba(50,25,0,.38);}
+  }
+  body.calm-motion .stack:hover .stack-fan, body.calm-motion .stack:active .stack-fan{transform:none;}
+  body.calm-motion .stack:hover .polaroid.back2, body.calm-motion .stack:active .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(7%,6%);}
+  body.calm-motion .stack:hover .polaroid.back1, body.calm-motion .stack:active .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-7%,5%);}
+  body.calm-motion .stack:hover .polaroid.front, body.calm-motion .stack:active .polaroid.front{box-shadow:0 10px 24px rgba(50,25,0,.38);}
   /* left-handed: controls flip sides so the child's hand never covers the work */
   body.left-handed .controls, body.left-handed .vol-row, body.left-handed .gallery-btns,
   body.left-handed .home-btns, body.left-handed .zoom-bar, body.left-handed .bg-music-row{flex-direction:row-reverse;}
@@ -467,9 +524,10 @@
   <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
-  <p class="sub">Pick a picture and color it in!</p>
+  <h1>Pick a Stage</h1>
+  <p class="sub">Tap a stack to see its pictures</p>
 
-  <div id="stageSections"></div>
+  <div class="stacks-list" id="stacksList"></div>
 
   <div class="home-btns">
     <button class="done-btn" id="galleryBtn">
@@ -505,6 +563,31 @@
       Sunshine Stars: <b id="welcomeStarsCount">0</b>
     </span>
   </div>
+</div>
+
+<!-- ============ STAGE DETAIL (one stage's pages) ============ -->
+<div class="screen hidden" id="stageDetailView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <div class="back-row">
+    <button class="back-btn" id="detailBackBtn" aria-label="Back to all stages">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      All stages
+    </button>
+  </div>
+  <div class="stage-sec-head">
+    <h2 id="detailTitle">Stage 1</h2>
+    <span class="stage-pill" id="detailPill">Crayons</span>
+    <span class="complete-badge hidden" id="detailBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span>
+    <span class="prog" id="detailProg"></span>
+  </div>
+  <div class="cards" id="detailRequired"></div>
+  <div class="bonus-sec">
+    <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
+    <div class="cards" id="detailBonus"></div>
+  </div>
+  <p class="home-note">Your paintings stay here in the app.</p>
 </div>
 
 <!-- ============ DESK VIEW ============ -->
@@ -618,10 +701,27 @@
     </button>
   </div>
   <h1>My Gallery</h1>
-  <p class="sub">Look what you made!</p>
+  <p class="sub">Look what you made! Tap a stack to see that stage's paintings.</p>
+  <div class="stacks-list" id="galleryStacksList"></div>
   <p class="sub">Your paintings stay here in the app.</p>
+  <p class="sub hidden" id="galleryStacksEmpty">No paintings yet — color a page and tap Done!</p>
+</div>
+
+<!-- ============ GALLERY: ONE STAGE'S PAINTINGS ============ -->
+<div class="screen hidden" id="galleryStageView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <div class="back-row">
+    <button class="back-btn" id="galleryStageBackBtn" aria-label="Back to gallery">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      My Gallery
+    </button>
+  </div>
+  <h1 id="galleryStageTitle">Stage 1</h1>
+  <p class="sub">Your finished paintings</p>
   <div class="gallery-grid" id="galleryGrid"></div>
-  <p class="sub hidden" id="galleryEmpty">No paintings yet — color a page and tap Done!</p>
+  <p class="sub hidden" id="galleryStageEmpty">No paintings yet — color a page and tap Done!</p>
 </div>
 
 <!-- ============ GALLERY: SINGLE PAINTING ============ -->
@@ -1508,7 +1608,7 @@ function toast(msg){
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
 }
 function showView(id){
-  ['welcomeView','stageView','deskView','galleryGridView','galleryView','parentView','doodleView'].forEach(v =>
+  ['welcomeView','stageView','stageDetailView','deskView','galleryGridView','galleryStageView','galleryView','parentView','doodleView'].forEach(v =>
     $(v).classList.toggle('hidden', v !== id));
   window.scrollTo({ top: 0 });
 }
@@ -2271,32 +2371,94 @@ function makeStageCard(p, locked, stageN){
   });
   return card;
 }
-function buildStageCards(){
-  /* Sections are built from STAGES + PAGES, so a stage appears as soon as
-     its pages land. A stage with no pages yet is not shown. */
-  const wrap = $('stageSections');
+/* ================= STACKED STAGES (2 per row) ================= */
+/* The Stages screen shows one Polaroid stack per stage: the lead page on
+   top, two more fanned behind. Tap a stack to open that stage's pages.
+   Locks are REAL: a stage is locked until the previous stage's 6 required
+   pages are done (the app's unlock rule); stages with no pages yet are
+   locked too and show blank "Coming soon" faces. */
+const LOCK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+const STAR_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>';
+function hasStagePages(n){ return PAGES.some(p => p.stage === n); }
+function stackLocked(n){ return !isStageUnlocked(n) || !hasStagePages(n); }
+function stackLockText(n){
+  if (hasStagePages(n)) return 'Finish ' + requiredTotal(n - 1) + ' Stage ' + (n - 1) + ' pages to unwrap ' + STAGE_BY_N[n].name + '!';
+  if (n === 6 && !isStageUnlocked(6)) return 'Finish 6 Stage 5 pages to unwrap Stickers!';
+  return 'Stage ' + n + ' is coming soon!';
+}
+function stackProgressText(n){
+  if (stackLocked(n)){
+    if (hasStagePages(n)) return 'Finish Stage ' + (n - 1) + ' to unwrap';
+    if (n === 6 && !isStageUnlocked(6)) return 'Finish Stage 5 to unwrap';
+    return 'Coming soon';
+  }
+  return (requiredDoneCount(n) + bonusDoneCount(n)) + ' of 10 done';
+}
+function polaroidHTML(face, cls, blankCap){
+  /* face: {img, name} for a real picture, or null for a blank frame. */
+  if (!face) return '<span class="polaroid blank ' + cls + '"><span class="blank-area"></span><span class="cap">' + (blankCap || 'Coming soon') + '</span></span>';
+  return '<span class="polaroid ' + cls + '"><img src="' + face.img + '" alt="' + face.name + '"><span class="cap">' + face.name + '</span></span>';
+}
+function buildStacks(){
+  const wrap = $('stacksList');
   wrap.innerHTML = '';
   STAGES.forEach(st => {
     const n = st.n;
-    if (!PAGES.some(p => p.stage === n)) return;
-    const locked = !isStageUnlocked(n);
-    const sec = document.createElement('div');
-    sec.className = 'stage-sec';
-    sec.innerHTML =
-      '<div class="stage-sec-head"><h2>Stage ' + n + '</h2><span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
-      '<span class="complete-badge' + (stageComplete(n) ? '' : ' hidden') + '" id="stage' + n + 'Badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#4A2E00" aria-hidden="true"><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>Stage Complete</span></div>' +
-      '<div class="cards"></div>' +
-      '<div class="bonus-sec"><div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div><div class="cards"></div></div>';
-    const lists = sec.querySelectorAll('.cards');
-    PAGES.filter(p => p.stage === n && isRequired(p)).forEach(p => lists[0].appendChild(makeStageCard(p, locked, n)));
-    PAGES.filter(p => p.stage === n && !isRequired(p)).forEach(p => lists[1].appendChild(makeStageCard(p, locked, n)));
-    wrap.appendChild(sec);
+    const locked = stackLocked(n);
+    const req = PAGES.filter(p => p.stage === n && isRequired(p));
+    const done = requiredDoneCount(n) + bonusDoneCount(n);
+    const btn = document.createElement('button');
+    btn.className = 'stack' + (locked ? ' locked' : '');
+    btn.setAttribute('aria-label', 'Stage ' + n + ', ' + st.name + (locked ? ', locked' : ', ' + done + ' of 10 done'));
+    const faces = hasStagePages(n)
+      ? [ { img: req[0].guide, name: req[0].name }, { img: req[1].guide, name: req[1].name }, { img: req[2].guide, name: req[2].name } ]
+      : [ null, null, null ];
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2') +
+        polaroidHTML(faces[1], 'back1') +
+        polaroidHTML(faces[0], 'front') +
+        (locked ? '<span class="stack-lock">' + LOCK_SVG + ' Locked</span>' : '') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">STAGE ' + n + '</span>' +
+        '<span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
+        (stageComplete(n) && hasStagePages(n) ? '<span class="complete-badge">' + STAR_SVG + 'Stage Complete</span>' : '') +
+        '<span class="stack-progress">' + stackProgressText(n) + '</span>' +
+      '</span>';
+    btn.addEventListener('click', () => {
+      if (locked) toast(stackLockText(n));
+      else openStage(n);
+    });
+    wrap.appendChild(btn);
   });
   buildPackSections();
+}
+function openStage(n){
+  /* One stage's pages only: the 6 required as the main grid + the Bonus
+     section — the same cards the old all-stages screen showed. */
+  if (!hasStagePages(n)) { toast(stackLockText(n)); return; }
+  if (stackLocked(n)) { toast(stackLockText(n)); return; }
+  const st = STAGE_BY_N[n];
+  $('detailTitle').textContent = 'Stage ' + n;
+  const pill = $('detailPill');
+  pill.textContent = st.name;
+  pill.className = 'stage-pill ' + st.tool;
+  $('detailProg').textContent = (requiredDoneCount(n) + bonusDoneCount(n)) + ' of 10 done';
+  const badge = document.getElementById('detailBadge') || document.querySelector('#stageDetailView .complete-badge');
+  badge.id = 'stage' + n + 'Badge';
+  badge.classList.toggle('hidden', !stageComplete(n));
+  const reqWrap = $('detailRequired');
+  reqWrap.innerHTML = '';
+  PAGES.filter(p => p.stage === n && isRequired(p)).forEach(p => reqWrap.appendChild(makeStageCard(p, false, n)));
+  const bonWrap = $('detailBonus');
+  bonWrap.innerHTML = '';
+  PAGES.filter(p => p.stage === n && !isRequired(p)).forEach(p => bonWrap.appendChild(makeStageCard(p, false, n)));
   tagMonthlyDrops();
+  showView('stageDetailView');
 }
 /* Parent-pack sections (Phase 9): built when a pack toggle is ON. Stub
-   until the packs land — called from buildStageCards. */
+   until the packs land — called from buildStacks. */
 function buildPackSections(){}
 /* Monthly drops (QW9): the bonus pages are the "New in {Month}" drop. */
 function tagMonthlyDrops(){
@@ -2309,7 +2471,7 @@ function tagMonthlyDrops(){
   });
 }
 function showStage(){
-  buildStageCards();
+  buildStacks();
   $('bgMusicRow').classList.toggle('hidden', BG_TRACKS.length === 0);
   updateStarsPill();
   showView('stageView');
@@ -3274,17 +3436,79 @@ async function paintingDataURL(pageId){
   paintingCache[pageId] = c.toDataURL('image/png');
   return paintingCache[pageId];
 }
-async function showGalleryGrid(){
-  const grid = $('galleryGrid');
-  grid.innerHTML = '';
-  $('galleryEmpty').classList.add('hidden');
+/* ================= GALLERY: STACKS BY STAGE ================= */
+/* My Gallery shows one Polaroid stack per stage (2 per row), built from
+   the child's REAL saved paintings. Tap a stack to see only that stage's
+   paintings. Doodles live in the Master Studio (Stage 10) stack. A locked
+   stage's stack can't be opened — same rule as the Stages screen. Saving a
+   doodle opens Stage 10's paintings right away so the child sees what
+   they just made, even while Stage 10 is still locked. */
+let currentGalleryStage = 1;
+async function showGalleryStacks(){
+  const wrap = $('galleryStacksList');
+  wrap.innerHTML = '';
+  $('galleryStacksEmpty').classList.add('hidden');
   showView('galleryGridView');
   const finished = progress.finished.slice();
-  if (!finished.length){
-    $('galleryEmpty').classList.remove('hidden');
-    return;
+  const doodles = loadDoodles();
+  if (!finished.length && !doodles.length){
+    /* No paintings yet: still show all 10 stacks (like the Stages screen),
+       with the empty note on top — the child sees what's coming. */
+    $('galleryStacksEmpty').classList.remove('hidden');
   }
-  for (const id of finished){
+  for (const st of STAGES){
+    const n = st.n;
+    const locked = stackLocked(n);
+    const ids = finished.filter(id => PAGE_BY_ID[id].stage === n);
+    const count = ids.length + (n === 10 ? doodles.length : 0);
+    const btn = document.createElement('button');
+    btn.className = 'stack' + (locked ? ' locked' : '');
+    btn.setAttribute('aria-label', 'Stage ' + n + ' paintings, ' + st.name + (locked ? ', locked' : ', ' + count + ' painting' + (count === 1 ? '' : 's')));
+    /* Faces: the stage's real paintings (up to 3). Empty slots stay blank. */
+    const faces = [ null, null, null ];
+    if (!locked){
+      for (let i = 0; i < Math.min(3, ids.length); i++){
+        const url = await paintingDataURL(ids[i]);
+        if (url) faces[i] = { img: url, name: PAGE_BY_ID[ids[i]].name };
+      }
+      if (n === 10){
+        for (let i = ids.length; i < Math.min(3, count); i++){
+          faces[i] = { img: doodles[i - ids.length].data, name: 'Doodle' };
+        }
+      }
+    }
+    const blankCap = locked ? 'Coming soon' : 'No paintings yet';
+    const prog = locked ? stackProgressText(n)
+      : (count ? count + (count === 1 ? ' painting' : ' paintings') : 'No paintings yet');
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2', blankCap) +
+        polaroidHTML(faces[1], 'back1', blankCap) +
+        polaroidHTML(faces[0], 'front', blankCap) +
+        (locked ? '<span class="stack-lock">' + LOCK_SVG + ' Locked</span>' : '') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">STAGE ' + n + '</span>' +
+        '<span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
+        '<span class="stack-progress">' + prog + '</span>' +
+      '</span>';
+    btn.addEventListener('click', () => {
+      if (locked) toast(stackLockText(n));
+      else showGalleryStage(n);
+    });
+    wrap.appendChild(btn);
+  }
+}
+async function showGalleryStage(n){
+  currentGalleryStage = n;
+  const st = STAGE_BY_N[n];
+  $('galleryStageTitle').textContent = 'Stage ' + n + ' · ' + st.name;
+  const grid = $('galleryGrid');
+  grid.innerHTML = '';
+  $('galleryStageEmpty').classList.add('hidden');
+  showView('galleryStageView');
+  const ids = progress.finished.filter(id => PAGE_BY_ID[id].stage === n);
+  for (const id of ids){
     const p = PAGE_BY_ID[id];
     const card = document.createElement('button');
     card.className = 'gcard';
@@ -3301,25 +3525,27 @@ async function showGalleryGrid(){
     card.addEventListener('click', () => showSinglePainting(id));
     grid.appendChild(card);
   }
-  const doodles = loadDoodles();
-  for (const d of doodles){
-    const card = document.createElement('button');
-    card.className = 'gcard';
-    const img = document.createElement('img');
-    img.alt = 'Your doodle';
-    img.src = d.data;
-    card.appendChild(img);
-    const nm = document.createElement('div');
-    nm.className = 'name';
-    nm.textContent = 'Doodle';
-    card.appendChild(nm);
-    card.addEventListener('click', () => showSingleDoodle(d.id));
-    grid.appendChild(card);
+  if (n === 10){
+    for (const d of loadDoodles()){
+      const card = document.createElement('button');
+      card.className = 'gcard';
+      const img = document.createElement('img');
+      img.alt = 'Your doodle';
+      img.src = d.data;
+      card.appendChild(img);
+      const nm = document.createElement('div');
+      nm.className = 'name';
+      nm.textContent = 'Doodle';
+      card.appendChild(nm);
+      card.addEventListener('click', () => showSingleDoodle(d.id));
+      grid.appendChild(card);
+    }
   }
-  if (!grid.children.length) $('galleryEmpty').classList.remove('hidden');
+  if (!grid.children.length) $('galleryStageEmpty').classList.remove('hidden');
 }
 async function showSinglePainting(pageId){
   const p = PAGE_BY_ID[pageId];
+  currentGalleryStage = p.stage;
   $('galleryTitle').textContent = 'My ' + p.name;
   $('galleryImg').alt = 'Your finished colored ' + p.name.toLowerCase();
   const url = await paintingDataURL(pageId);
@@ -3337,6 +3563,7 @@ async function showSinglePainting(pageId){
 function showSingleDoodle(id){
   const d = loadDoodles().find(x => x.id === id);
   if (!d) return;
+  currentGalleryStage = 10;
   $('galleryTitle').textContent = 'My Doodle';
   $('galleryImg').alt = 'Your doodle';
   $('galleryImg').src = d.data;
@@ -3346,9 +3573,11 @@ function showSingleDoodle(id){
   $('replayBtn').classList.add('hidden');
   showView('galleryView');
 }
-$('galleryBtn').addEventListener('click', () => showGalleryGrid());
+$('galleryBtn').addEventListener('click', () => showGalleryStacks());
 $('galleryBackBtn').addEventListener('click', () => showStage());
-$('singleBackBtn').addEventListener('click', () => showGalleryGrid());
+$('singleBackBtn').addEventListener('click', () => showGalleryStage(currentGalleryStage));
+$('detailBackBtn').addEventListener('click', () => showStage());
+$('galleryStageBackBtn').addEventListener('click', () => showGalleryStacks());
 $('againBtn').addEventListener('click', () => {
   if ($('galleryImg').dataset.doodleId){ showView('doodleView'); return; }
   const id = $('galleryImg').dataset.pageId || (currentPage && currentPage.id) || 'lion';
@@ -3587,7 +3816,8 @@ $('doodleSaveBtn').addEventListener('click', () => {
   while (list.length > 20) list.pop();
   saveDoodles(list);
   toast('Saved to your Gallery!');
-  showGalleryGrid();
+  showGalleryStage(10); /* Doodles live in the Master Studio stack — open
+    it right away so the child sees what they just made. */
 });
 
 /* ================= PARENT AREA ================= */
@@ -3715,7 +3945,7 @@ function switchProfile(id){
   progress = loadProgress();
   for (const k in paintingCache) delete paintingCache[k];
   sessionDone = 0;
-  buildStageCards();
+  buildStacks();
   renderProfileChips();
   renderProgressView();
   toast('Switched! This is your gallery now.');
@@ -3895,7 +4125,7 @@ window.__cps = {
   get zoom(){ return { scale: zoom.scale, tx: zoom.tx, ty: zoom.ty }; },
   setZoom(s){ zoom.scale = s; applyZoom(); },
   openPage,
-  showStage,
+  showStage, openStage, showGalleryStacks, showGalleryStage,
   fillPixel(x, y){
     const d = fctx.getImageData(x, y, 1, 1).data;
     return [d[0], d[1], d[2], d[3]];
