@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C89B6A">
+<title>My Little Studio — Stacked Stages (Sample Preview)</title>
+<style>
+  /* ---------- base look, copied from the live app (index.html) ---------- */
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:#2B2118; min-height:100dvh;
+    background:#C89B6A url("assets/desk-wood.jpg") center/cover no-repeat fixed;
+    font-size:16px; line-height:1.4;
+  }
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; padding:0;}
+  button:active{transform:scale(.96);}
+  .hidden{display:none !important;}
+  .screen{min-height:100dvh; display:flex; flex-direction:column; align-items:center;
+    padding:calc(12px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
+    max-width:720px; margin:0 auto; width:100%;}
+  .screen h1{margin:0; font-size:31px; line-height:1.05; font-weight:800; letter-spacing:-.01em; color:#fff;
+    text-shadow:0 2px 10px rgba(60,30,5,.55), 0 1px 2px rgba(60,30,5,.6); text-align:center;}
+  .screen h1.pill{width:fit-content; margin-left:auto; margin-right:auto;
+    background:rgba(43,33,24,.38); padding:8px 20px 10px; border-radius:999px;}
+  .logo-hanger.small{width:min(48vw,180px); margin:-12px auto 14px; cursor:pointer;}
+  .logo-hanger.small img{display:block; width:100%; height:auto;
+    filter:drop-shadow(0 12px 16px rgba(60,30,5,.35));}
+  .screen .sub{color:#FFE9B8; font-size:15px; font-weight:700; margin:6px 0 0; text-align:center;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .sample-pill{background:linear-gradient(180deg,#FFE45C,#FFC400); color:#4A2E00; font-size:12px;
+    font-weight:800; letter-spacing:.1em; text-transform:uppercase; padding:6px 14px; border-radius:999px;
+    box-shadow:0 3px 10px rgba(60,30,5,.35); margin-bottom:10px;}
+  .stage-pill{background:#FFD60A; color:#4A2E00; font-size:12px; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; padding:5px 11px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
+  .stage-pill.pencil{background:#7ED6FF; color:#0B3D5C;}
+  .stage-pill.marker{background:#FF8FB1; color:#5C1030;}
+  .stage-pill.watercolor{background:#9BE7FF; color:#0B3D5C;}
+  .stage-pill.pastel{background:#E8C8F0; color:#4A2E5C;}
+  .stage-pill.sticker{background:#FFB84D; color:#4A2E00;}
+  .stage-pill.gel{background:#B6F36B; color:#1F4A00;}
+  .stage-pill.glitter{background:#E9B6FF; color:#4A005C;}
+  .stage-pill.stamp{background:#FF9D76; color:#4A1E00;}
+  .stage-pill.master{background:linear-gradient(90deg,#FFD60A,#FF8FB1,#7ED6FF); color:#4A2E00;}
+  .back-row{width:100%; display:flex; justify-content:flex-start; padding-bottom:2px;}
+  .back-btn{display:inline-flex; align-items:center; gap:4px; color:#fff; font-size:13px; font-weight:800;
+    text-shadow:0 1px 4px rgba(60,30,5,.6); padding:4px 8px 4px 2px; border-radius:10px;}
+  .back-btn svg{width:16px; height:16px;}
+  .stage-sec-head{display:flex; align-items:center; gap:10px; margin:14px 0 10px; padding:0 2px; width:100%;}
+  .stage-sec-head h2{margin:0; font-size:19px; font-weight:800; color:#fff;
+    text-shadow:0 2px 8px rgba(60,30,5,.55);}
+  .stage-sec-head .prog{margin-left:auto; color:#FFE9B8; font-size:14px; font-weight:700;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .cards{display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;}
+  .card{background:#fff; border-radius:16px; padding:8px 8px 10px; text-align:center;
+    box-shadow:0 10px 24px rgba(50,25,0,.38); position:relative; overflow:hidden;}
+  .card img{width:100%; height:auto; display:block; border-radius:10px; background:#fff;}
+  .card .name{font-size:16px; font-weight:800; color:#2B2118; margin:8px 0 2px;}
+  .card .stars-row{display:flex; gap:2px; justify-content:center; min-height:20px; align-items:center;}
+  .card .stars-row svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));}
+  .bonus-sec{margin-top:16px; width:100%;}
+  .bonus-head{display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:0 2px;}
+  .bonus-head h3{margin:0; font-size:14px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:#FFE9B8; text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .bonus-head .line{flex:1; height:2px; background:rgba(255,233,184,.5); border-radius:2px;}
+  .gallery-grid{width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px;}
+  .gcard{background:#fff; border-radius:14px; padding:8px; box-shadow:0 10px 24px rgba(50,25,0,.38);}
+  .gcard img{width:100%; height:auto; display:block; border-radius:8px;}
+  .gcard .name{font-size:14px; font-weight:800; text-align:center; margin:7px 0 1px; color:#2B2118;}
+  .done-btn{flex:1; min-height:60px; border-radius:16px; background:#FF6B4A; color:#fff;
+    font-size:22px; font-weight:800; letter-spacing:.02em;
+    box-shadow:0 8px 20px rgba(255,107,74,.5), inset 0 -3px 0 rgba(0,0,0,.12);
+    display:flex; align-items:center; justify-content:center; gap:10px;}
+  .home-btns{display:flex; gap:12px; width:100%; margin-top:22px;}
+  .home-note{margin-top:14px; color:#FFE9B8; font-size:13.5px; font-weight:700; text-align:center;
+    text-shadow:0 1px 4px rgba(60,30,5,.6);}
+  .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
+    background:#2B2118; color:#fff; font-size:15px; font-weight:700; padding:12px 22px; border-radius:999px;
+    box-shadow:0 10px 26px rgba(0,0,0,.35); opacity:0; pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease; z-index:80; max-width:88vw; text-align:center;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ---------- the new stacked-Polaroid look ---------- */
+  .stacks-list{display:flex; flex-direction:column; gap:8px; width:100%; margin-top:6px;}
+  .stack{width:100%; text-align:center; padding:6px 0 10px;}
+  .stack-fan{position:relative; display:block; width:min(78vw,300px); height:222px; margin:12px auto 0;}
+  .polaroid{position:absolute; left:50%; top:0; width:240px; background:#fff; padding:8px 8px 0;
+    border-radius:4px; box-shadow:0 10px 24px rgba(50,25,0,.38);}
+  .polaroid img{display:block; width:100%; height:150px; object-fit:cover; border-radius:2px; background:#fff;}
+  .polaroid .cap{display:block; text-align:center; font-size:13px; font-weight:800; color:#8A6D3B;
+    padding:7px 0 8px; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .polaroid.back2{transform:translateX(-50%) rotate(10deg) translate(16px,12px); z-index:1;}
+  .polaroid.back1{transform:translateX(-50%) rotate(-10deg) translate(-16px,10px); z-index:2;}
+  .polaroid.front{transform:translateX(-50%) rotate(-1.5deg); z-index:3;}
+  .polaroid.blank .blank-area{display:block; height:150px; background:#FBF6EC; border-radius:2px;}
+  .stack.locked .polaroid img{filter:saturate(.35) brightness(.92);}
+  .stack-lock{position:absolute; z-index:4; top:2px; right:calc(50% - 132px);
+    display:inline-flex; align-items:center; gap:5px;
+    background:linear-gradient(180deg,#FFE45C,#FFC400); color:#4A2E00; font-size:12px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; padding:6px 12px; border-radius:999px;
+    box-shadow:0 3px 10px rgba(60,30,5,.4);}
+  .stack-label{display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .stack-title{font-size:19px; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(60,30,5,.55);}
+  .stack-progress{color:#FFE9B8; font-size:14px; font-weight:700; text-shadow:0 1px 4px rgba(60,30,5,.6);}
+</style>
+</head>
+<body>
+
+<!-- ============ STACKS SCREEN ============ -->
+<div class="screen" id="stacksView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <span class="sample-pill">Sample Preview — not the live app</span>
+  <h1 class="pill">Pick a Stage</h1>
+  <p class="sub">Tap a stack to see its pictures</p>
+  <div class="stacks-list" id="stacksList"></div>
+  <div class="home-btns">
+    <button class="done-btn" id="galleryBtn" style="font-size:19px;">
+      My Gallery
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5L6 23"/></svg>
+    </button>
+  </div>
+  <p class="home-note">Sample numbers only — progress shown here is just an example.<br>Nothing on this page changes the live app.</p>
+</div>
+
+<!-- ============ STAGE DETAIL SCREEN ============ -->
+<div class="screen hidden" id="stageDetailView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <div class="back-row">
+    <button class="back-btn" id="detailBackBtn" aria-label="Back to all stages">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      All stages
+    </button>
+  </div>
+  <div class="stage-sec-head">
+    <h2 id="detailTitle">Stage 1</h2>
+    <span class="stage-pill" id="detailPill">Crayons</span>
+    <span class="prog" id="detailProg"></span>
+  </div>
+  <div class="cards" id="detailRequired"></div>
+  <div class="bonus-sec">
+    <div class="bonus-head"><h3>Bonus</h3><span class="line"></span></div>
+    <div class="cards" id="detailBonus"></div>
+  </div>
+  <p class="home-note">Tap a picture to color it in the real app.</p>
+</div>
+
+<!-- ============ GALLERY: STACKS ============ -->
+<div class="screen hidden" id="galleryStacksView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <div class="back-row">
+    <button class="back-btn" id="galleryStacksBackBtn" aria-label="Back to all stages">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      All stages
+    </button>
+  </div>
+  <h1 class="pill">My Gallery</h1>
+  <p class="sub">Look what you made! Tap a stack to see that stage's paintings.</p>
+  <div class="stacks-list" id="galleryStacksList"></div>
+  <p class="home-note">Sample paintings only — your real paintings live in the app's Gallery.</p>
+</div>
+
+<!-- ============ GALLERY: ONE STAGE'S PAINTINGS ============ -->
+<div class="screen hidden" id="galleryDetailView">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <div class="back-row">
+    <button class="back-btn" id="galleryDetailBackBtn" aria-label="Back to gallery">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      My Gallery
+    </button>
+  </div>
+  <h1 class="pill" id="galleryDetailTitle">Stage 1</h1>
+  <p class="sub">Your finished paintings</p>
+  <div class="gallery-grid" id="galleryDetailGrid"></div>
+  <p class="sub hidden" id="galleryDetailEmpty">No paintings yet — color a page and tap Done!</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGES = [
+  { n:1, tool:'crayon', name:'Crayons' },
+  { n:2, tool:'pencil', name:'Colored Pencils' },
+  { n:3, tool:'marker', name:'Markers' },
+  { n:4, tool:'watercolor', name:'Watercolors' },
+  { n:5, tool:'pastel', name:'Pastels' },
+  { n:6, tool:'sticker', name:'Stickers' },
+  { n:7, tool:'gel', name:'Gel Pens' },
+  { n:8, tool:'glitter', name:'Glitter Gel Pens' },
+  { n:9, tool:'stamp', name:'Stamps' },
+  { n:10, tool:'master', name:'Master Studio' },
+];
+const STAGE_BY_N = {}; STAGES.forEach(s => STAGE_BY_N[s.n] = s);
+/* Real page data, copied from the live app's index.html (50 pages). */
+const PAGES = [{"id":"lion","name":"Lion","stage":1,"required":true,"line":"assets/lion-line-2x.jpg","guide":"assets/lion-guide.jpg"},{"id":"ladybug","name":"Ladybug","stage":1,"required":true,"line":"assets/ladybug-line-2x.jpg","guide":"assets/ladybug-guide.jpg"},{"id":"elephant","name":"Elephant","stage":1,"required":true,"line":"assets/elephant-line-2x.jpg","guide":"assets/elephant-guide.jpg"},{"id":"ice-cream","name":"Ice Cream","stage":1,"required":true,"line":"assets/ice-cream-line-2x.jpg","guide":"assets/ice-cream-guide.jpg"},{"id":"frog","name":"Frog","stage":1,"required":true,"line":"assets/frog-line-2x.jpg","guide":"assets/frog-guide.jpg"},{"id":"fire-truck","name":"Fire Truck","stage":2,"required":true,"line":"assets/fire-truck-line-2x.jpg","guide":"assets/fire-truck-guide.jpg"},{"id":"superhero-pup","name":"Superhero Pup","stage":1,"required":true,"line":"assets/superhero-pup-line-2x.jpg","guide":"assets/superhero-pup-guide.jpg"},{"id":"penguin","name":"Penguin","stage":1,"required":false,"line":"assets/penguin-line-2x.jpg","guide":"assets/penguin-guide.jpg"},{"id":"unicorn","name":"Unicorn","stage":1,"required":false,"line":"assets/unicorn-line-2x.jpg","guide":"assets/unicorn-guide.jpg"},{"id":"space-cat","name":"Space Cat","stage":1,"required":false,"line":"assets/space-cat-line-2x.jpg","guide":"assets/space-cat-guide.jpg"},{"id":"dolphin","name":"Dolphin","stage":1,"required":false,"line":"assets/dolphin-line-2x.jpg","guide":"assets/dolphin-guide.jpg"},{"id":"pirate-ship","name":"Pirate Ship","stage":2,"required":true,"line":"assets/pirate-ship-line-2x.jpg","guide":"assets/pirate-ship-guide.jpg"},{"id":"train","name":"Train","stage":2,"required":true,"line":"assets/train-line-2x.jpg","guide":"assets/train-guide.jpg"},{"id":"seahorse","name":"Seahorse","stage":2,"required":true,"line":"assets/seahorse-line-2x.jpg","guide":"assets/seahorse-guide.jpg"},{"id":"owl","name":"Owl","stage":2,"required":true,"line":"assets/owl-line-2x.jpg","guide":"assets/owl-guide.jpg"},{"id":"skater-pup","name":"Skater Pup","stage":2,"required":true,"line":"assets/skater-pup-line-2x.jpg","guide":"assets/skater-pup-guide.jpg?v=2"},{"id":"robot","name":"Robot","stage":2,"required":false,"line":"assets/robot-line-2x.jpg","guide":"assets/robot-guide.jpg"},{"id":"dragon","name":"Dragon","stage":2,"required":false,"line":"assets/dragon-line-2x.jpg","guide":"assets/dragon-guide.jpg"},{"id":"koala","name":"Koala","stage":2,"required":false,"line":"assets/koala-line-2x.jpg","guide":"assets/koala-guide.jpg"},{"id":"teddy-bear","name":"Teddy Bear","stage":2,"required":false,"line":"assets/teddy-bear-line-2x.jpg","guide":"assets/teddy-bear-guide.jpg"},{"id":"zoom-race-car","name":"Race Car","stage":3,"required":true,"line":"assets/zoom-race-car-line-2x.jpg","guide":"assets/zoom-race-car-guide.jpg"},{"id":"school-bus","name":"School Bus","stage":3,"required":true,"line":"assets/school-bus-line-2x.jpg","guide":"assets/school-bus-guide.jpg"},{"id":"farm-tractor","name":"Farm Tractor","stage":3,"required":true,"line":"assets/farm-tractor-line-2x.jpg","guide":"assets/farm-tractor-guide.jpg"},{"id":"jet-plane","name":"Jet Plane","stage":3,"required":true,"line":"assets/jet-plane-line-2x.jpg","guide":"assets/jet-plane-guide.jpg"},{"id":"sailboat-adventure","name":"Sailboat","stage":3,"required":true,"line":"assets/sailboat-adventure-line-2x.jpg","guide":"assets/sailboat-adventure-guide.jpg"},{"id":"rocket","name":"Rocket","stage":3,"required":true,"line":"assets/rocket-line-2x.jpg","guide":"assets/rocket-guide.jpg"},{"id":"hot-air-balloon","name":"Hot-Air Balloon","stage":3,"required":false,"line":"assets/hot-air-balloon-line-2x.jpg","guide":"assets/hot-air-balloon-guide.jpg"},{"id":"birthday-cake","name":"Birthday Cake","stage":3,"required":false,"line":"assets/birthday-cake-line-2x.jpg","guide":"assets/birthday-cake-guide.jpg"},{"id":"kitten-yarn","name":"Kitten","stage":3,"required":false,"line":"assets/kitten-yarn-line-2x.jpg","guide":"assets/kitten-yarn-guide.jpg"},{"id":"sunny-sunflower","name":"Sunflower","stage":3,"required":false,"line":"assets/sunny-sunflower-line-2x.jpg","guide":"assets/sunny-sunflower-guide.jpg"},{"id":"turtle-friend","name":"Turtle","stage":4,"required":true,"line":"assets/turtle-friend-line-2x.jpg","guide":"assets/turtle-friend-guide.jpg"},{"id":"polar-bear","name":"Polar Bear","stage":4,"required":true,"line":"assets/polar-bear-line-2x.jpg","guide":"assets/polar-bear-guide.jpg"},{"id":"happy-hippo","name":"Hippo","stage":4,"required":true,"line":"assets/happy-hippo-line-2x.jpg","guide":"assets/happy-hippo-guide.jpg"},{"id":"sleepy-sloth","name":"Sloth","stage":4,"required":true,"line":"assets/sleepy-sloth-line-2x.jpg","guide":"assets/sleepy-sloth-guide.jpg"},{"id":"fairy-garden","name":"Fairy Garden","stage":4,"required":true,"line":"assets/fairy-garden-line-2x.jpg","guide":"assets/fairy-garden-guide.jpg"},{"id":"butterfly","name":"Butterfly","stage":4,"required":true,"line":"assets/butterfly-line-2x.jpg","guide":"assets/butterfly-guide.jpg"},{"id":"koi-fish-pond","name":"Koi Fish","stage":4,"required":false,"line":"assets/koi-fish-pond-line-2x.jpg","guide":"assets/koi-fish-pond-guide.jpg"},{"id":"cherry-blossom-tree","name":"Cherry Blossom Tree","stage":4,"required":false,"line":"assets/cherry-blossom-tree-line-2x.jpg","guide":"assets/cherry-blossom-tree-guide.jpg"},{"id":"mermaid-splash","name":"Mermaid","stage":4,"required":false,"line":"assets/mermaid-splash-line-2x.jpg","guide":"assets/mermaid-splash-guide.jpg"},{"id":"puddle-jump-duck","name":"Duck","stage":4,"required":false,"line":"assets/puddle-jump-duck-line-2x.jpg","guide":"assets/puddle-jump-duck-guide.jpg"},{"id":"tiger-cub","name":"Tiger Cub","stage":5,"required":true,"line":"assets/tiger-cub-line-2x.jpg","guide":"assets/tiger-cub-guide.jpg"},{"id":"ice-cream-truck","name":"Ice Cream Truck","stage":5,"required":true,"line":"assets/ice-cream-truck-line-2x.jpg","guide":"assets/ice-cream-truck-guide.jpg"},{"id":"bunny","name":"Bunny","stage":5,"required":true,"line":"assets/bunny-line-2x.jpg","guide":"assets/bunny-guide.jpg"},{"id":"busy-bee","name":"Busy Bee","stage":5,"required":true,"line":"assets/busy-bee-line-2x.jpg","guide":"assets/busy-bee-guide.jpg"},{"id":"giraffe","name":"Giraffe","stage":5,"required":true,"line":"assets/giraffe-line-2x.jpg","guide":"assets/giraffe-guide.jpg"},{"id":"dino","name":"Dino","stage":5,"required":true,"line":"assets/dino-line-2x.jpg","guide":"assets/dino-guide.jpg"},{"id":"peacock","name":"Peacock","stage":5,"required":false,"line":"assets/peacock-line-2x.jpg","guide":"assets/peacock-guide.jpg"},{"id":"rainbow","name":"Rainbow","stage":5,"required":false,"line":"assets/rainbow-line-2x.jpg","guide":"assets/rainbow-guide.jpg"},{"id":"whale","name":"Whale","stage":5,"required":false,"line":"assets/whale-line-2x.jpg","guide":"assets/whale-guide.jpg"},{"id":"cupcake-stand","name":"Cupcake Stand","stage":5,"required":false,"line":"assets/cupcake-stand-line-2x.jpg","guide":"assets/cupcake-stand-guide.jpg"}];
+/* Sample progress, for the preview only — not real progress. */
+const SAMPLE_DONE = {
+  1: ['lion','ladybug','elephant','ice-cream','frog','superhero-pup'],
+  2: ['fire-truck','pirate-ship','train'],
+  3: ['zoom-race-car'],
+};
+/* Locked-stage stack faces: the approved sample sheets. Stages 7, 8 and 10
+   have no art yet, so their stacks use blank Polaroid frames. */
+const LOCKED_FACE = { 6:'assets/preview-stickers-sample.jpg', 9:'assets/preview-stamps-sample.jpg' };
+const LOCKED_FACE_NAME = { 6:'Stickers', 9:'Stamps' };
+
+const $ = id => document.getElementById(id);
+const LOCK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+function starSVG(filled){
+  return '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (filled ? '#FFC400' : '#E8DCC8') + '"' +
+    (filled ? ' stroke="#E8A800" stroke-width="0.7"' : '') +
+    '><path d="M12 2l2.9 6.26L21.5 9.3l-4.75 4.4L18 20.5 12 17.2 6 20.5l1.25-6.8L2.5 9.3l6.6-1.04L12 2z"/></svg>';
+}
+let toastTimer = null;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function showView(id){
+  ['stacksView','stageDetailView','galleryStacksView','galleryDetailView'].forEach(v => $(v).classList.toggle('hidden', v !== id));
+  window.scrollTo(0, 0);
+}
+function pagesOf(n){ return PAGES.filter(p => p.stage === n); }
+function requiredOf(n){ return pagesOf(n).filter(p => p.required); }
+function bonusOf(n){ return pagesOf(n).filter(p => !p.required); }
+function isLive(n){ return n <= 5; }
+function doneCount(n){ return (SAMPLE_DONE[n] || []).length; }
+function lockText(n){
+  if (n === 6) return 'Finish 6 Stage 5 pages to unwrap Stickers!';
+  return 'Stage ' + n + ' is coming soon!';
+}
+function polaroidHTML(face, cls){
+  /* face: {img, name} for a real picture, or null for a blank frame. */
+  if (!face) return '<span class="polaroid blank ' + cls + '"><span class="blank-area"></span><span class="cap">Coming soon</span></span>';
+  return '<span class="polaroid ' + cls + '"><img src="' + face.img + '" alt="' + face.name + '"><span class="cap">' + face.name + '</span></span>';
+}
+
+/* ================= STAGES SCREEN: 10 stacks ================= */
+function buildStacks(){
+  const wrap = $('stacksList');
+  wrap.innerHTML = '';
+  STAGES.forEach(st => {
+    const n = st.n;
+    const live = isLive(n);
+    const req = requiredOf(n);
+    const btn = document.createElement('button');
+    btn.className = 'stack' + (live ? '' : ' locked');
+    btn.setAttribute('aria-label', 'Stage ' + n + ', ' + st.name + (live ? ', ' + doneCount(n) + ' of 10 done' : ', locked'));
+    let faces;
+    if (live){
+      faces = [
+        { img: req[0].guide, name: req[0].name },
+        { img: req[1].guide, name: req[1].name },
+        { img: req[2].guide, name: req[2].name },
+      ];
+    } else if (LOCKED_FACE[n]){
+      faces = [ { img: LOCKED_FACE[n], name: LOCKED_FACE_NAME[n] }, null, null ];
+    } else {
+      faces = [ null, null, null ];
+    }
+    const prog = live ? doneCount(n) + ' of 10 done'
+      : (n === 6 ? 'Finish Stage 5 to unwrap' : 'Coming soon');
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2') +
+        polaroidHTML(faces[1], 'back1') +
+        polaroidHTML(faces[0], 'front') +
+        (live ? '' : '<span class="stack-lock">' + LOCK_SVG + ' Locked</span>') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">STAGE ' + n + '</span>' +
+        '<span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
+        '<span class="stack-progress">' + prog + '</span>' +
+      '</span>';
+    btn.addEventListener('click', () => {
+      if (live) openStage(n);
+      else toast(lockText(n));
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+/* ================= STAGE DETAIL: only that stage's pages ================= */
+function makeDetailCard(p, n){
+  const done = (SAMPLE_DONE[n] || []).includes(p.id);
+  const card = document.createElement('button');
+  card.className = 'card';
+  card.innerHTML =
+    '<img src="' + p.line + '" alt="' + p.name + ', uncolored picture">' +
+    '<div class="name">' + p.name + '</div>' +
+    '<div class="stars-row">' + starSVG(done) + starSVG(done) + starSVG(done) + '</div>';
+  card.addEventListener('click', () => toast('This is a sample preview — coloring happens in the real app.'));
+  return card;
+}
+function openStage(n){
+  const st = STAGE_BY_N[n];
+  $('detailTitle').textContent = 'Stage ' + n;
+  const pill = $('detailPill');
+  pill.textContent = st.name;
+  pill.className = 'stage-pill ' + st.tool;
+  $('detailProg').textContent = doneCount(n) + ' of 10 done';
+  const reqWrap = $('detailRequired');
+  reqWrap.innerHTML = '';
+  requiredOf(n).forEach(p => reqWrap.appendChild(makeDetailCard(p, n)));
+  const bonWrap = $('detailBonus');
+  bonWrap.innerHTML = '';
+  bonusOf(n).forEach(p => bonWrap.appendChild(makeDetailCard(p, n)));
+  showView('stageDetailView');
+}
+
+/* ================= GALLERY: stacks grouped by stage ================= */
+function buildGalleryStacks(){
+  const wrap = $('galleryStacksList');
+  wrap.innerHTML = '';
+  STAGES.forEach(st => {
+    const n = st.n;
+    const live = isLive(n);
+    const done = (SAMPLE_DONE[n] || []).map(id => PAGES.find(p => p.id === id)).filter(Boolean);
+    const btn = document.createElement('button');
+    btn.className = 'stack' + (live ? '' : ' locked');
+    btn.setAttribute('aria-label', 'Stage ' + n + ' paintings, ' + st.name + (live ? ', ' + done.length + ' paintings' : ', locked'));
+    let faces;
+    if (!live && LOCKED_FACE[n]) faces = [ { img: LOCKED_FACE[n], name: LOCKED_FACE_NAME[n] }, null, null ];
+    else if (!live) faces = [ null, null, null ];
+    else if (done.length >= 3) faces = done.slice(0, 3).map(p => ({ img: p.guide, name: p.name }));
+    else if (done.length === 2) faces = [ { img: done[0].guide, name: done[0].name }, { img: done[1].guide, name: done[1].name }, null ];
+    else if (done.length === 1) faces = [ { img: done[0].guide, name: done[0].name }, null, null ];
+    else faces = [ null, null, null ];
+    const prog = live ? (done.length ? done.length + (done.length === 1 ? ' painting' : ' paintings') : 'No paintings yet')
+      : (n === 6 ? 'Finish Stage 5 to unwrap' : 'Coming soon');
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2') +
+        polaroidHTML(faces[1], 'back1') +
+        polaroidHTML(faces[0], 'front') +
+        (live ? '' : '<span class="stack-lock">' + LOCK_SVG + ' Locked</span>') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">STAGE ' + n + '</span>' +
+        '<span class="stage-pill ' + st.tool + '">' + st.name + '</span>' +
+        '<span class="stack-progress">' + prog + '</span>' +
+      '</span>';
+    btn.addEventListener('click', () => {
+      if (live) openGalleryStage(n);
+      else toast(lockText(n));
+    });
+    wrap.appendChild(btn);
+  });
+}
+function openGalleryStage(n){
+  const st = STAGE_BY_N[n];
+  $('galleryDetailTitle').textContent = 'Stage ' + n + ' · ' + st.name;
+  const grid = $('galleryDetailGrid');
+  grid.innerHTML = '';
+  const done = (SAMPLE_DONE[n] || []).map(id => PAGES.find(p => p.id === id)).filter(Boolean);
+  done.forEach(p => {
+    const card = document.createElement('button');
+    card.className = 'gcard';
+    card.innerHTML = '<img src="' + p.guide + '" alt="Your finished ' + p.name.toLowerCase() + ' painting"><div class="name">' + p.name + '</div>';
+    card.addEventListener('click', () => toast('Sample painting — your real paintings live in the app\u2019s Gallery.'));
+    grid.appendChild(card);
+  });
+  $('galleryDetailEmpty').classList.toggle('hidden', done.length > 0);
+  showView('galleryDetailView');
+}
+
+/* ================= wiring ================= */
+$('galleryBtn').addEventListener('click', () => { buildGalleryStacks(); showView('galleryStacksView'); });
+$('detailBackBtn').addEventListener('click', () => showView('stacksView'));
+$('galleryStacksBackBtn').addEventListener('click', () => showView('stacksView'));
+$('galleryDetailBackBtn').addEventListener('click', () => showView('galleryStacksView'));
+document.querySelectorAll('.logo-hanger.small').forEach(el => {
+  el.addEventListener('click', () => showView('stacksView'));
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') showView('stacksView'); });
+});
+buildStacks();
+showView('stacksView');
+</script>
+</body>
+</html>
