@@ -1158,14 +1158,14 @@ function firstRequiredPage(n){
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
    per the report's §8.5 lion precedent (palette IS the guide's medians).
    40 pages: stages 1–4 are 10 per stage (6 required + 4 bonus). Stage 5
-   (Pastels) lands 2026-11-21 with 7 pages (3 required + 4 bonus — the
-   cheeky-monkey page is blocked, see its ART-REPORT). A page is required unless
+   (Pastels) is 10 pages (6 required + 4 bonus). A page is required unless
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
    from the line art's natural size, never stretched.
    Stage 3 (Markers) landed 2026-11-21: 30 pages total. Stage 4 (Watercolors)
-   landed 2026-11-21: 40 pages total. Stage 5 (Pastels) lands 2026-11-21:
-   47 pages total. White is never a
+   landed 2026-11-21: 40 pages total. Stage 5 (Pastels) landed 2026-11-21:
+   50 pages total. Stage 6 (Stickers) lands 2026-11-22: 60 pages total.
+   White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
 const PAGES = [
@@ -1413,7 +1413,58 @@ const PAGES = [
     line:'assets/cupcake-stand-line-2x.jpg', guide:'assets/cupcake-stand-guide.jpg',
     palette:[['Light Pink','#FBC9D8'],['Pale Yellow','#FEF0A1'],['Sky Blue','#BAE0EE'],
              ['Mint Green','#D0F2E5'],['Deep Pink','#F7A4BB'],['Gold','#E7C360'],
-             ['Cherry Red','#F13E4B'],['Medium Blue','#82BDDE'],['Leaf Green','#8BCEAA']] }
+             ['Cherry Red','#F13E4B'],['Medium Blue','#82BDDE'],['Leaf Green','#8BCEAA']] },
+  /* Stage 6 (Stickers) lands 2026-11-22: 60 pages total. Zebra is the
+     substitute animal for the dropped cheeky-monkey (Stage 6 first page).
+     All 10 pages are fresh AI art with a glossy die-cut sticker look
+     (white die-cut band, thick outer outline). Hedgehog's guide is a
+     flat-fill with a builder-assigned palette (no AI guide exists — see
+     its ART-REPORT); the other 9 guides are the AI guides shipped as-is. */
+  { id:'zebra', name:'Zebra', title:'Color the Zebra!', stage:6, tool:'sticker',
+    line:'assets/zebra-line-2x.jpg', guide:'assets/zebra-guide.jpg',
+    palette:[['Cloud Blue','#D5E8F2'],['Sun Yellow','#FED65D'],['Flower Pink','#FAB1BC'],
+             ['Leaf Green','#7DBD6E']] },
+  { id:'clever-fox', name:'Clever Fox', title:'Color the Clever Fox!', stage:6, tool:'sticker',
+    line:'assets/clever-fox-line-2x.jpg', guide:'assets/clever-fox-guide.jpg',
+    palette:[['Fox Orange','#F99646'],['Hill Green','#7BC13D'],['Cream','#F9E6C6'],
+             ['Pink','#FA9F9F'],['Mushroom Red','#ED3C37']] },
+  { id:'brave-knight', name:'Brave Knight', title:'Color the Brave Knight!', stage:6, tool:'sticker',
+    line:'assets/brave-knight-line-2x.jpg', guide:'assets/brave-knight-guide.jpg',
+    palette:[['Mound Green','#64B846'],['Skin','#F4D0B6'],['Tower Grey','#969FA1'],
+             ['Armor Grey','#B2B5BB'],['Door Dark','#5D6569'],['Shield Blue','#3992CE'],
+             ['Gold','#FCCE4D'],['Plume Red','#DA3C3A'],['Hair Brown','#A55F2C']] },
+  { id:'octopus', name:'Octopus', title:'Color the Octopus!', stage:6, tool:'sticker',
+    line:'assets/octopus-line-2x.jpg', guide:'assets/octopus-guide.jpg',
+    palette:[['Octopus Purple','#A271C0'],['Sand','#EDD19B'],['Starfish Orange','#FD9C4A'],
+             ['Coral Pink','#F398AE'],['Shell Yellow','#FBD855'],['Bubble Blue','#C7E3EF']] },
+  { id:'castle', name:'Castle', title:'Color the Castle!', stage:6, tool:'sticker',
+    line:'assets/castle-line-2x.jpg', guide:'assets/castle-guide.jpg',
+    palette:[['Cloud Blue','#D1E9F5'],['Hill Green','#5BB251'],['Stone Grey','#B1B1B1'],
+             ['Sun Yellow','#FDD945'],['Roof Red','#E43B36'],['Door Brown','#905B33'],
+             ['Window Grey','#7B7B7B'],['Flower Pink','#F69CAC']] },
+  { id:'kite', name:'Kite', title:'Color the Kite!', stage:6, tool:'sticker',
+    line:'assets/kite-line-2x.jpg', guide:'assets/kite-guide.jpg',
+    palette:[['Cloud Blue','#D6E9F7'],['Kite Red','#EA473E'],['Kite Yellow','#FEDF3B'],
+             ['Kite Blue','#47A6DB'],['Hill Green','#84BD57'],['Bow Pink','#EE87A7']] },
+  { id:'camping-stars', name:'Camping Stars', title:'Color the Camping Stars!', stage:6, tool:'sticker', required:false,
+    line:'assets/camping-stars-line-2x.jpg', guide:'assets/camping-stars-guide.jpg',
+    palette:[['Tree Green','#3DBA32'],['Tent Red','#EF3B37'],['Moon Yellow','#FDDC51'],
+             ['Log Brown','#AA673B']] },
+  { id:'hedgehog', name:'Hedgehog', title:'Color the Hedgehog!', stage:6, tool:'sticker', required:false,
+    line:'assets/hedgehog-line-2x.jpg', guide:'assets/hedgehog-guide.jpg',
+    palette:[['Hedgehog Brown','#8A5A3B'],['Cream','#F6E5C8'],['Red','#E23B3B'],
+             ['Leaf Green','#7CC54F'],['Flower Pink','#F7A8C0'],['Flower Yellow','#FDD067'],
+             ['Dark Brown','#5D4037']] },
+  { id:'farm-barn', name:'Farm Barn', title:'Color the Farm Barn!', stage:6, tool:'sticker', required:false,
+    line:'assets/farm-barn-line-2x.jpg', guide:'assets/farm-barn-guide.jpg',
+    palette:[['Barn Red','#E6433C'],['Ground Green','#66B449'],['Cloud Blue','#D5E7F2'],
+             ['Sun Yellow','#FCD450'],['Door Brown','#8C4E32'],['Roof Grey','#AAB7BF'],
+             ['Cow Black','#212121'],['Window Slate','#576570']] },
+  { id:'party-balloons', name:'Party Balloons', title:'Color the Party Balloons!', stage:6, tool:'sticker', required:false,
+    line:'assets/party-balloons-line-2x.jpg', guide:'assets/party-balloons-guide.jpg',
+    palette:[['Cloud Blue','#C7E2F3'],['Balloon Red','#ED3636'],['Balloon Blue','#308DD2'],
+             ['Balloon Green','#64C057'],['Balloon Purple','#9A6FB7'],['Balloon Pink','#EF81B3'],
+             ['Sun Yellow','#FDE163']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1535,7 +1586,17 @@ const PAGE_FACTS = {
   'peacock': { fact: 'A peacock\'s big fancy tail is called a train, and it can grow almost 5 feet long — nearly as long as a grown-up is tall! He fans it out to show off his shiny eye-spots.', prompt: 'Can you count all 13 eye-spots on the peacock\'s tail? Can you find the peacock\'s crest — the 3 little stalks with dots on top of his head? And can you find the little mushroom hiding in the garden?' },
   'rainbow': { fact: 'A rainbow appears when sunlight shines through rain — the sunshine bends and splits into all the colours! You can only see a rainbow when the sun is behind you and the rain is in front of you.', prompt: 'Can you count all 10 little birds flying in the sky? How many stripes does the rainbow have? (There are 6 — red, orange, yellow, green, blue and purple!)' },
   'whale': { fact: 'A whale breathes through a blowhole on the top of its head — when it comes up for air, it blows out a tall fountain of water, just like in this picture!', prompt: 'How many little fish are swimming with the whale? (There are 4!) Can you find the 1 smiling starfish?' },
-  'cupcake-stand': { fact: 'Cupcakes got their name because the very first ones were baked in small cups, more than 200 years ago!', prompt: 'How many cupcakes are on the stand? (There are 11!) And how many balloons can you find? (There are 6!)' }
+  'cupcake-stand': { fact: 'Cupcakes got their name because the very first ones were baked in small cups, more than 200 years ago!', prompt: 'How many cupcakes are on the stand? (There are 11!) And how many balloons can you find? (There are 6!)' },
+  'zebra': { fact: 'A zebra\'s stripes are like a fingerprint — no two zebras have the same pattern!', prompt: 'How many flowers are at the bottom? (There are 3!) Can you find the smiling sun?' },
+  'clever-fox': { fact: 'A fox\'s big ears help it hear tiny sounds underground!', prompt: 'How many petals does each flower have? (Each flower has 5!) Can you find the butterfly?' },
+  'brave-knight': { fact: 'A knight\'s shield kept them safe, and each knight had their own picture on it!', prompt: 'How many towers does the castle have? (There is 1!) Can you find the gold star?' },
+  'octopus': { fact: 'An octopus has three hearts and eight arms!', prompt: 'How many bubbles are floating up? (There are 3!) Can you find the seashell?' },
+  'castle': { fact: 'Castles were built long ago to keep kings and queens safe!', prompt: 'How many towers does the castle have? (There are 3!) Can you find the flag?' },
+  'kite': { fact: 'Kites were first flown in China more than 2,000 years ago!', prompt: 'How many bows are on the kite\'s tail? (There are 3!) Can you find the little blue bird?' },
+  'camping-stars': { fact: 'The moon is not a light — it shines by bouncing sunlight back to us!', prompt: 'How many stars are in the sky? (There are 5!) Can you find the campfire?' },
+  'hedgehog': { fact: 'A hedgehog\'s spikes are called quills, and it has about 5,000 of them!', prompt: 'How many flowers are beside the hedgehog? (There are 2!) Can you find the red apple?' },
+  'farm-barn': { fact: 'A cow says moo, and a chicken says cluck — and a rooster crows at sunrise!', prompt: 'How many clouds are in the sky? (There are 2!) Can you find the hay bale?' },
+  'party-balloons': { fact: 'The first balloons were made long ago — today they are rubber!', prompt: 'How many balloons are in the bunch? (There are 6!) Can you find the gift box?' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -2179,9 +2240,9 @@ function pencilSVG(hex){
     '<rect x="2" y="5" width="4" height="14" rx="2" fill="rgba(0,0,0,0.12)"/>' +
     '</svg>';
 }
-/* Tool icons: one SVG per tool kind. New tools (marker, watercolor,
-   pastel, gel, glitter, sticker, stamp, master) get their own icons in
-   the tools step — until then they fall back to the crayon icon. */
+/* Tool icons: one SVG per tool kind. New tools (stamp, master) get their
+   own icons in the tools step — until then they fall back to the crayon
+   icon. Stickers got theirs with Stage 6. */
 function toolSVG(tool, hex){
   if (tool === 'pencil') return pencilSVG(hex);
   if (tool === 'marker') return markerSVG(hex);
@@ -2189,7 +2250,17 @@ function toolSVG(tool, hex){
   if (tool === 'pastel') return pastelSVG(hex);
   if (tool === 'gel') return gelSVG(hex);
   if (tool === 'glitter') return glitterSVG(hex);
+  if (tool === 'sticker') return stickerSVG(hex);
   return crayonSVG(hex);
+}
+/* Sticker: a glossy die-cut star — the tray color with a white die-cut
+   border and a bright top-left gloss, like the real sticker sheets. */
+function stickerSVG(hex){
+  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+    '<path d="M24 1.5l3.4 6.9 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6-5.5-5.4 7.6-1.1z" fill="' + hex + '" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M24 1.5l3.4 6.9 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6-5.5-5.4 7.6-1.1z" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="0.7" stroke-linejoin="round"/>' +
+    '<circle cx="20.5" cy="7" r="2" fill="rgba(255,255,255,0.75)"/>' +
+    '</svg>';
 }
 /* Chunky marker: wide body, chisel tip, glossy top. */
 function markerSVG(hex){
@@ -2243,7 +2314,9 @@ function selectTool(btn, kind, idx, magic){
     c.classList.remove('sel'); c.setAttribute('aria-checked', 'false');
   });
   btn.classList.add('sel'); btn.setAttribute('aria-checked', 'true');
-  const toolWord = currentPage.tool === 'pencil' ? 'pencil' : 'crayon';
+  const TOOL_WORDS = { pencil:'pencil', marker:'marker', watercolor:'watercolor brush',
+    pastel:'pastel', gel:'gel pen', glitter:'glitter pen', sticker:'sticker', stamp:'stamp', master:'master tool' };
+  const toolWord = TOOL_WORDS[currentPage.tool] || 'crayon';
   let label = '';
   if (kind === 'eraser') label = 'Eraser';
   else if (kind === 'magic') label = (MAGIC_FILLS.find(m => m.id === magic) || {}).name + ' magic';
@@ -2688,7 +2761,15 @@ function applyFill(res){
       } else {
         let r = gr, g = gg, b = gb;
         const tool = currentPage.tool;
-        if (tool === 'marker' || tool === 'gel'){
+        if (tool === 'sticker'){
+          /* A wide, bright diagonal sheen — stickers are the glossiest
+             tool in the box, shinier than gel pens. */
+          const t = (x - box.x0) / Math.max(1, w) + (y - box.y0) / Math.max(1, h);
+          const sheen = 0.30 * Math.max(0, 1 - Math.abs(t - 0.5) * 2);
+          r = Math.round(r + (255 - r) * sheen);
+          g = Math.round(g + (255 - g) * sheen);
+          b = Math.round(b + (255 - b) * sheen);
+        } else if (tool === 'marker' || tool === 'gel'){
           /* A soft diagonal sheen, like light on a glossy pen stroke.
              Gel pens get a narrower, brighter shine. */
           const t = (x - box.x0) / Math.max(1, w) + (y - box.y0) / Math.max(1, h);
@@ -2794,7 +2875,7 @@ function textureInto(bc, fc, mk, w0, h0, box, tool){
         /* Chunky matte grain (±10%), sampled coarse so it feels chalky. */
         const n = noiseTile[(((y >> 2) & 255) << 8) | ((x >> 1) & 255)];
         f = 1 + 0.10 * n;
-      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter'){
+      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter' || tool === 'sticker'){
         /* Smooth ink: almost no grain (±2%), the gloss comes from the fill. */
         const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
         f = 1 + 0.02 * n;
