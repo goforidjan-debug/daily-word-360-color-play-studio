@@ -92,7 +92,13 @@
     max-width:720px; margin:0 auto; width:100%;}
   .back-row{width:100%; display:flex; justify-content:flex-start; padding-bottom:2px;}
   .back-btn{display:inline-flex; align-items:center; gap:4px; color:#fff; font-size:13px; font-weight:800;
-    text-shadow:0 1px 4px rgba(60,30,5,.6); padding:4px 8px 4px 2px; border-radius:10px;}
+    text-shadow:0 1px 4px rgba(60,30,5,.6); padding:4px 10px 4px 6px; border-radius:999px;
+    background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.16));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 -2px 0 rgba(0,0,0,.12),
+      0 2px 6px rgba(0,0,0,.2);}
+  .back-btn:active{transform:translateY(1px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(0,0,0,.12),
+      0 1px 3px rgba(0,0,0,.2);}
   .back-btn svg{width:16px; height:16px;}
   .topbar{width:100%; display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
     padding:2px 2px 0;}
@@ -126,8 +132,13 @@
     transform-origin:0 0; will-change:transform;}
   .zoom-bar{display:flex; align-items:center; justify-content:center; gap:10px; padding-top:8px;}
   .zoom-btn{min-width:52px; min-height:44px; padding:0 14px; border-radius:12px;
-    background:#FFF7E8; color:#5C4632; font-size:24px; font-weight:800; line-height:1;
-    box-shadow:0 3px 8px rgba(50,25,0,.18); display:flex; align-items:center; justify-content:center;}
+    background:linear-gradient(180deg,#FFFDF6 0%,#FFF7E8 55%,#F2E3C2 100%); color:#5C4632;
+    font-size:24px; font-weight:800; line-height:1;
+    box-shadow:0 3px 8px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -3px 0 rgba(0,0,0,.08); display:flex; align-items:center; justify-content:center;}
+  .zoom-btn:not(:disabled):active{transform:translateY(2px);
+    box-shadow:0 1px 4px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -2px 0 rgba(0,0,0,.08);}
   .zoom-btn.reset{font-size:14px; letter-spacing:.02em;}
   .zoom-btn:disabled{opacity:.4;}
   .zoom-label{min-width:52px; text-align:center; font-size:14px; font-weight:800; color:#8A6D3B;}
@@ -139,29 +150,43 @@
   .hint b{color:#FFE45C;}
 
   .controls{width:100%; max-width:640px; display:flex; gap:12px; margin-top:14px; align-items:stretch;}
-  .undo-btn{flex:0 0 60px; min-height:60px; border-radius:16px; background:rgba(255,255,255,.94);
+  .undo-btn{flex:0 0 60px; min-height:60px; border-radius:16px;
+    background:linear-gradient(180deg,#FFFFFF 0%,#FBF6EC 55%,#EFE4CE 100%);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
-    box-shadow:0 6px 16px rgba(50,25,0,.35); font-size:11px; font-weight:800; color:#5C4632;}
+    box-shadow:0 6px 16px rgba(50,25,0,.35), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -3px 0 rgba(0,0,0,.1); font-size:11px; font-weight:800; color:#5C4632;}
   .undo-btn:disabled{opacity:.45;}
-  .done-btn{flex:1; min-height:60px; border-radius:16px; background:#FF6B4A; color:#fff;
+  .undo-btn:not(:disabled):active{transform:translateY(2px);
+    box-shadow:0 2px 6px rgba(50,25,0,.35), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -2px 0 rgba(0,0,0,.1);}
+  .done-btn{flex:1; min-height:60px; border-radius:16px;
+    background:linear-gradient(180deg,#FF8A6E 0%,#FF6B4A 45%,#E8552F 100%); color:#fff;
     font-size:22px; font-weight:800; letter-spacing:.02em;
-    box-shadow:0 8px 20px rgba(255,107,74,.5), inset 0 -3px 0 rgba(0,0,0,.12);
+    box-shadow:0 8px 20px rgba(255,107,74,.5), inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 -3px 0 rgba(0,0,0,.15);
     display:flex; align-items:center; justify-content:center; gap:10px;}
-  .done-btn:hover{background:#FF7A5C;}
+  .done-btn:hover{filter:brightness(1.07);}
+  .done-btn:active{transform:translateY(2px);
+    box-shadow:0 3px 10px rgba(255,107,74,.5), inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 -2px 0 rgba(0,0,0,.15);}
 
-  /* ---------- tool tray (wraps to a second row when > 8 tools) ---------- */
+  /* ---------- tool tray (wraps to a second row when > 6 tools) ----------
+     Big chunky upright tools, 6 per row, like the reference trays: the
+     selected tool lifts AND gets a thick dark ring with a gold inner edge
+     (the reference paint blob's black ring). */
   .tray{width:100%; max-width:640px; margin-top:12px; background:rgba(255,251,242,.96);
     border-radius:18px; padding:10px 8px 8px; box-shadow:0 10px 26px rgba(50,25,0,.38);}
   .tray-label{text-align:center; font-size:11px; font-weight:800; letter-spacing:.16em;
     text-transform:uppercase; color:#8A6D3B; margin-bottom:6px;}
   .tools{display:flex; flex-wrap:wrap; gap:2px;}
-  .tool{flex:0 0 calc(12.5% - 2px); min-width:0; min-height:60px; border-radius:12px;
+  .tool{flex:0 0 calc(16.666% - 2px); min-width:0; min-height:108px; border-radius:12px;
     display:flex; align-items:center; justify-content:center; position:relative;
-    transition:transform .16s ease;}
-  .tool svg{width:100%; max-width:52px; height:auto; display:block;
+    transition:transform .16s ease, box-shadow .16s ease;}
+  .tool svg{width:100%; max-width:56px; height:auto; display:block;
     filter:drop-shadow(0 3px 3px rgba(50,25,0,.28)); transition:transform .16s ease;}
-  .tool.sel{transform:translateY(-8px);}
-  .tool.sel svg{transform:scale(1.16) rotate(-4deg);
+  .tool.sel{transform:translateY(-8px);
+    box-shadow:0 0 0 3px #FFD60A, 0 0 0 6px #2B2118, 0 10px 18px rgba(50,25,0,.35);}
+  .tool.sel svg{transform:scale(1.12) rotate(-4deg);
     filter:drop-shadow(0 8px 8px rgba(50,25,0,.4));}
   .tool.sel::after{content:""; position:absolute; left:50%; bottom:-2px; transform:translateX(-50%);
     width:26px; height:6px; border-radius:999px; background:#FFD60A;
@@ -175,9 +200,14 @@
   .overlay .cap{color:#fff; font-size:16px; font-weight:700; margin:14px 0 0; text-align:center;
     text-shadow:0 1px 4px rgba(0,0,0,.6);}
   .close-btn{position:absolute; top:calc(12px + env(safe-area-inset-top)); right:14px;
-    width:56px; height:56px; border-radius:50%; background:#fff; color:#2B2118;
+    width:56px; height:56px; border-radius:50%;
+    background:linear-gradient(180deg,#FFFFFF 0%,#F4EDDD 100%); color:#2B2118;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.4);}
+    box-shadow:0 6px 18px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.1);}
+  .close-btn:active{transform:translateY(2px);
+    box-shadow:0 2px 8px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -2px 0 rgba(0,0,0,.1);}
 
   .stars-box{text-align:center; padding:0 20px;}
   .stars{display:flex; gap:10px; justify-content:center; align-items:flex-end;}
@@ -188,8 +218,15 @@
   @keyframes pop{from{transform:scale(0) rotate(-30deg); opacity:0;} to{transform:scale(1) rotate(0deg); opacity:1;}}
   .stars-box h2{color:#fff; font-size:32px; margin:18px 0 4px; text-shadow:0 2px 10px rgba(0,0,0,.5);}
   .stars-box p{color:#FFE9B8; font-size:17px; font-weight:700; margin:0 0 22px;}
-  .big-btn{min-height:60px; min-width:230px; padding:0 28px; border-radius:999px; background:#FFD60A;
-    color:#4A2E00; font-size:19px; font-weight:800; box-shadow:0 8px 22px rgba(0,0,0,.4);}
+  .big-btn{min-height:60px; min-width:230px; padding:0 28px; border-radius:999px;
+    background:linear-gradient(180deg,#FFE45C 0%,#FFD60A 45%,#F5B800 100%);
+    color:#4A2E00; font-size:19px; font-weight:800;
+    box-shadow:0 8px 22px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.6),
+      inset 0 -3px 0 rgba(0,0,0,.15);}
+  .big-btn:hover{filter:brightness(1.05);}
+  .big-btn:active{transform:translateY(2px);
+    box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.6),
+      inset 0 -2px 0 rgba(0,0,0,.15);}
   .ghost-btn{display:block; margin:16px auto 0; color:#FFE9B8; font-size:15px; font-weight:800;
     text-decoration:underline; text-underline-offset:3px;}
 
@@ -216,9 +253,15 @@
   .frame img{width:100%; height:auto; display:block; border-radius:10px;}
   .gallery-btns{display:flex; gap:12px; margin-top:18px; width:100%; max-width:640px;}
   .gallery-btns .done-btn{font-size:18px;}
-  .save-btn{flex:1; min-height:60px; border-radius:16px; background:#fff; color:#5C4632;
-    font-size:18px; font-weight:800; box-shadow:0 8px 20px rgba(50,25,0,.35);
+  .save-btn{flex:1; min-height:60px; border-radius:16px;
+    background:linear-gradient(180deg,#FFFFFF 0%,#FBF6EC 55%,#EFE4CE 100%); color:#5C4632;
+    font-size:18px; font-weight:800;
+    box-shadow:0 8px 20px rgba(50,25,0,.35), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -3px 0 rgba(0,0,0,.1);
     display:flex; align-items:center; justify-content:center; gap:8px;}
+  .save-btn:active{transform:translateY(2px);
+    box-shadow:0 3px 10px rgba(50,25,0,.35), inset 0 2px 0 rgba(255,255,255,.9),
+      inset 0 -2px 0 rgba(0,0,0,.1);}
 
   /* ---------- parent area ---------- */
   .parent-card{width:100%; max-width:640px; background:rgba(255,251,242,.97); border-radius:18px;
@@ -270,8 +313,13 @@
     opacity:0; transition:opacity .6s ease;}
   .showcase-img img.show-active{opacity:1;}
   .show-arrow{position:absolute; top:36%; width:44px; height:44px; border-radius:50%;
-    background:rgba(255,255,255,.95); color:#5C4632; box-shadow:0 4px 12px rgba(0,0,0,.3);
+    background:linear-gradient(180deg,#FFFFFF 0%,#F4EDDD 100%); color:#5C4632;
+    box-shadow:0 4px 12px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.1);
     display:flex; align-items:center; justify-content:center; z-index:3;}
+  .show-arrow:active{transform:translateY(2px);
+    box-shadow:0 1px 5px rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -2px 0 rgba(0,0,0,.1);}
   .show-arrow.left{left:8px;}
   .show-arrow.right{right:8px;}
   .show-caption{display:flex; align-items:center; justify-content:center; gap:8px; padding-top:8px;
@@ -286,10 +334,15 @@
     box-shadow:0 1px 3px rgba(0,0,0,.3); padding:0;}
   .show-dots .dot.on{background:#FFD60A; transform:scale(1.25);}
   .start-btn{min-height:68px; min-width:250px; padding:0 30px; border-radius:999px;
-    background:#FF6B4A; color:#fff; font-size:21px; font-weight:800;
-    box-shadow:0 8px 22px rgba(255,107,74,.5), inset 0 -3px 0 rgba(0,0,0,.12);
+    background:linear-gradient(180deg,#FF8A6E 0%,#FF6B4A 45%,#E8552F 100%); color:#fff;
+    font-size:21px; font-weight:800;
+    box-shadow:0 8px 22px rgba(255,107,74,.5), inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 -3px 0 rgba(0,0,0,.15);
     display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px;}
-  .start-btn:hover{background:#FF7A5C;}
+  .start-btn:hover{filter:brightness(1.07);}
+  .start-btn:active{transform:translateY(2px);
+    box-shadow:0 3px 10px rgba(255,107,74,.5), inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 -2px 0 rgba(0,0,0,.15);}
   .welcome-hint{color:#FFE9B8; font-size:14px; font-weight:700; margin:12px 0 0;
     text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65);}
 
@@ -333,10 +386,15 @@
   .confetti-piece{position:absolute; top:-16px; width:10px; height:14px; border-radius:2px;
     animation:confetti-fall 2.4s ease-in forwards;}
   @keyframes confetti-fall{to{transform:translateY(105vh) rotate(720deg); opacity:.85;}}
-  .tool{flex-direction:column; min-height:66px; padding-top:4px;}
-  .tool-name{display:block; font-size:9.5px; font-weight:800; color:#8A6D3B; text-align:center;
+  .tool{flex-direction:column; min-height:108px; padding-top:4px;}
+  .tool-name{display:block; font-size:10.5px; font-weight:800; color:#8A6D3B; text-align:center;
     margin-top:2px; line-height:1.15; max-width:100%; overflow-wrap:break-word;}
   .magic-row{margin-top:10px; border-top:1px solid #EADFC8; padding-top:8px;}
+  /* Magic-fill buttons: a soft glossy disc behind the icon, like the
+     round blue tool buttons in the references. */
+  .magic-row .tool{background:linear-gradient(180deg,#FFFFFF,#F3EAD6);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 0 rgba(0,0,0,.08),
+      0 3px 8px rgba(50,25,0,.18);}
   .fact-line{margin:12px 4px 0; text-align:center; font-size:14px; font-weight:700; color:#FFE9B8;
     text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65); line-height:1.45;}
   .fact-line b{color:#FFE45C;}
@@ -424,9 +482,23 @@
   .sign-row{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; justify-content:center;}
   .sign-input{flex:1 1 200px; min-height:52px; border-radius:12px; border:2px solid #E8DCC8;
     padding:0 14px; font-size:17px; font-family:inherit; color:#2B2118; background:#fff;}
-  .sign-mini{min-height:52px; padding:0 18px; border-radius:12px; background:rgba(255,255,255,.22);
-    color:#fff; font-size:15px; font-weight:800; box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);}
+  .sign-mini{min-height:52px; padding:0 18px; border-radius:12px;
+    background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.16));
+    color:#fff; font-size:15px; font-weight:800;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.55), inset 0 2px 0 rgba(255,255,255,.35),
+      inset 0 -3px 0 rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.25);}
+  .sign-mini:active{transform:translateY(2px);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.55), inset 0 2px 0 rgba(255,255,255,.35),
+      inset 0 -2px 0 rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.25);}
   .sign-done{margin-top:16px;}
+  /* ---------- Round 14: signature size adjuster ---------- */
+  .sign-size{margin-top:16px; text-align:left;}
+  .sign-size-top{display:flex; justify-content:space-between; align-items:baseline;
+    color:#FFE9B8; font-size:15px; font-weight:800;}
+  #signSizeName{color:#fff;}
+  .sign-size input[type=range]{width:100%; accent-color:#FFD60A; margin:8px 0 2px; height:32px;}
+  .sign-size-marks{display:flex; justify-content:space-between;
+    color:#FFE9B8; font-size:12.5px; font-weight:700; opacity:.85;}
   /* ---------- Round 13: welcome-back gift + rest screen ---------- */
   .gift-box{text-align:center; padding:0 20px;}
   .gift-box h2{color:#fff; font-size:30px; margin:16px 0 4px; text-shadow:0 2px 10px rgba(0,0,0,.5);}
@@ -988,6 +1060,11 @@
       <button class="sign-mini" id="signTypeBtn">Write it</button>
       <button class="sign-mini" id="signUndoBtn">Undo</button>
       <button class="sign-mini" id="signClearBtn">Clear</button>
+    </div>
+    <div class="sign-size">
+      <div class="sign-size-top"><label for="signSizeRange">Signature size</label><span id="signSizeName">Small</span></div>
+      <input type="range" id="signSizeRange" min="0" max="2" step="1" value="0" aria-label="Signature size">
+      <div class="sign-size-marks"><span>Small</span><span>Medium</span><span>Large</span></div>
     </div>
     <button class="big-btn sign-done" id="signDoneBtn">Stamp it on my picture</button>
     <button class="ghost-btn" id="signCancelBtn">Not now</button>
@@ -2258,17 +2335,64 @@ function magicColorAt(kind, x, y, box){
     default: return [255, 214, 10];
   }
 }
+/* Tool icons: BIG tall upright SVGs (viewBox 48x72), standing like the
+   reference trays — chunky crayons, brushes and markers, glossy with
+   gradients. The hex is the guide-exact tray color by construction.
+   Gradient ids get a per-call suffix (__svgUid) so two tools of different
+   colors never share a def. NO numbers anywhere on the tools. */
+let __svgUid = 0;
 function magicSVG(kind){
-  if (kind === 'rainbow') return '<svg viewBox="0 0 48 24" aria-hidden="true"><path d="M6 20 A18 18 0 0 1 42 20" fill="none" stroke="#FF5C5C" stroke-width="4"/><path d="M11 20 A13 13 0 0 1 37 20" fill="none" stroke="#FED820" stroke-width="4"/><path d="M16 20 A8 8 0 0 1 32 20" fill="none" stroke="#5EC338" stroke-width="4"/></svg>';
-  if (kind === 'glitter') return '<svg viewBox="0 0 48 24" aria-hidden="true"><path d="M14 2l2.4 7.6L24 12l-7.6 2.4L14 22l-2.4-7.6L4 12l7.6-2.4z" fill="#FFD60A"/><path d="M34 4l1.6 5.4L41 11l-5.4 1.6L34 18l-1.6-5.4L27 11l5.4-1.6z" fill="#fff"/><circle cx="42" cy="19" r="2" fill="#FFD60A"/></svg>';
-  if (kind === 'stars') return '<svg viewBox="0 0 48 24" aria-hidden="true"><path d="M12 2l2.2 5.4L20 8.5l-4.2 4 1 6-4.8-3-4.8 3 1-6-4.2-4 5.8-1.1z" fill="#FFD60A"/><path d="M34 6l1.6 4 4.4.7-3.2 3 .8 4.4-4-2.2-3.9 2.2.8-4.4-3.2-3 4.4-.7z" fill="#7ED6FF"/></svg>';
-  if (kind === 'stripes') return '<svg viewBox="0 0 48 24" aria-hidden="true"><rect x="2" y="3" width="44" height="18" rx="4" fill="#FFD60A"/><path d="M8 21 L20 3 M18 21 L30 3 M28 21 L40 3" stroke="#FF6B4A" stroke-width="5"/></svg>';
-  if (kind === 'dots') return '<svg viewBox="0 0 48 24" aria-hidden="true"><rect x="2" y="3" width="44" height="18" rx="4" fill="#B982D2"/><circle cx="12" cy="9" r="3" fill="#FFD60A"/><circle cx="24" cy="15" r="3" fill="#FFD60A"/><circle cx="36" cy="9" r="3" fill="#FFD60A"/></svg>';
-  if (kind === 'foil') return '<svg viewBox="0 0 48 24" aria-hidden="true"><defs><linearGradient id="foilG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8E8E8"/><stop offset=".5" stop-color="#FFD60A"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><rect x="2" y="3" width="44" height="18" rx="4" fill="url(#foilG)"/></svg>';
-  return '<svg viewBox="0 0 48 24" aria-hidden="true"><circle cx="24" cy="12" r="8" fill="#00E5FF"/><circle cx="24" cy="12" r="4" fill="#fff" opacity=".85"/><circle cx="10" cy="7" r="2" fill="#00E5FF"/><circle cx="38" cy="17" r="2" fill="#00E5FF"/></svg>';
+  const u = 'm' + (++__svgUid);
+  const open = '<svg viewBox="0 0 48 72" aria-hidden="true">';
+  if (kind === 'rainbow') return open +
+    '<path d="M6 54 A18 18 0 0 1 42 54" fill="none" stroke="#FF5C5C" stroke-width="6"/>' +
+    '<path d="M12 54 A12 12 0 0 1 36 54" fill="none" stroke="#FED820" stroke-width="6"/>' +
+    '<path d="M18 54 A6 6 0 0 1 30 54" fill="none" stroke="#5EC338" stroke-width="6"/>' +
+    '<circle cx="24" cy="18" r="7" fill="#FFD60A"/>' +
+    '<circle cx="24" cy="18" r="3.5" fill="#fff" opacity=".7"/></svg>';
+  if (kind === 'glitter') return open +
+    '<path d="M24 8l3.2 10.8L38 22l-10.8 3.2L24 36l-3.2-10.8L10 22l10.8-3.2z" fill="#FFD60A"/>' +
+    '<path d="M36 40l1.6 5.4L43 47l-5.4 1.6L36 54l-1.6-5.4L29 47l5.4-1.6z" fill="#fff"/>' +
+    '<circle cx="12" cy="48" r="2.5" fill="#FFD60A"/></svg>';
+  if (kind === 'stars') return open +
+    '<path d="M22 10l2.6 6.4L31 17.5l-5.4 4.8 1.4 6.8-5-3.4-5 3.4 1.4-6.8L13 17.5l6.4-1.1z" fill="#FFD60A"/>' +
+    '<path d="M34 38l1.8 4.4 4.8.8-3.5 3.3 1 4.7-4.1-2.3-4.1 2.3 1-4.7-3.5-3.3 4.8-.8z" fill="#7ED6FF"/></svg>';
+  if (kind === 'stripes') return open +
+    '<defs><clipPath id="' + u + 'c"><rect x="10" y="8" width="28" height="56" rx="7"/></clipPath></defs>' +
+    '<rect x="10" y="8" width="28" height="56" rx="7" fill="#FFD60A"/>' +
+    '<g clip-path="url(#' + u + 'c)" stroke="#FF6B4A" stroke-width="6">' +
+    '<path d="M12 64 L36 8"/><path d="M22 64 L44 20"/><path d="M2 40 L16 8"/></g>' +
+    '<rect x="10" y="8" width="28" height="56" rx="7" fill="none" stroke="rgba(0,0,0,0.15)"/></svg>';
+  if (kind === 'dots') return open +
+    '<rect x="10" y="8" width="28" height="56" rx="7" fill="#B982D2"/>' +
+    '<circle cx="20" cy="20" r="4.5" fill="#FFD60A"/><circle cx="30" cy="36" r="4.5" fill="#FFD60A"/>' +
+    '<circle cx="20" cy="52" r="4.5" fill="#FFD60A"/></svg>';
+  if (kind === 'foil') return open +
+    '<defs><linearGradient id="' + u + 'f" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#E8E8E8"/><stop offset=".5" stop-color="#FFD60A"/>' +
+    '<stop offset="1" stop-color="#fff"/></linearGradient></defs>' +
+    '<rect x="10" y="8" width="28" height="56" rx="7" fill="url(#' + u + 'f)"/></svg>';
+  return open +
+    '<circle cx="24" cy="32" r="15" fill="#00E5FF"/><circle cx="24" cy="32" r="7" fill="#fff" opacity=".85"/>' +
+    '<circle cx="10" cy="14" r="2.5" fill="#00E5FF"/><circle cx="38" cy="52" r="2.5" fill="#00E5FF"/></svg>';
 }
+/* 3D eraser: a chunky eraser block with a blue paper sleeve, gloss on top
+   and a soft shadow underneath — like the blue reference button. */
 function eraserSVG(){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true"><rect x="6" y="5" width="30" height="14" rx="3" fill="#FF9EBB" stroke="rgba(0,0,0,0.18)"/><rect x="26" y="5" width="10" height="14" fill="#7ED6FF"/><path d="M36 5 L44 12 L36 19 Z" fill="#fff" stroke="rgba(0,0,0,0.18)"/></svg>';
+  const u = 'e' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'b" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#7CC4FF"/><stop offset=".55" stop-color="#2E7DE8"/>' +
+    '<stop offset="1" stop-color="#1B5FC4"/></linearGradient></defs>' +
+    '<ellipse cx="24" cy="62" rx="14" ry="3" fill="rgba(0,0,0,0.15)"/>' +
+    '<rect x="11" y="18" width="26" height="40" rx="6" fill="#F4F8FF" stroke="rgba(0,0,0,0.15)"/>' +
+    '<rect x="11" y="30" width="26" height="14" fill="url(#' + u + 'b)"/>' +
+    '<rect x="11" y="30" width="26" height="2" fill="rgba(255,255,255,0.5)"/>' +
+    '<rect x="11" y="42" width="26" height="2" fill="rgba(0,0,0,0.15)"/>' +
+    '<rect x="11" y="52" width="26" height="6" rx="3" fill="rgba(0,0,0,0.08)"/>' +
+    '<ellipse cx="19" cy="24" rx="5" ry="3" fill="rgba(255,255,255,0.85)"/>' +
+    '<rect x="14.5" y="20" width="4" height="36" rx="2" fill="rgba(255,255,255,0.5)"/>' +
+    '</svg>';
 }
 function speakColorName(name){
   try {
@@ -2281,28 +2405,37 @@ function speakColorName(name){
 }
 
 /* ================= TOOL TRAY ================= */
+/* Fat wax crayon standing up: colored tip, glossy body, wrapper band —
+   like the chunky crayons standing in the reference tray. */
 function crayonSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="4" width="35" height="16" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<path d="M37 4 L47 12 L37 20 Z" fill="' + shade(hex, 38) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
-    '<rect x="9" y="4" width="11" height="16" fill="rgba(0,0,0,0.14)"/>' +
-    '<rect x="9" y="4" width="1.6" height="16" fill="rgba(255,255,255,0.45)"/>' +
-    '<rect x="18.4" y="4" width="1.6" height="16" fill="rgba(255,255,255,0.45)"/>' +
-    '<rect x="4" y="6.2" width="31" height="3" rx="1.5" fill="rgba(255,255,255,0.32)"/>' +
+  const u = 'c' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 55) + '"/><stop offset=".4" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -30) + '"/></linearGradient></defs>' +
+    '<path d="M14 24 L24 5 L34 24 Z" fill="' + shade(hex, 38) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<ellipse cx="20.5" cy="13" rx="2" ry="3.5" fill="rgba(255,255,255,0.6)" transform="rotate(-18 20.5 13)"/>' +
+    '<rect x="13" y="24" width="22" height="42" rx="5" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="13" y="40" width="22" height="11" fill="rgba(0,0,0,0.16)"/>' +
+    '<rect x="13" y="40" width="22" height="1.6" fill="rgba(255,255,255,0.5)"/>' +
+    '<rect x="13" y="49.4" width="22" height="1.6" fill="rgba(255,255,255,0.5)"/>' +
+    '<rect x="16.5" y="27" width="5" height="36" rx="2.5" fill="rgba(255,255,255,0.38)"/>' +
     '</svg>';
 }
 function pencilSVG(hex){
-  /* Colored pencil lying flat, tip pointing right: hexagonal body (three facet
-     bands), sharpened wood cone, colored lead point. Clearly not a crayon. */
-  const dark = shade(hex, -22), light = shade(hex, 30);
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="5" width="30" height="14" rx="2" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<rect x="2" y="5" width="30" height="4.5" fill="' + light + '" opacity="0.55"/>' +
-    '<rect x="2" y="14.5" width="30" height="4.5" fill="' + dark + '" opacity="0.45"/>' +
-    '<rect x="2" y="5" width="30" height="1.4" fill="rgba(255,255,255,0.5)"/>' +
-    '<path d="M32 5 L42 12 L32 19 Z" fill="#E8C49A" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
-    '<path d="M41 10.2 L47 12 L41 13.8 Z" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="0.6" stroke-linejoin="round"/>' +
-    '<rect x="2" y="5" width="4" height="14" rx="2" fill="rgba(0,0,0,0.12)"/>' +
+  /* Colored pencil standing up: sharpened wood cone, colored lead point,
+     hexagonal body with three facet bands, metal band + pink eraser at
+     the bottom. Clearly not a crayon. */
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<path d="M15 28 L24 8 L33 28 Z" fill="#E8C49A" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<path d="M21.5 13.5 L24 8 L26.5 13.5 Z" fill="' + hex + '"/>' +
+    '<ellipse cx="21" cy="18" rx="1.8" ry="3" fill="rgba(255,255,255,0.6)"/>' +
+    '<rect x="15" y="28" width="18" height="34" rx="2" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="15" y="28" width="6" height="34" fill="' + shade(hex, 30) + '" opacity="0.55"/>' +
+    '<rect x="27" y="28" width="6" height="34" fill="' + shade(hex, -25) + '" opacity="0.5"/>' +
+    '<rect x="17.5" y="30" width="3" height="30" fill="rgba(255,255,255,0.4)"/>' +
+    '<rect x="15" y="62" width="18" height="3.5" fill="#C0C0C0" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
+    '<rect x="15" y="65.5" width="18" height="5" rx="2" fill="#F2A0B5" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
     '</svg>';
 }
 /* Tool icons: one SVG per tool kind. New tools (stamp, master) get their
@@ -2318,57 +2451,108 @@ function toolSVG(tool, hex){
   if (tool === 'sticker') return stickerSVG(hex);
   return crayonSVG(hex);
 }
-/* Sticker: a glossy die-cut star — the tray color with a white die-cut
+/* Sticker: a big glossy die-cut star — the tray color with a white die-cut
    border and a bright top-left gloss, like the real sticker sheets. */
 function stickerSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<g transform="translate(24 37) scale(2) translate(-24 -12)">' +
     '<path d="M24 1.5l3.4 6.9 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6-5.5-5.4 7.6-1.1z" fill="' + hex + '" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>' +
     '<path d="M24 1.5l3.4 6.9 7.6 1.1-5.5 5.4 1.3 7.6-6.8-3.6-6.8 3.6 1.3-7.6-5.5-5.4 7.6-1.1z" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="0.7" stroke-linejoin="round"/>' +
-    '<circle cx="20.5" cy="7" r="2" fill="rgba(255,255,255,0.75)"/>' +
+    '</g>' +
+    '<circle cx="17" cy="26" r="4" fill="rgba(255,255,255,0.75)"/>' +
     '</svg>';
 }
-/* Chunky marker: wide body, chisel tip, glossy top. */
+/* Chunky marker standing up: colored tip, black cap, wide glossy body.
+   No ring, no number — the reference markers have numbers; ours never do. */
 function markerSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="6" width="30" height="12" rx="3" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<rect x="2" y="6" width="30" height="3.5" rx="1.5" fill="rgba(255,255,255,0.45)"/>' +
-    '<rect x="2" y="6" width="6" height="12" rx="3" fill="rgba(0,0,0,0.15)"/>' +
-    '<path d="M32 6 L44 9 L44 15 L32 18 Z" fill="' + shade(hex, -25) + '" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
+  const u = 'k' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset=".45" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -30) + '"/></linearGradient></defs>' +
+    '<rect x="20" y="2" width="8" height="10" rx="3" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
+    '<rect x="20" y="2" width="8" height="4" rx="2" fill="rgba(255,255,255,0.35)"/>' +
+    '<path d="M14 12 L34 12 L31 26 L17 26 Z" fill="#262626" stroke="rgba(0,0,0,0.25)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<rect x="15.5" y="16" width="17" height="1.4" fill="rgba(255,255,255,0.18)"/>' +
+    '<rect x="16" y="21" width="16" height="1.4" fill="rgba(255,255,255,0.18)"/>' +
+    '<rect x="14" y="26" width="20" height="40" rx="4" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="17" y="29" width="4.5" height="34" rx="2.25" fill="rgba(255,255,255,0.4)"/>' +
     '</svg>';
 }
-/* Watercolor brush: wooden handle, silver ferrule, soft colored bristles. */
+/* Watercolor brush standing up: big soft bristle tip in the tray color,
+   silver ferrule, wooden handle — like the chunky brushes in the reference. */
 function watercolorSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="9.5" width="24" height="5" rx="2.5" fill="#C98A4B" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<rect x="26" y="8" width="7" height="8" rx="1.5" fill="#C0C0C0" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<path d="M33 7 C 40 8 46 10 46 12 C 46 14 40 16 33 17 Z" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
-    '<circle cx="42" cy="12" r="1.6" fill="rgba(255,255,255,0.6)"/>' +
+  const u = 'w' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'b" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset="1" stop-color="' + shade(hex, -20) + '"/></linearGradient>' +
+    '<linearGradient id="' + u + 's" x1="0" y1="0" x2="1" y2="0">' +
+    '<stop offset="0" stop-color="#EDEDED"/><stop offset=".5" stop-color="#B0B0B0"/><stop offset="1" stop-color="#D8D8D8"/></linearGradient>' +
+    '<linearGradient id="' + u + 'h" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#D89A5B"/><stop offset="1" stop-color="#A86A2E"/></linearGradient></defs>' +
+    '<path d="M24 3 C 33 10, 35 19, 24 26 C 13 19, 15 10, 24 3 Z" fill="url(#' + u + 'b)" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
+    '<path d="M24 8 C 29 13, 30 18, 24 22 C 18 18, 19 13, 24 8 Z" fill="rgba(255,255,255,0.25)"/>' +
+    '<ellipse cx="20" cy="11" rx="2.2" ry="3.5" fill="rgba(255,255,255,0.6)" transform="rotate(-15 20 11)"/>' +
+    '<rect x="17" y="26" width="14" height="12" rx="2" fill="url(#' + u + 's)" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>' +
+    '<rect x="17" y="29.5" width="14" height="1.2" fill="rgba(0,0,0,0.18)"/>' +
+    '<rect x="17" y="34.5" width="14" height="1.2" fill="rgba(0,0,0,0.18)"/>' +
+    '<rect x="19" y="27" width="3" height="10" rx="1.5" fill="rgba(255,255,255,0.55)"/>' +
+    '<rect x="19.5" y="38" width="9" height="28" rx="4.5" fill="url(#' + u + 'h)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="22.5" y="41" width="1.6" height="22" fill="rgba(0,0,0,0.12)"/>' +
+    '<rect x="21" y="40" width="2" height="24" rx="1" fill="rgba(255,255,255,0.3)"/>' +
     '</svg>';
 }
-/* Pastel stick: short, chunky, soft matte, rounded ends. */
+/* Pastel stick: short, chunky, soft matte, rounded ends, standing up. */
 function pastelSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="4" y="6" width="40" height="12" rx="6" fill="' + hex + '" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>' +
-    '<rect x="4" y="6" width="40" height="4" rx="2" fill="rgba(255,255,255,0.35)"/>' +
-    '<rect x="4" y="15" width="40" height="3" rx="1.5" fill="rgba(0,0,0,0.08)"/>' +
+  const u = 'p' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 40) + '"/><stop offset=".5" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -22) + '"/></linearGradient></defs>' +
+    '<rect x="14" y="6" width="20" height="60" rx="9" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>' +
+    '<rect x="14" y="6" width="20" height="11" rx="5.5" fill="rgba(255,255,255,0.28)"/>' +
+    '<rect x="14" y="55" width="20" height="11" rx="5.5" fill="rgba(0,0,0,0.08)"/>' +
+    '<rect x="17.5" y="14" width="4" height="44" rx="2" fill="rgba(255,255,255,0.22)"/>' +
     '</svg>';
 }
-/* Gel pen: slim pen with a shiny barrel and a sparkle at the tip. */
+/* Gel pen standing up: slim shiny barrel, metal nib pointing down, a
+   sparkle at the top. The nib cone keeps its exact path (r18 asserts it);
+   it is rotated to point down at the bottom of the upright pen. */
 function gelSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="8" width="32" height="8" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<rect x="2" y="8" width="32" height="2.6" rx="1.3" fill="rgba(255,255,255,0.55)"/>' +
+  const u = 'g' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset=".5" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -28) + '"/></linearGradient></defs>' +
+    '<rect x="18" y="6" width="12" height="48" rx="6" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="18" y="6" width="12" height="7" rx="3.5" fill="' + shade(hex, -25) + '" opacity="0.8"/>' +
+    '<rect x="20.5" y="11" width="3.5" height="38" rx="1.75" fill="rgba(255,255,255,0.5)"/>' +
+    '<rect x="21" y="53" width="6" height="5" fill="#C0C0C0" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
+    '<g transform="translate(24 62) rotate(90) translate(-38.5 -12)">' +
     '<path d="M34 8 L43 12 L34 16 Z" fill="#E8E8E8" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
-    '<path d="M43 6l1.2 3.8L48 11l-3.8 1.2L43 16l-1.2-3.8L38 11l3.8-1.2z" fill="#FFD60A"/>' +
+    '</g>' +
+    '<path d="M38 4l1.4 4.6L44 10l-4.6 1.4L38 16l-1.4-4.6L32 10l4.6-1.4z" fill="#FFD60A"/>' +
+    '<circle cx="10" cy="20" r="1.6" fill="#FFD60A"/>' +
     '</svg>';
 }
-/* Glitter pen: slim pen with sparkles bursting from the tip. */
+/* Glitter pen standing up: slim shiny barrel, metal nib pointing down,
+   sparkles bursting from the tip. */
 function glitterSVG(hex){
-  return '<svg viewBox="0 0 48 24" aria-hidden="true">' +
-    '<rect x="2" y="8" width="30" height="8" rx="4" fill="' + hex + '" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
-    '<rect x="2" y="8" width="30" height="2.6" rx="1.3" fill="rgba(255,255,255,0.55)"/>' +
+  const u = 'l' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset=".5" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -28) + '"/></linearGradient></defs>' +
+    '<rect x="18" y="6" width="12" height="48" rx="6" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="18" y="6" width="12" height="7" rx="3.5" fill="' + shade(hex, -25) + '" opacity="0.8"/>' +
+    '<rect x="20.5" y="11" width="3.5" height="38" rx="1.75" fill="rgba(255,255,255,0.5)"/>' +
+    '<rect x="21" y="53" width="6" height="5" fill="#C0C0C0" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
+    '<g transform="translate(24 62) rotate(90) translate(-36 -12)">' +
     '<path d="M32 8 L40 12 L32 16 Z" fill="#E8E8E8" stroke="rgba(0,0,0,0.18)" stroke-width="1" stroke-linejoin="round"/>' +
-    '<circle cx="43" cy="7" r="1.8" fill="#FFD60A"/><circle cx="46" cy="14" r="1.4" fill="#fff"/><circle cx="42" cy="17" r="1.2" fill="#FFD60A"/>' +
+    '</g>' +
+    '<path d="M36 6l1.2 3.8L41 11l-3.8 1.2L36 16l-1.2-3.8L31 11l3.8-1.2z" fill="#FFD60A"/>' +
+    '<circle cx="41" cy="56" r="2" fill="#FFD60A"/><circle cx="7" cy="58" r="1.8" fill="#fff"/>' +
+    '<circle cx="43" cy="66" r="1.5" fill="#FFD60A"/>' +
     '</svg>';
 }
 function selectTool(btn, kind, idx, magic){
@@ -3466,6 +3650,10 @@ function openSign(pageId){
   signTyped = null;
   signRedraw();
   $('signNameInput').value = '';
+  /* Size adjuster always starts at Small. */
+  signSize = 0;
+  $('signSizeRange').value = '0';
+  $('signSizeName').textContent = 'Small';
   $('signOverlay').classList.remove('hidden');
 }
 function requestSign(pageId){
@@ -3493,6 +3681,16 @@ $('signTypeBtn').addEventListener('click', () => {
   signStrokes = [];
   signRedraw();
 });
+/* Signature size: Small (default) / Medium / Large — the slider in the
+   sign overlay picks one; the chosen size is used at stamp time. Small is
+   about half the old width so it can never cover the picture. */
+let signSize = 0;
+const SIGN_SIZES = [ { frac: 0.22, cap: 380 }, { frac: 0.32, cap: 560 }, { frac: 0.45, cap: 760 } ];
+const SIGN_SIZE_NAMES = ['Small', 'Medium', 'Large'];
+$('signSizeRange').addEventListener('input', e => {
+  signSize = +e.target.value;
+  $('signSizeName').textContent = SIGN_SIZE_NAMES[signSize];
+});
 $('signDoneBtn').addEventListener('click', () => {
   if (!currentPage || currentPage.id !== signPageId || !lineImg){
     toast('Could not sign right now.');
@@ -3502,15 +3700,15 @@ $('signDoneBtn').addEventListener('click', () => {
     toast('Draw or type your name first!');
     return;
   }
-  /* Stamp the pad drawing onto the painting, bottom-right, on a small
-     white card so the name stays readable on any picture. */
-  const sw = Math.min(W * 0.45, 760), sh = sw * signPad.height / signPad.width;
+  /* Stamp the pad drawing onto the painting, bottom-right, directly on
+     the picture — NO white card, so the signature sits on the art itself
+     with no background. The pad bitmap is transparent where not drawn. */
+  const sz = SIGN_SIZES[signSize] || SIGN_SIZES[0];
+  const sw = Math.min(W * sz.frac, sz.cap), sh = sw * signPad.height / signPad.width;
   const dx = W - sw - 28, dy = H - sh - 28;
-  bctx.fillStyle = 'rgba(255,255,255,0.88)';
-  bctx.fillRect(dx - 14, dy - 10, sw + 28, sh + 20);
   bctx.drawImage(signPad, dx, dy, sw, sh);
-  const box = { x0: Math.max(0, Math.floor(dx - 14)), y0: Math.max(0, Math.floor(dy - 10)),
-                x1: Math.min(W - 1, Math.ceil(dx + sw + 14)), y1: Math.min(H - 1, Math.ceil(dy + sh + 10)) };
+  const box = { x0: Math.max(0, Math.floor(dx)), y0: Math.max(0, Math.floor(dy)),
+                x1: Math.min(W - 1, Math.ceil(dx + sw)), y1: Math.min(H - 1, Math.ceil(dy + sh)) };
   syncFillRegion(box);
   signedFlag = true;
   render();
