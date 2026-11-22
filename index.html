@@ -1164,7 +1164,8 @@ function firstRequiredPage(n){
    from the line art's natural size, never stretched.
    Stage 3 (Markers) landed 2026-11-21: 30 pages total. Stage 4 (Watercolors)
    landed 2026-11-21: 40 pages total. Stage 5 (Pastels) landed 2026-11-21:
-   50 pages total. Stage 6 (Stickers) lands 2026-11-22: 60 pages total.
+   50 pages total. Stage 6 (Stickers) landed 2026-11-22: 60 pages total.
+   Stage 7 (Gel Pens) lands 2026-11-22: 70 pages total.
    White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
@@ -1464,7 +1465,61 @@ const PAGES = [
     line:'assets/party-balloons-line-2x.jpg', guide:'assets/party-balloons-guide.jpg',
     palette:[['Cloud Blue','#C7E2F3'],['Balloon Red','#ED3636'],['Balloon Blue','#308DD2'],
              ['Balloon Green','#64C057'],['Balloon Purple','#9A6FB7'],['Balloon Pink','#EF81B3'],
-             ['Sun Yellow','#FDE163']] }
+             ['Sun Yellow','#FDE163']] },
+  /* Stage 7 (Gel Pens) lands 2026-11-22: 70 pages total. Squirrel is the
+     first page. Snowman + squirrel guides are flat-fills built from the AI
+     guides' colours (see their ART-REPORTs §3); the other 8 guides are the
+     AI guides shipped as-is. Canonical line art: crab/submarine/snowman v2
+     (v1 had open strokes / misregistration); pizza guide v1 ships (v2 was
+     a recolour, not a fix). Lighthouse line art is v4. */
+  { id:'squirrel', name:'Squirrel', title:'Color the Squirrel!', stage:7, tool:'gel',
+    line:'assets/squirrel-line-2x.jpg', guide:'assets/squirrel-guide.jpg',
+    palette:[['Trunk Brown','#B77842'],['Squirrel Orange','#E18134'],['Leaf Green','#6DC145'],
+             ['Cloud Blue','#C5E1EC'],['Sun Yellow','#FDE255'],['Hollow Dark Brown','#51331B'],
+             ['Mushroom Red','#E23D37'],['Cap Brown','#9B6036'],['Cream','#EAD7C6']] },
+  { id:'crab', name:'Crab', title:'Color the Crab!', stage:7, tool:'gel',
+    line:'assets/crab-line-2x-v2.jpg', guide:'assets/crab-guide.jpg',
+    palette:[['Sand','#FAD18F'],['Sea Blue','#6ACBF8'],['Crab Orange','#FE893C'],
+             ['Sun Yellow','#FEDE3E'],['Bucket Blue','#008BD0'],['Shell Pink','#FE7FB3'],
+             ['Shell Purple','#AC70CE'],['Spade Green','#6FC250'],['Conch Teal','#27BAAB']] },
+  { id:'submarine', name:'Submarine', title:'Color the Submarine!', stage:7, tool:'gel',
+    line:'assets/submarine-line-2x-v2.jpg', guide:'assets/submarine-guide.jpg',
+    palette:[['Sand','#FFDFA4'],['Sub Yellow','#FFD92E'],['Coral Orange','#FE724E'],
+             ['Teal','#51B3BE'],['Light Green','#A6C737'],['Pink','#F49DBF'],
+             ['Deep Green','#58AE50'],['Porthole Blue','#9DD6E3'],['Clam Lavender','#CAB4DF']] },
+  { id:'snowman', name:'Snowman', title:'Color the Snowman!', stage:7, tool:'gel',
+    line:'assets/snowman-line-2x-v2.jpg', guide:'assets/snowman-guide.jpg',
+    palette:[['Pale Blue','#CAF0FD'],['Tree Green','#5FBF41'],['Hat Blue','#23A7E7'],
+             ['Scarf Red','#E64944'],['Trunk Brown','#A96538'],['Carrot Orange','#FB6F31']] },
+  { id:'pizza', name:'Pizza', title:'Color the Pizza!', stage:7, tool:'gel',
+    line:'assets/pizza-line-2x.jpg', guide:'assets/pizza-guide.jpg',
+    palette:[['Cheese Yellow','#FFDA4E'],['Basil Green','#53B33E'],
+             ['Mushroom Brown','#B8763C'],['Tomato Red','#E82727']] },
+  { id:'lighthouse', name:'Lighthouse', title:'Color the Lighthouse!', stage:7, tool:'gel',
+    line:'assets/lighthouse-line-2x.jpg', guide:'assets/lighthouse-guide.jpg',
+    palette:[['Sun Yellow','#FEDE50'],['Cloud Blue','#C3E4F5'],['Wave Blue','#01A1FF'],
+             ['Cliff Green','#6CD030'],['Tower Red','#FF4342'],['Teal','#31A1A7'],
+             ['Bird Tan','#C69E78'],['Grass Green','#049A4E'],['Roof Red','#780B12']] },
+  { id:'snail', name:'Snail', title:'Color the Snail!', stage:7, tool:'gel', required:false,
+    line:'assets/snail-line-2x.jpg', guide:'assets/snail-guide.jpg',
+    palette:[['Hill Green','#A1E155'],['Cloud Blue','#CFE7F3'],['Sun Yellow','#FEE04A'],
+             ['Shell Orange','#FEA648'],['Mushroom Red','#F65052'],['Stem Tan','#FCD9BC'],
+             ['Flower Purple','#B27CE1'],['Leaf Green','#68BB43'],['Flower Blue','#52ABE5']] },
+  { id:'helicopter', name:'Helicopter', title:'Color the Helicopter!', stage:7, tool:'gel', required:false,
+    line:'assets/helicopter-line-2x.jpg', guide:'assets/helicopter-guide.jpg',
+    palette:[['Mountain Green','#3DCC50'],['Cloud Blue','#ABDDF4'],['Sun Yellow','#FDE23B'],
+             ['Helicopter Blue','#00A3FE'],['Grass Green','#00FF56'],['Rotor Purple','#8662D6'],
+             ['Tail Pink','#FE52AA'],['Cheek Pink','#FD95C8']] },
+  { id:'treasure-chest', name:'Treasure Chest', title:'Color the Treasure Chest!', stage:7, tool:'gel', required:false,
+    line:'assets/treasure-chest-line-2x.jpg', guide:'assets/treasure-chest-guide.jpg',
+    palette:[['Chest Brown','#9C602E'],['Gold','#FDDE46'],['Cloud Blue','#C8E3F4'],
+             ['Palm Green','#63C564'],['Gem Pink','#FDB2C6'],['Gem Blue','#49B3E1'],
+             ['Gem Purple','#9B66B6']] },
+  { id:'donut', name:'Donut', title:'Color the Donut!', stage:7, tool:'gel', required:false,
+    line:'assets/donut-line-2x.jpg', guide:'assets/donut-guide.jpg',
+    palette:[['Frosting Pink','#FF89A6'],['Plate Blue','#BBE1EE'],['Dough Orange','#FD9B30'],
+             ['Grass Green','#6EC44C'],['Sun Yellow','#FEE148'],['Strawberry Red','#F44345'],
+             ['Sprinkle Blue','#23A5D6'],['Sprinkle Purple','#9770B9']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1596,7 +1651,17 @@ const PAGE_FACTS = {
   'camping-stars': { fact: 'The moon is not a light — it shines by bouncing sunlight back to us!', prompt: 'How many stars are in the sky? (There are 5!) Can you find the campfire?' },
   'hedgehog': { fact: 'A hedgehog\'s spikes are called quills, and it has about 5,000 of them!', prompt: 'How many flowers are beside the hedgehog? (There are 2!) Can you find the red apple?' },
   'farm-barn': { fact: 'A cow says moo, and a chicken says cluck — and a rooster crows at sunrise!', prompt: 'How many clouds are in the sky? (There are 2!) Can you find the hay bale?' },
-  'party-balloons': { fact: 'The first balloons were made long ago — today they are rubber!', prompt: 'How many balloons are in the bunch? (There are 6!) Can you find the gift box?' }
+  'party-balloons': { fact: 'The first balloons were made long ago — today they are rubber!', prompt: 'How many balloons are in the bunch? (There are 6!) Can you find the gift box?' },
+  'squirrel': { fact: 'Squirrels hide acorns to eat later — and sometimes forget where they put them, which plants new trees!', prompt: 'How many mushrooms grow by the tree? (There are 3!) Can you find the acorn?' },
+  'crab': { fact: 'Crabs walk sideways!', prompt: 'How many shells are on the sand? (There are 4!) Can you find the smiling starfish?' },
+  'submarine': { fact: 'A submarine can dive deep under the sea!', prompt: 'How many fish are swimming? (There are 3!) Can you find the two round windows (portholes)?' },
+  'snowman': { fact: 'No two snowflakes are exactly alike!', prompt: 'How many snowflakes are falling? (There are 5!) Can you find the carrot nose?' },
+  'pizza': { fact: 'The first pizzas were made in Naples, Italy!', prompt: 'How many olives are on the pizza? (There are 13!) Can you find the tomato?' },
+  'lighthouse': { fact: 'A lighthouse\'s light can be seen for many miles out at sea — it helps ships find their way home safely!', prompt: 'How many blue wave humps are at the bottom? (There are 8!) Can you find the little sailboat? What colour are its sails?' },
+  'snail': { fact: 'A snail carries its home on its back — its shell is its house, and it goes everywhere with it!', prompt: 'How many mushrooms are growing on the hill? (There are 4!) Can you find the snail\'s big orange shell? What colour are the flowers?' },
+  'helicopter': { fact: 'A helicopter can fly up, down, sideways, and even hover in one place — no runway needed!', prompt: 'How many green mountains are below the helicopter? (There are 3!) Can you find the helicopter\'s big round window? What colour is the rotor?' },
+  'treasure-chest': { fact: 'Long ago, pirates buried treasure chests full of gold coins and shiny gems — and some are still hidden today!', prompt: 'How many gold coins can you count in the chest? (There are more than 30!) Can you find the golden crown? What colours are the gems?' },
+  'donut': { fact: 'The first donuts were round with no hole — the hole helps the donut cook evenly all the way through!', prompt: 'How many strawberries are beside the donut? (There are 2!) Can you find the donut\'s hole in the middle? What colour is the frosting?' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
