@@ -1030,15 +1030,14 @@
   </div>
   <div class="parent-card">
     <h2>Superhero Pages</h2>
-    <p>An optional pack of superhero coloring pages — original heroes only, no Marvel or DC characters. Off by default — only a parent can turn it on.</p>
+    <p>An optional pack of 10 superhero coloring pages. Off by default — only a parent can turn it on.</p>
     <div class="switch-row">
       <div>
         <div class="lbl">Superhero Pages</div>
-        <div class="desc">Extra pages, parent-enabled</div>
+        <div class="desc">10 extra pages, parent-enabled</div>
       </div>
       <button class="switch" id="heroSwitch" role="switch" aria-checked="false" aria-label="Superhero Pages"></button>
     </div>
-    <div class="parent-note hidden" id="heroNote">Superhero pages are not in this prototype yet — the switch is ready for the full app.</div>
   </div>
   <h2 class="parent-sec">About</h2>
   <div class="parent-card">
@@ -1368,8 +1367,8 @@ const STAGE_BY_N = {}; STAGES.forEach(s => STAGE_BY_N[s.n] = s);
    included in the one unlock at no extra charge. Pack pages carry
    `pack:'bible'` (etc.) instead of a stage, and always use the crayon tool
    — the simplest tool, unlocked from the start. The Bible pack (10, landed
-   2026-11-23) and the Mythical Creatures pack (10, landed 2026-11-23) have
-   pages; the superhero entry is the shape its build will fill in. */
+   2026-11-23), the Mythical Creatures pack (10, landed 2026-11-23) and the
+   Superhero pack (10, landed 2026-11-23) all have pages. */
 const PACKS = {
   bible: { key:'bible', name:'Bible-Story Pages', short:'Bible-Story Pack', tool:'crayon',
     trayLabel:'Your crayons',
@@ -2009,6 +2008,51 @@ const PAGES = [
     palette:[['Leaf Green','#66B431'],['Minotaur Brown','#AC6E40'],['Sun Yellow','#FDDA33'],
              ['Muzzle Cream','#F4DEAC'],['Flower Pink','#FD91B0'],['Butterfly Blue','#6ABEE7'],
              ['Dark Brown','#6A3B20'],['Butterfly Orange','#FE9B3C']] },
+  { id:'captain-sunshine', name:'Captain Sunshine', title:'Color Captain Sunshine!', pack:'superhero', tool:'crayon',
+    line:'assets/captain-sunshine-line-2x.jpg', guide:'assets/captain-sunshine-guide.jpg',
+    palette:[['Cape Orange','#FA511D'],['Sun Yellow','#FED53D'],['Hair Brown','#9A5B30'],
+             ['Skin','#FDC29F']] },
+  { id:'aqua-girl', name:'Aqua Girl', title:'Color Aqua Girl!', pack:'superhero', tool:'crayon',
+    line:'assets/aqua-girl-line-2x.jpg', guide:'assets/aqua-girl-guide.jpg',
+    palette:[['Cape Teal','#00A4A4'],['Skin','#FCC59F'],['Hair Brown','#915A37'],
+             ['Fish Orange','#FD842F'],['Fish Pink','#FC7B9F'],['Bubble Blue','#CCE8F3'],
+             ['Drop Blue','#68CCE2'],['Belt Gold','#FEC84C'],['Suit Blue','#009CDE']] },
+  { id:'turbo-kid', name:'Turbo Kid', title:'Color Turbo Kid!', pack:'superhero', tool:'crayon',
+    line:'assets/turbo-kid-line-2x.jpg', guide:'assets/turbo-kid-guide.jpg',
+    palette:[['Cape Blue','#016FB1'],['Suit Red','#DF382F'],['Hair Brown','#92522D'],
+             ['Skin','#F9C9A9'],['Bolt Yellow','#FED352']] },
+  { id:'star-girl', name:'Star Girl', title:'Color Star Girl!', pack:'superhero', tool:'crayon',
+    line:'assets/star-girl-line-2x.jpg', guide:'assets/star-girl-guide.jpg',
+    palette:[['Cape Pink','#FB86B2'],['Dress Purple','#B772EB'],['Star Yellow','#FEE43D'],
+             ['Moon Cream','#FFEDA1'],['Hair Brown','#A25B25'],['Skin','#FCCEAC']] },
+  { id:'leaf-lad', name:'Leaf Lad', title:'Color Leaf Lad!', pack:'superhero', tool:'crayon',
+    line:'assets/leaf-lad-line-2x.jpg', guide:'assets/leaf-lad-guide.jpg',
+    palette:[['Cape Light Green','#BED990'],['Suit Green','#92C458'],['Pot Brown','#855531'],
+             ['Sunflower Yellow','#FDDC43'],['Flower Pink','#FE7B9D'],['Skin','#FDCFAE'],
+             ['Butterfly Orange','#FE9038'],['Leaf Dark Green','#399741']] },
+  { id:'bubble-boy', name:'Bubble Boy', title:'Color Bubble Boy!', pack:'superhero', tool:'crayon',
+    line:'assets/bubble-boy-line-2x.jpg', guide:'assets/bubble-boy-guide.jpg',
+    palette:[['Bubble Blue','#BBE1EC'],['Suit Blue','#289BCA'],['Skin','#F9CBA5'],
+             ['Duck Yellow','#FED936'],['Hair Brown','#9D5E2B']] },
+  { id:'comet-cat', name:'Comet Cat', title:'Color Comet Cat!', pack:'superhero', tool:'crayon',
+    line:'assets/comet-cat-line-2x.jpg', guide:'assets/comet-cat-guide.jpg',
+    palette:[['Cat Orange','#F49B43'],['Cream','#FCE8C1'],['Planet Purple','#A17DBC'],
+             ['Cape Red','#DD3F38'],['Star Yellow','#FDE24D'],['Nose Pink','#F1959E']] },
+  { id:'thunder-tom', name:'Thunder Tom', title:'Color Thunder Tom!', pack:'superhero', tool:'crayon',
+    line:'assets/thunder-tom-line-2x.jpg', guide:'assets/thunder-tom-guide.jpg',
+    palette:[['Cape Purple','#893FC3'],['Suit Blue','#2F94DE'],['Bolt Yellow','#FEC132'],
+             ['Skin','#FDCEAC'],['Rainbow Red','#FA4E48'],['Hair Brown','#9A5C2E'],
+             ['Rainbow Green','#72C757']] },
+  { id:'rainbow-ruby', name:'Rainbow Ruby', title:'Color Rainbow Ruby!', pack:'superhero', tool:'crayon',
+    line:'assets/rainbow-ruby-line-2x.jpg', guide:'assets/rainbow-ruby-guide.jpg',
+    palette:[['Cape Red','#E42A2B'],['Dress Pink','#FE7BA7'],['Skin','#FDC99F'],
+             ['Rainbow Green','#5BC44F'],['Rainbow Orange','#FE992E'],['Hair Brown','#844A2B'],
+             ['Rainbow Yellow','#FEE528'],['Rainbow Blue','#1D98D5'],['Flower Purple','#AC78C9']] },
+  { id:'moonlight-mia', name:'Moonlight Mia', title:'Color Moonlight Mia!', pack:'superhero', tool:'crayon',
+    line:'assets/moonlight-mia-line-2x.jpg', guide:'assets/moonlight-mia-guide.jpg',
+    palette:[['Moon Cream','#FEEEA3'],['Owl Brown','#B3875D'],['Cape Purple','#8763B0'],
+             ['Dress Navy','#1B3665'],['Skin','#FCC9A3'],['Star Yellow','#FEE369'],
+             ['Hair Brown','#8E603E']] },
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -2206,6 +2250,16 @@ const PAGE_FACTS = {
   'cyclops': { fact: 'In old Greek stories, a Cyclops was a giant with just one big eye. The most famous Cyclops was named Polyphemus — he lived in a cave, and the hero Odysseus met him on his long journey home.', prompt: 'How many birds are flying in the sky? (There are 4!)' },
   'sphinx': { fact: 'In old stories from Egypt, the Sphinx was a creature with a lion\'s body and a person\'s head. The biggest one still sits in the sand near the pyramids — it is as long as a jumbo jet!', prompt: 'How many pyramids are behind the sphinx? (There are 2!)' },
   'minotaur': { fact: 'In old Greek stories, the Minotaur was a creature with a bull\'s head who lived in a twisty maze called the Labyrinth on the island of Crete. The hero Theseus found his way through the maze with a ball of string!', prompt: 'How many butterflies are flying? (There are 3!)' },
+  'captain-sunshine': { fact: 'The Sun is a star — and it is so big that more than one million planet Earths could fit inside it!', prompt: 'How many stars are in the sky? (There are 4!)' },
+  'aqua-girl': { fact: 'The oceans hold most of the water on Earth — and the biggest ocean, the Pacific, is bigger than all the land on Earth put together!', prompt: 'How many fish are swimming? (There are 3!)' },
+  'turbo-kid': { fact: 'The cheetah is the fastest animal on land — it can run about 60 miles per hour, almost as fast as a car on a highway!', prompt: 'How many stars are in the sky? (There are 3!)' },
+  'star-girl': { fact: 'Stars are giant balls of hot gas that make their own light — and the Sun is the closest star to us!', prompt: 'How many stars are in the sky? (There are 7!)' },
+  'leaf-lad': { fact: 'Plants make their own food from sunlight — and while they do it, they make the oxygen we breathe!', prompt: 'How many butterflies are flying? (There are 3!)' },
+  'bubble-boy': { fact: 'Bubbles are always round, because a round shape holds the air inside with the least skin — a bubble is really a thin skin of soapy water!', prompt: 'How many stars are in the sky? (There are 2!)' },
+  'comet-cat': { fact: 'A comet is a ball of ice and dust flying around the Sun — when it gets close to the Sun, it grows a long glowing tail!', prompt: 'How many stars are in the sky? (There are 6!)' },
+  'thunder-tom': { fact: 'Lightning is a giant spark of electricity in the sky — and thunder is the sound it makes. You see the flash first because light travels faster than sound!', prompt: 'How many big lightning bolts are in the sky? (There are 3!)' },
+  'rainbow-ruby': { fact: 'A rainbow appears when sunlight shines through rain — the light splits into red, orange, yellow, green, blue and purple!', prompt: 'How many flowers are at the bottom? (There are 3!)' },
+  'moonlight-mia': { fact: "The Moon is the Earth's only natural satellite — it takes about a month to travel all the way around us!", prompt: 'How many big moons can you see? (There are 3!)' },
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -5049,7 +5103,6 @@ function syncParentScreen(){
   $('bibleSwitch').setAttribute('aria-checked', parentPrefs.bible ? 'true' : 'false');
   $('mythicalSwitch').setAttribute('aria-checked', parentPrefs.mythical ? 'true' : 'false');
   $('heroSwitch').setAttribute('aria-checked', parentPrefs.superhero ? 'true' : 'false');
-  $('heroNote').classList.toggle('hidden', !parentPrefs.superhero);
   $('leftSwitch').setAttribute('aria-checked', parentPrefs.leftHanded ? 'true' : 'false');
   $('calmSwitch').setAttribute('aria-checked', parentPrefs.calmMotion ? 'true' : 'false');
   $('muteSwitch').setAttribute('aria-checked', parentPrefs.muteLocked ? 'true' : 'false');
