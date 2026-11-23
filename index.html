@@ -1234,7 +1234,7 @@ function firstRequiredPage(n){
 /* Palettes are guide-exact medians from each page's *-ART-REPORT.md.
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
    per the report's §8.5 lion precedent (palette IS the guide's medians).
-   40 pages: stages 1–4 are 10 per stage (6 required + 4 bonus). Stage 5
+   80 pages: stages 1–8 are 10 per stage (6 required + 4 bonus). Stage 5
    (Pastels) is 10 pages (6 required + 4 bonus). A page is required unless
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
@@ -1243,6 +1243,7 @@ function firstRequiredPage(n){
    landed 2026-11-21: 40 pages total. Stage 5 (Pastels) landed 2026-11-21:
    50 pages total. Stage 6 (Stickers) landed 2026-11-22: 60 pages total.
    Stage 7 (Gel Pens) lands 2026-11-22: 70 pages total.
+   Stage 8 (Glitter Gel Pens) lands 2026-11-22: 80 pages total.
    White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
@@ -1596,7 +1597,55 @@ const PAGES = [
     line:'assets/donut-line-2x.jpg', guide:'assets/donut-guide.jpg?v=2',
     palette:[['Frosting Pink','#FF89A6'],['Plate Blue','#BBE1EE'],['Dough Orange','#FD9B30'],
              ['Grass Green','#6EC44C'],['Sun Yellow','#FEE148'],['Strawberry Red','#F44345'],
-             ['Sprinkle Blue','#23A5D6'],['Sprinkle Purple','#9770B9']] }
+             ['Sprinkle Blue','#23A5D6'],['Sprinkle Purple','#9770B9']] },
+  /* Stage 8 (Glitter Gel Pens) lands 2026-11-22: 80 pages total. Fireworks is the
+     first page. Shooting-star + seashell guides are the AI guides shipped
+     as-is; the other 8 guides are flat-fills built from the AI guides'
+     colours (see their ART-REPORTs §3). */
+  { id:'fireworks', name:'Fireworks', title:'Color the Fireworks!', stage:8, tool:'glitter',
+    line:'assets/fireworks-line-2x.jpg', guide:'assets/fireworks-guide.jpg',
+    palette:[['House Blue-Grey','#93AAC2'],['Roof Brown','#B36630'],['Burst Blue','#349DD4'],
+             ['Face Cream','#FEDC85'],['Burst Red','#F95050'],['Burst Yellow','#FEE501'],
+             ['Burst Orange','#FEA420'],['Night Navy','#03396D'],['Smoke Grey','#858485']] },
+  { id:'jellyfish', name:'Jellyfish', title:'Color the Jellyfish!', stage:8, tool:'glitter',
+    line:'assets/jellyfish-line-2x.jpg', guide:'assets/jellyfish-guide.jpg',
+    palette:[['Sand Yellow','#FECE4E'],['Bell Pink','#FF95BD'],['Fish Orange','#FE7035'],
+             ['Seaweed Green','#74C647'],['Bubble Blue','#98D4E8'],['Shell Purple','#B883DA'],
+             ['Sea Blue','#28ACF9'],['Pebble Peach','#FAD3AB']] },
+  { id:'hummingbird', name:'Hummingbird', title:'Color the Hummingbird!', stage:8, tool:'glitter',
+    line:'assets/hummingbird-line-2x.jpg', guide:'assets/hummingbird-guide.jpg',
+    palette:[['Leaf Green','#01C233'],['Flower Orange','#FF6E01'],['Cloud Blue','#CAE4F1'],
+             ['Sun Yellow','#FFD31B'],['Bird Green','#01A04D'],['Ray Orange','#FEB91B']] },
+  { id:'crystal', name:'Crystal', title:'Color the Crystal!', stage:8, tool:'glitter',
+    line:'assets/crystal-line-2x.jpg', guide:'assets/crystal-guide.jpg',
+    palette:[['Light Lavender','#C592FB'],['Rock Grey','#A5A5A5'],['Deep Purple','#AD5DFC'],
+             ['Cloud Blue','#D1E8F6'],['Grass Green','#59CF55'],['Crystal Blue','#7ABDFA'],
+             ['Sun Yellow','#FFDB2D'],['Crystal Pink','#FE7CC6'],['Ray Orange','#FDB728']] },
+  { id:'shooting-star', name:'Shooting Star', title:'Color the Shooting Star!', stage:8, tool:'glitter',
+    line:'assets/shooting-star-line-2x.jpg', guide:'assets/shooting-star-guide.jpg',
+    palette:[['Hill Green','#41DC42'],['Tail Blue','#C1EBFE'],['Star Yellow','#FEE74B'],
+             ['Moon Pale Yellow','#FEEF92'],['Tuft Dark Green','#00A547'],['Flower Pink','#FF9DB9']] },
+  { id:'seashell', name:'Seashell', title:'Color the Seashell!', stage:8, tool:'glitter',
+    line:'assets/seashell-line-2x.jpg', guide:'assets/seashell-guide.jpg',
+    palette:[['Sand Yellow','#FED964'],['Wave Blue','#009CE7'],['Cloud/Bubble Pale Blue','#CFE6F4'],
+             ['Shell Pink','#FE8CBE'],['Sun Yellow','#FED42A'],['Peach','#FDCBA8'],
+             ['Starfish Orange','#FD9441'],['Tiny Shell Purple','#997EF7']] },
+  { id:'disco-ball', name:'Disco Ball', title:'Color the Disco Ball!', stage:8, tool:'glitter', required:false,
+    line:'assets/disco-ball-line-2x.jpg', guide:'assets/disco-ball-guide.jpg',
+    palette:[['Silver','#C7C7C7'],['Disco Yellow','#FEEC46'],['Disco Pink','#FF62AE'],
+             ['Tile Blue','#3D9EE5'],['Chain Gold','#F0C249'],['Cheek Pink','#FEA4C9']] },
+  { id:'firefly', name:'Firefly', title:'Color the Firefly!', stage:8, tool:'glitter', required:false,
+    line:'assets/firefly-line-2x.jpg', guide:'assets/firefly-guide.jpg',
+    palette:[['Grass Green','#A3DA76'],['Firefly Yellow','#FEDB09'],['Flower Pink','#FE70BB'],['Flower Purple','#AA62F1'],
+             ['Wing Blue','#CDE5F1'],['Moon Cream','#FEEFB3'],['Leaf Green','#40BD4F']] },
+  { id:'crown', name:'Crown', title:'Color the Crown!', stage:8, tool:'glitter', required:false,
+    line:'assets/crown-line-2x.jpg', guide:'assets/crown-guide.jpg',
+    palette:[['Cushion Red','#D52726'],['Crown Gold','#FEC724'],['Jewel Green','#62BA40'],
+             ['Jewel Blue','#0E91D5'],['Star Blue','#C2DBEF']] },
+  { id:'starfish', name:'Starfish', title:'Color the Starfish!', stage:8, tool:'glitter', required:false,
+    line:'assets/starfish-line-2x.jpg', guide:'assets/starfish-guide.jpg',
+    palette:[['Starfish Orange','#FF8029'],['Fish Yellow','#FFDD35'],['Bubble Blue','#C4E1EF'],
+             ['Shell Pink','#FFA9C4'],['Fin Blue','#00A3DC'],['Spiral Purple','#A880C6']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1738,7 +1787,17 @@ const PAGE_FACTS = {
   'snail': { fact: 'A snail carries its home on its back — its shell is its house, and it goes everywhere with it!', prompt: 'How many mushrooms are growing on the hill? (There are 4!) Can you find the snail\'s big orange shell? What colour are the flowers?' },
   'helicopter': { fact: 'A helicopter can fly up, down, sideways, and even hover in one place — no runway needed!', prompt: 'How many green mountains are below the helicopter? (There are 3!) Can you find the helicopter\'s big round window? What colour is the rotor?' },
   'treasure-chest': { fact: 'Long ago, pirates buried treasure chests full of gold coins and shiny gems — and some are still hidden today!', prompt: 'How many gold coins can you count in the chest? (There are more than 30!) Can you find the golden crown? What colours are the gems?' },
-  'donut': { fact: 'The first donuts were round with no hole — the hole helps the donut cook evenly all the way through!', prompt: 'How many strawberries are beside the donut? (There are 2!) Can you find the donut\'s hole in the middle? What colour is the frosting?' }
+  'donut': { fact: 'The first donuts were round with no hole — the hole helps the donut cook evenly all the way through!', prompt: 'How many strawberries are beside the donut? (There are 2!) Can you find the donut\'s hole in the middle? What colour is the frosting?' },
+  'fireworks': { fact: 'Fireworks were first made in China more than 1,000 years ago — people made them to celebrate happy days, just like we do now!', prompt: 'How many little houses are in the town under the fireworks? (There are 5!) Can you find the little grey smoke puff over a chimney?' },
+  'jellyfish': { fact: 'A jellyfish has no brain, no heart and no bones — it has been drifting in the sea for millions of years!', prompt: 'How many little fish are swimming with the jellyfish? (There are 3!) Can you find the pink starfish on the sand?' },
+  'hummingbird': { fact: 'Hummingbirds flap their wings about 50 times every second — so fast their wings look like a blur!', prompt: 'How many triangle rays does the sun have? (There are 12!) Can you find the hummingbird\'s long, thin beak?' },
+  'crystal': { fact: 'Crystals grow slowly deep underground — some take thousands of years to grow!', prompt: 'How many sparkly stars are in the sky? (There are 5!) Can you find the pink crystal?' },
+  'shooting-star': { fact: 'A shooting star isn\'t a star at all — it\'s a tiny piece of space rock burning up as it zooms through the sky!', prompt: 'How many little stars sparkle in the shooting star\'s tail? (There are 34!) Can you find the smiling moon?' },
+  'seashell': { fact: 'A seashell is a sea animal\'s home — the animal builds its shell and lives inside it!', prompt: 'How many bubbles float above the beach? (There are 6!) Can you find the little starfish?' },
+  'disco-ball': { fact: 'A disco ball is covered in hundreds of tiny mirrors — when light hits them, sparkles dance all around the room!', prompt: 'How many light rays shine out from the disco ball? (There are 13!) Can you find the tiniest star? (It is near the top, between the two bigger smiling stars!)' },
+  'firefly': { fact: 'Fireflies make their own light — it is called bioluminescence, and they flash it to talk to each other in the dark!', prompt: 'How many flowers grow in the grass? (There are 4!) Can you find the firefly\'s 5 glowing green spots? (3 are on its body and 2 are on its face!)' },
+  'crown': { fact: 'Kings and queens have worn crowns for thousands of years — and the shiny stones on a crown are called gems!', prompt: 'How many jewels sparkle on the crown\'s band? (There are 3!) Can you find the green jewel? (It is the one in the middle!)' },
+  'starfish': { fact: 'A starfish is not a fish at all — it is a sea star, and if it loses an arm, it can grow a new one!', prompt: 'How many bubbles float above the starfish? (There are 6!) Can you find the little purple shell? (It is next to the pink shell!)' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
