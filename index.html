@@ -1294,6 +1294,7 @@ function firstRequiredPage(n){
    50 pages total. Stage 6 (Stickers) landed 2026-11-22: 60 pages total.
    Stage 7 (Gel Pens) lands 2026-11-22: 70 pages total.
    Stage 8 (Glitter Gel Pens) lands 2026-11-22: 80 pages total.
+   Stage 9 (Stamps) lands 2026-11-22: 90 pages total.
    White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
@@ -1695,7 +1696,58 @@ const PAGES = [
   { id:'starfish', name:'Starfish', title:'Color the Starfish!', stage:8, tool:'glitter', required:false,
     line:'assets/starfish-line-2x.jpg', guide:'assets/starfish-guide.jpg',
     palette:[['Starfish Orange','#FF8029'],['Fish Yellow','#FFDD35'],['Bubble Blue','#C4E1EF'],
-             ['Shell Pink','#FFA9C4'],['Fin Blue','#00A3DC'],['Spiral Purple','#A880C6']] }
+             ['Shell Pink','#FFA9C4'],['Fin Blue','#00A3DC'],['Spiral Purple','#A880C6']] },
+  /* Stage 9 (Stamps) lands 2026-11-22: 90 pages total. Panda is the first
+     page. Panda, fawn, flamingo and pumpkin guides are the AI guides
+     shipped as-is; the other 6 guides are flat-fills built from the AI
+     guides' colours (see their ART-REPORTs §3). Shark's Sea Blue and
+     fawn's Sky Blue are exterior colours that are also tray colours, so a
+     child can stamp the sea / sky the guide's colour. */
+  { id:'panda', name:'Panda', title:'Color the Panda!', stage:9, tool:'stamp',
+    line:'assets/panda-line-2x.jpg', guide:'assets/panda-guide.jpg',
+    palette:[['Bamboo Green','#51B943'],['Panda Black','#1D1D1E'],
+             ['Flower Pink','#F891B0'],['Sunny Yellow','#FEDD6C']] },
+  { id:'toucan', name:'Toucan', title:'Color the Toucan!', stage:9, tool:'stamp',
+    line:'assets/toucan-line-2x.jpg', guide:'assets/toucan-guide.jpg',
+    palette:[['Leaf Green','#42C13C'],['Black','#1F1F1F'],['Sunny Yellow','#FED23E'],
+             ['Branch Brown','#C66C1D'],['Toucan Red','#F33F3B'],['Flower Pink','#FE7A9D'],
+             ['Beak Orange','#FF7E25']] },
+  { id:'raccoon', name:'Raccoon', title:'Color the Raccoon!', stage:9, tool:'stamp',
+    line:'assets/raccoon-line-2x.jpg', guide:'assets/raccoon-guide.jpg',
+    palette:[['Raccoon Grey','#BBBBBD'],['Stump Brown','#B06B3D'],['Leaf Green','#71B642'],
+             ['Mask Black','#2D2D2D'],['Stump Tan','#E0B476'],['Mushroom Red','#ED3A39'],
+             ['Leaf Orange','#FA863D'],['Acorn Brown','#7E421F']] },
+  { id:'fawn', name:'Fawn', title:'Color the Fawn!', stage:9, tool:'stamp',
+    line:'assets/fawn-line-2x.jpg', guide:'assets/fawn-guide.jpg',
+    palette:[['Fawn Tan','#D0A077'],['Flower Pink','#FF71A7'],['Sunny Yellow','#FEDC28'],
+             ['Butterfly Purple','#AB8DCB'],['Butterfly Orange','#F79652'],
+             ['Hoof Brown','#AF8260'],['Sky Blue','#CBE8F9']] },
+  { id:'shark', name:'Shark', title:'Color the Shark!', stage:9, tool:'stamp',
+    line:'assets/shark-line-2x.jpg', guide:'assets/shark-guide.jpg',
+    palette:[['Shark Blue','#6C99AE'],['Fish Orange','#FB913A'],
+             ['Coral Pink','#F374A6'],['Sea Blue','#BFE2F5']] },
+  { id:'guitar', name:'Guitar', title:'Color the Guitar!', stage:9, tool:'stamp',
+    line:'assets/guitar-line-2x.jpg', guide:'assets/guitar-guide.jpg',
+    palette:[['Guitar Brown','#B26A30'],['Neck Brown','#653D24'],['Note Blue','#3E76C0'],
+             ['Note Purple','#8E65BE'],['Sound-Hole Black','#010101'],['Star Yellow','#FDDD4A'],
+             ['Flower Pink','#F575A5'],['Leaf Green','#53B157']] },
+  { id:'flamingo', name:'Flamingo', title:'Color the Flamingo!', stage:9, tool:'stamp', required:false,
+    line:'assets/flamingo-line-2x.jpg', guide:'assets/flamingo-guide.jpg',
+    palette:[['Pond Blue','#B8DEF1'],['Flamingo Pink','#F98EA6'],['Reed Green','#76BE61'],
+             ['Cattail Brown','#91613C'],['Sunny Yellow','#FCD149'],['Beak Black','#333333']] },
+  { id:'bicycle', name:'Bicycle', title:'Color the Bicycle!', stage:9, tool:'stamp', required:false,
+    line:'assets/bicycle-line-2x.jpg', guide:'assets/bicycle-guide.jpg',
+    palette:[['Tree Green','#6BCC3F'],['Hill Green','#AEFE83'],['Tire Grey','#4E4E4E'],
+             ['Sunny Yellow','#FFE62F'],['Bike Red','#FB403E'],['Basket Brown','#9B613A'],
+             ['Butterfly Purple','#A077F7'],['Flower Pink','#FE89B4'],['Butterfly Orange','#FB993B']] },
+  { id:'pumpkin', name:'Pumpkin', title:'Color the Pumpkin!', stage:9, tool:'stamp', required:false,
+    line:'assets/pumpkin-line-2x.jpg', guide:'assets/pumpkin-guide.jpg',
+    palette:[['Pumpkin Orange','#FF8A2A'],['Leaf Green','#67B548'],['Sunny Yellow','#FDDB3C'],
+             ['Stem Brown','#9F6138'],['Flower Pink','#FF789A']] },
+  { id:'parrot', name:'Parrot', title:'Color the Parrot!', stage:9, tool:'stamp', required:false,
+    line:'assets/parrot-line-2x.jpg', guide:'assets/parrot-guide.jpg',
+    palette:[['Parrot Red','#F92420'],['Leaf Green','#2DAC41'],['Sunny Yellow','#FED41E'],
+             ['Branch Brown','#995329'],['Wing Blue','#008CD3'],['Flower Pink','#FE6CAC']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1847,7 +1899,17 @@ const PAGE_FACTS = {
   'disco-ball': { fact: 'A disco ball is covered in hundreds of tiny mirrors — when light hits them, sparkles dance all around the room!', prompt: 'How many light rays shine out from the disco ball? (There are 13!) Can you find the tiniest star? (It is near the top, between the two bigger smiling stars!)' },
   'firefly': { fact: 'Fireflies make their own light — it is called bioluminescence, and they flash it to talk to each other in the dark!', prompt: 'How many flowers grow in the grass? (There are 4!) Can you find the firefly\'s 5 glowing green spots? (3 are on its body and 2 are on its face!)' },
   'crown': { fact: 'Kings and queens have worn crowns for thousands of years — and the shiny stones on a crown are called gems!', prompt: 'How many jewels sparkle on the crown\'s band? (There are 3!) Can you find the green jewel? (It is the one in the middle!)' },
-  'starfish': { fact: 'A starfish is not a fish at all — it is a sea star, and if it loses an arm, it can grow a new one!', prompt: 'How many bubbles float above the starfish? (There are 6!) Can you find the little purple shell? (It is next to the pink shell!)' }
+  'starfish': { fact: 'A starfish is not a fish at all — it is a sea star, and if it loses an arm, it can grow a new one!', prompt: 'How many bubbles float above the starfish? (There are 6!) Can you find the little purple shell? (It is next to the pink shell!)' },
+  'panda': { fact: 'Giant pandas spend 10 to 16 hours every day eating bamboo — it is almost all they eat!', prompt: 'How many flowers grow in the grass? (There are 4!) Can you find the panda\'s two black ears?' },
+  'toucan': { fact: 'A toucan\'s beak looks heavy, but it is very light — it is mostly hollow inside!', prompt: 'How many big green leaves are there? (There are 7!) Can you find the smiling sun in the sky?' },
+  'raccoon': { fact: 'Raccoons are famous for dipping their food in water before they eat it!', prompt: 'How many mushrooms are there? (There are 3!) Can you find the little acorn?' },
+  'fawn': { fact: 'A baby deer is called a fawn. Its white spots help it hide in the dappled sunlight of the forest!', prompt: 'How many flowers are there? (There are 4!) Can you find the butterfly?' },
+  'shark': { fact: 'Sharks have been swimming in the sea for over 400 million years — long before the first dinosaurs!', prompt: 'How many orange friends are swimming with the shark? (A little fish and a starfish — 2!) Can you find the pink coral?' },
+  'guitar': { fact: 'A guitar has six strings — and people have been playing guitars for hundreds of years!', prompt: 'How many music notes are there? (There are 4!) Can you find the yellow star?' },
+  'flamingo': { fact: 'Flamingos are born grey! They turn pink from the food they eat!', prompt: 'How many brown cattails are there? (There are 6!) Can you find the little pink flower on the lily pad?' },
+  'bicycle': { fact: 'The first bicycles had no pedals — riders pushed along with their feet!', prompt: 'How many flowers are in the basket? (There are 6!) Can you find the butterfly?' },
+  'pumpkin': { fact: 'A pumpkin is a fruit, not a vegetable — it grows from a flower and has seeds inside!', prompt: 'How many leaves are there? (There are 4 — two big vine leaves and two little flower leaves!) Can you find the smiling sun?' },
+  'parrot': { fact: 'Some parrots can learn more than 100 words!', prompt: 'How many leaves are there? (There are 7 — three big ones on the left and four little ones on the right!) Can you find the pink flower?' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -2547,9 +2609,9 @@ function pencilSVG(hex){
     '<rect x="15" y="65.5" width="18" height="5" rx="2" fill="#F2A0B5" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
     '</svg>';
 }
-/* Tool icons: one SVG per tool kind. New tools (stamp, master) get their
-   own icons in the tools step — until then they fall back to the crayon
-   icon. Stickers got theirs with Stage 6. */
+/* Tool icons: one SVG per tool kind. New tools (master) get their own
+   icon in the tools step — until then they fall back to the crayon icon.
+   Stickers got theirs with Stage 6; stamps with Stage 9. */
 function toolSVG(tool, hex){
   if (tool === 'pencil') return pencilSVG(hex);
   if (tool === 'marker') return markerSVG(hex);
@@ -2558,6 +2620,7 @@ function toolSVG(tool, hex){
   if (tool === 'gel') return gelSVG(hex);
   if (tool === 'glitter') return glitterSVG(hex);
   if (tool === 'sticker') return stickerSVG(hex);
+  if (tool === 'stamp') return stampSVG(hex);
   return crayonSVG(hex);
 }
 /* Sticker: a big glossy die-cut star — the tray color with a white die-cut
@@ -2664,6 +2727,25 @@ function glitterSVG(hex){
     '<path d="M36 6l1.2 3.8L41 11l-3.8 1.2L36 16l-1.2-3.8L31 11l3.8-1.2z" fill="#FFD60A"/>' +
     '<circle cx="41" cy="56" r="2" fill="#FFD60A"/><circle cx="7" cy="58" r="1.8" fill="#fff"/>' +
     '<circle cx="43" cy="66" r="1.5" fill="#FFD60A"/>' +
+    '</svg>';
+}
+/* Rubber stamp standing up: chunky handle on top, wide base block in the
+   tray color, darker ink face at the bottom, white star print on the
+   base — the same stamp as the ceremony fan, upright and in the tray
+   color. No numbers, no text. */
+function stampSVG(hex){
+  const u = 's' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset=".5" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -28) + '"/></linearGradient></defs>' +
+    '<rect x="16" y="4" width="16" height="14" rx="7" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<ellipse cx="21" cy="9" rx="2.5" ry="3.5" fill="rgba(255,255,255,0.5)" transform="rotate(-12 21 9)"/>' +
+    '<rect x="20" y="18" width="8" height="8" fill="' + shade(hex, -15) + '" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
+    '<rect x="11" y="26" width="26" height="30" rx="3" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>' +
+    '<rect x="14" y="29" width="4" height="24" rx="2" fill="rgba(255,255,255,0.4)"/>' +
+    '<path d="M24 33 L26.1 38 L31.2 38.2 L27.4 41.6 L28.9 46.8 L24 44 L19.1 46.8 L20.6 41.6 L16.8 38.2 L21.9 38 Z" fill="#fff" opacity="0.9" stroke-linejoin="round"/>' +
+    '<rect x="11" y="56" width="26" height="10" rx="2" fill="' + shade(hex, -45) + '" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>' +
     '</svg>';
 }
 function selectTool(btn, kind, idx, magic){
@@ -3145,6 +3227,14 @@ function applyFill(res){
           const rr = hash2(x, y);
           if (rr < 0.06){ r = 255; g = 255; b = 255; }
           else if (rr < 0.10){ r = 255; g = 214; b = 10; }
+        } else if (tool === 'stamp'){
+          /* Uneven ink, like a real rubber stamp: the print is mostly
+             flat color, but a few patches miss the ink and stay white.
+             Sampled 2x2 (hash2 on x>>1, y>>1) so the gaps are blotchy,
+             not fine sparkle — and white only, never gold, so it cannot
+             be confused with glitter. Deterministic, so it saves, undos
+             and replays exactly. About 4% of the fill stays white. */
+          if (hash2(x >> 1, y >> 1) < 0.04){ r = 255; g = 255; b = 255; }
         }
         d[k] = r; d[k + 1] = g; d[k + 2] = b;
         colorArr[p] = currentToolIdx + 1; passArr[p] = 4;
@@ -3236,8 +3326,10 @@ function textureInto(bc, fc, mk, w0, h0, box, tool){
         /* Chunky matte grain (±10%), sampled coarse so it feels chalky. */
         const n = noiseTile[(((y >> 2) & 255) << 8) | ((x >> 1) & 255)];
         f = 1 + 0.10 * n;
-      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter' || tool === 'sticker'){
-        /* Smooth ink: almost no grain (±2%), the gloss comes from the fill. */
+      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter' || tool === 'sticker' || tool === 'stamp'){
+        /* Smooth ink: almost no grain (±2%), the gloss comes from the fill.
+           Stamps join this family — their uneven ink is baked into the
+           fill (applyFill), not the grain. */
         const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
         f = 1 + 0.02 * n;
       } else {
