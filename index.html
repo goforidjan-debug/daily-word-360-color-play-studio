@@ -9,7 +9,11 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FF6B4A'/%3E%3Ccircle cx='22' cy='26' r='8' fill='%23FFD93D'/%3E%3Ccircle cx='42' cy='26' r='8' fill='%232EC4B6'/%3E%3Ccircle cx='32' cy='44' r='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
 <style>
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0; padding:0;}
+  html,body{margin:0; padding:0; overscroll-behavior:none;}
+  /* 2026-11-22 (Godwin bug report): pull-to-refresh reloaded the app back
+     to the welcome screen. overscroll-behavior:none on the root stops the
+     gesture from reloading at all (Chrome/Android); the screen-restore
+     below is the second layer, for a genuine reload. */
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     color:#2B2118; min-height:100dvh;
@@ -102,6 +106,17 @@
     width:min(300px,calc(100vw - 28px));
     background:#FFFDF6; border-radius:18px; padding:14px;
     box-shadow:0 18px 40px rgba(50,25,0,.45), inset 0 0 0 2px rgba(138,109,59,.28);}
+  /* 2026-11-22 (Godwin bug report): on desktop widths the menu button sat
+     flush against the viewport top — give it breathing room. The panel
+     drops the same amount so it still sits just below the button. Phone
+     keeps the tight 12px fit beside the small hanging sign. NOTE: this
+     media query MUST sit after the base .stage-menu rule above — equal
+     specificity, so the later rule wins; placed before it, the panel
+     stayed at 72px while the button moved (caught by r22b, 2026-11-22). */
+  @media (min-width:768px){
+    .stage-menu-btn{ top:28px; }
+    .stage-menu{ top:88px; }
+  }
   .stage-menu .home-btns{flex-direction:column; margin-top:0;}
   .stage-menu .bg-music-row{flex-direction:column; margin-top:12px;}
   .stage-menu .done-btn, .stage-menu .bg-change-btn{width:100%;}
@@ -784,7 +799,7 @@
   </div>
 </div>
 
-<!-- ============ DOODLE PAD (Master Studio preview) ============ -->
+<!-- ============ DOODLE PAD (Master Studio) ============ -->
 <div class="desk hidden" id="doodleView">
   <div class="back-row">
     <button class="back-btn" id="doodleBackBtn" aria-label="Back to all pages">
@@ -795,7 +810,7 @@
   <div class="topbar">
     <div class="titleblock">
       <h1>Doodle Pad</h1>
-      <span class="stage">Master Studio · Preview</span>
+      <span class="stage">Master Studio</span>
     </div>
   </div>
   <div class="doodle-paper"><canvas id="doodleCanvas" width="1280" height="854"></canvas></div>
@@ -1284,7 +1299,7 @@ function firstRequiredPage(n){
 /* Palettes are guide-exact medians from each page's *-ART-REPORT.md.
    Fire-truck Yellow/Orange use the guide's actual medians (#FED337 / #FE7517),
    per the report's §8.5 lion precedent (palette IS the guide's medians).
-   80 pages: stages 1–8 are 10 per stage (6 required + 4 bonus). Stage 5
+   100 pages: stages 1–10 are 10 per stage (6 required + 4 bonus). Stage 5
    (Pastels) is 10 pages (6 required + 4 bonus). A page is required unless
    it carries `required:false` (bonus). `square:true` pages are 1600x1600
    (elephant, robot); every other page is 1920x1280. The canvas is sized
@@ -1295,6 +1310,7 @@ function firstRequiredPage(n){
    Stage 7 (Gel Pens) lands 2026-11-22: 70 pages total.
    Stage 8 (Glitter Gel Pens) lands 2026-11-22: 80 pages total.
    Stage 9 (Stamps) lands 2026-11-22: 90 pages total.
+   Stage 10 (Master Studio) lands 2026-11-22: 100 pages total.
    White is never a
    tray crayon (the guide shows what stays white); sailboat's white sail
    stripes are left uncolored, per the frog precedent. */
@@ -1747,7 +1763,54 @@ const PAGES = [
   { id:'parrot', name:'Parrot', title:'Color the Parrot!', stage:9, tool:'stamp', required:false,
     line:'assets/parrot-line-2x.jpg', guide:'assets/parrot-guide.jpg',
     palette:[['Parrot Red','#F92420'],['Leaf Green','#2DAC41'],['Sunny Yellow','#FED41E'],
-             ['Branch Brown','#995329'],['Wing Blue','#008CD3'],['Flower Pink','#FE6CAC']] }
+             ['Branch Brown','#995329'],['Wing Blue','#008CD3'],['Flower Pink','#FE6CAC']] },
+  /* Stage 10 (Master Studio) lands 2026-11-22: 100 pages total. Graduation Cap is the first
+     page. Graduation-cap, trophy and award-rosette guides are flat-fills built from the AI
+     guides' colours (see their ART-REPORTs §3); the other 7 guides are the AI guides
+     shipped as-is. The master tool paints a vertical gradient — light at the top of each
+     region shading to the full guide colour at the bottom. */
+  { id:'graduation-cap', name:'Graduation Cap', title:'Color the Graduation Cap!', stage:10, tool:'master',
+    line:'assets/graduation-cap-line-2x.jpg', guide:'assets/graduation-cap-guide.jpg',
+    palette:[['Cap Black','#212121'],['Bush Green','#62BF49'],['Scroll Cream','#FCF0D6'],
+             ['Bow Red','#E93231'],['Tassel Gold','#FCC644'],['Confetti Pink','#F97784'],
+             ['Confetti Blue','#4394DB']] },
+  { id:'trophy', name:'Trophy', title:'Color the Trophy!', stage:10, tool:'master',
+    line:'assets/trophy-line-2x.jpg', guide:'assets/trophy-guide.jpg',
+    palette:[['Trophy Gold','#F1C250'],['Bush Green','#60CB47'],['Star Red','#EC443F'],
+             ['Confetti Pink','#F47E9E'],['Confetti Blue','#628DD8']] },
+  { id:'easel-canvas', name:'Easel & Canvas', title:'Color the Easel & Canvas!', stage:10, tool:'master',
+    line:'assets/easel-canvas-line-2x.jpg', guide:'assets/easel-canvas-guide.jpg',
+    palette:[['Sun Yellow','#FEE14F'],['Bush Green','#64BA4B'],['Sun Orange','#F8932E'],
+             ['Jar Blue','#267BB4'],['Easel Brown','#AA6D40'],['Blob Red','#EF4B46']] },
+  { id:'golden-star', name:'Golden Star', title:'Color the Golden Star!', stage:10, tool:'master',
+    line:'assets/golden-star-line-2x.jpg', guide:'assets/golden-star-guide.jpg',
+    palette:[['Star Gold','#FECF45'],['Bush Green','#52B45F'],['Moon Pale Yellow','#FDE88F'],
+             ['Star Purple','#8B5CAD'],['Star Blue','#3095CE'],['Star Pink','#F481AC'],
+             ['Star Orange','#F8972E']] },
+  { id:'magic-wand', name:'Magic Wand', title:'Color the Magic Wand!', stage:10, tool:'master',
+    line:'assets/magic-wand-line-2x.jpg', guide:'assets/magic-wand-guide.jpg',
+    palette:[['Bush Green','#58CA59'],['Wand Gold','#FDD75A'],['Handle Pink','#ED89D1'],
+             ['Handle Purple','#8670D9'],['Sparkle Blue','#94C4F1'],['Moon Pale Yellow','#FFE489']] },
+  { id:'diploma', name:'Diploma', title:'Color the Diploma!', stage:10, tool:'master',
+    line:'assets/diploma-line-2x.jpg', guide:'assets/diploma-guide.jpg',
+    palette:[['Scroll Cream','#FAF1D2'],['Bush Green','#50C846'],['Ribbon Red','#F03937'],
+             ['Book Blue','#1283D1'],['Pencil Yellow','#FED70E'],['Eraser Pink','#F46286']] },
+  { id:'medal', name:'Medal', title:'Color the Medal!', stage:10, tool:'master', required:false,
+    line:'assets/medal-line-2x.jpg', guide:'assets/medal-guide.jpg',
+    palette:[['Laurel Green','#00BF48'],['Medal Gold','#FACF40'],['Star Red','#E42625'],
+             ['Confetti Pink','#FE67B6'],['Confetti Blue','#27A4E6']] },
+  { id:'paintbrush-jar', name:'Paintbrush Jar', title:'Color the Paintbrush Jar!', stage:10, tool:'master', required:false,
+    line:'assets/paintbrush-jar-line-2x.jpg', guide:'assets/paintbrush-jar-guide.jpg',
+    palette:[['Bush Green','#6AC647'],['Jar Pale Blue','#CFE7F1'],['Brush Red','#E94A42'],
+             ['Brush Yellow','#FEE339'],['Brush Blue','#1497DA'],['Brush Brown','#A66D44']] },
+  { id:'party-popper', name:'Party Popper', title:'Color the Party Popper!', stage:10, tool:'master', required:false,
+    line:'assets/party-popper-line-2x.jpg', guide:'assets/party-popper-guide.jpg',
+    palette:[['Bush Green','#2DAF47'],['Cone Gold','#F4CC50'],['Balloon Pink','#FF579C'],
+             ['Balloon Blue','#1F8FE1'],['Cone Red','#DA2C2E']] },
+  { id:'award-rosette', name:'Award Rosette', title:'Color the Award Rosette!', stage:10, tool:'master', required:false,
+    line:'assets/award-rosette-line-2x.jpg', guide:'assets/award-rosette-guide.jpg',
+    palette:[['Bush Green','#58C440'],['Ribbon Blue','#0094DC'],['Rosette Gold','#FFCE33'],
+             ['Rosette Red','#EF3C38'],['Confetti Pink','#E16791']] }
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -1847,48 +1910,48 @@ const PAGE_FACTS = {
   'sailboat-adventure': { fact: 'A sailboat does not need an engine — the wind pushes on its big sails and moves the boat across the water! People have sailed with the wind for thousands of years.', prompt: 'How many rays does the smiling sun have? Count them — there are 20!' },
   'rocket': { fact: 'A rocket blasts off by pushing hot fire down — and that big push lifts it way up into the sky!', prompt: 'Can you count all 15 yellow stars in the sky? Can you find the 3 round windows on the rocket?' },
   'hot-air-balloon': { fact: 'A hot-air balloon floats because the hot air inside it is lighter than the cool air outside — so it rises way up into the sky!', prompt: 'Can you count all 4 puffy clouds in the sky? Can you find the diamond shapes woven into the basket?' },
-  'birthday-cake': { fact: 'A long, long time ago in Germany, children woke up on their birthday to a cake with one candle for every year of their life — plus one extra candle called the "light of life." The candles burned all day, and in the evening the child blew them all out while making a secret wish!', prompt: 'Can you count the 5 candles and the 6 presents? And can you find all 9 stars?' },
+  'birthday-cake': { fact: 'A long, long time ago in Germany, children woke up on their birthday to a cake with one candle for every year of their life — plus one extra candle called the \"light of life.\" The candles burned all day, and in the evening the child blew them all out while making a secret wish!', prompt: 'Can you count the 5 candles and the 6 presents? And can you find all 10 stars?' },
   'kitten-yarn': { fact: 'A kitten\'s whiskers are about as wide as its body. They help the kitten feel its way around and tell if it can fit through a small space!', prompt: 'The pink yarn makes 2 curly loops on the floor — can you find them both? And can you spot the big circle? The ball of yarn is round like a circle!' },
-  'sunny-sunflower': { fact: 'Young sunflowers turn their faces to follow the sun across the sky during the day!', prompt: 'Can you count 3 sunflowers and 3 clouds? Every sunflower has 16 petals — count the big one\'s petals!' },
+  'sunny-sunflower': { fact: 'Young sunflowers turn their faces to follow the sun across the sky during the day!', prompt: 'Can you count 3 sunflowers and 3 clouds? This big sunflower has 16 petals — can you count them?' },
   'turtle-friend': { fact: 'A turtle\'s shell is part of its body — it is made of bone and joined to the turtle\'s backbone and ribs, so a turtle can never come out of its shell, and its shell grows with it!', prompt: 'How many lily pads are floating on the pond? (There are 3!) And how many tall cattails can you find? (There are 4!)' },
-  'polar-bear': { fact: 'A polar bear\'s fur looks white, but each hair is actually a clear, hollow tube — and underneath all that white fur, a polar bear\'s skin is black!', prompt: 'How many snowflakes can you count? (There are 10!) And can you find the little orange fish?' },
+  'polar-bear': { fact: 'A polar bear\'s fur looks white, but each hair is really clear — like a tiny see-through straw! And under all that white fur, a polar bear\'s skin is black!', prompt: 'How many snowflakes can you count? (There are 10!) And can you find the little orange fish?' },
   'happy-hippo': { fact: 'Hippos cannot swim! They walk and bounce along the bottom of rivers — and they can hold their breath underwater for about five minutes.', prompt: 'Can you find the little yellow bird? And how many lily pads can you count? (There are 4!)' },
   'sleepy-sloth': { fact: 'Sloths move so slowly that tiny green algae grows on their fur — it helps them hide among the leaves, like a built-in camouflage coat!', prompt: 'How many leaves can you count? (There are 13!) And can you spot the sloth\'s little tail?' },
-  'fairy-garden': { fact: 'A mushroom is not a plant at all — it is a fungus! The mushroom you see is just the top. Under the ground it grows a wide net of tiny threads called mycelium, which can stretch further than the mushroom is tall.', prompt: 'Can you find the 3 butterflies — orange, blue and purple? And how many yellow stars can you count? (There are 15!)' },
+  'fairy-garden': { fact: 'A mushroom is not a plant at all — it is a fungus! The mushroom you see is just the top. Under the ground it grows a wide net of tiny threads called mycelium, which can stretch further than the mushroom is tall.', prompt: 'Can you find the 3 butterflies — orange, blue and purple? And how many big yellow stars can you count? (There are 13!)' },
   'butterfly': { fact: 'A butterfly tastes with its feet! It has tiny taste sensors on its feet that tell it if a leaf is a good place to lay its eggs.', prompt: 'Can you count the sun\'s rays? (There are 16!) And how many flowers can you find? (There are 4!)' },
   'koi-fish-pond': { fact: 'Koi fish can live a very long time — some live more than 100 years!', prompt: 'Can you count the 9 brown cattails around the pond? And can you find the 3 green lily pads floating on the water?' },
   'cherry-blossom-tree': { fact: 'Cherry blossom trees are called sakura in Japan, and every spring people have picnics underneath them just to enjoy the pink flowers!', prompt: 'Can you find the little brown bird sitting on a branch? And how many grass tufts can you count? (There are 8!) How many clouds are in the sky? (There are 2!)' },
   'mermaid-splash': { fact: 'A starfish can grow back one of its arms if it loses one — amazing!', prompt: 'Can you find the smiling starfish? And how many big seashells are on the sand? (There are 3 — two scallop shells and one cone shell!) Can you find the spiral shell in the mermaid\'s hand?' },
   'puddle-jump-duck': { fact: 'A duck\'s feathers are waterproof! A duck spreads a special oil from a tiny gland near its tail all over its feathers, so the rain rolls right off — that is why this little duck can jump in puddles and stay cosy and dry underneath!', prompt: 'Can you count the raindrops? (There are 26!) And can you find the little red umbrella?' },
   'tiger-cub': { fact: 'A tiger\'s stripes are like your fingerprints — no two tigers in the whole world have the same stripe pattern!', prompt: 'How many grass tufts is the tiger cub sitting in? (There are 7!) Can you find the butterfly\'s 4 wings — 2 yellow and 2 orange?' },
-  'ice-cream-truck': { fact: 'The ice cream cone became famous at a big fair in 1904, when a waffle seller rolled his warm waffles into cones so people could carry their ice cream!', prompt: 'Can you count the 5 music notes playing in the sky? And can you find the 3 yellow stars?' },
+  'ice-cream-truck': { fact: 'The ice cream cone became famous at a big fair in 1904, when a waffle seller rolled his warm waffles into cones so people could carry their ice cream!', prompt: 'Can you count the 5 groups of music notes playing in the sky? And can you find the 3 yellow stars?' },
   'bunny': { fact: 'A rabbit\'s big ears are not just for hearing — they help the rabbit stay cool on hot days, like a fan!', prompt: 'Can you count the 4 butterflies in the garden? And can you find the 2 red mushrooms?' },
-  'busy-bee': { fact: 'A honeybee flaps its wings about 200 times every second — that fast flutter is the buzz you hear!', prompt: 'Can you count the 26 honeycomb cells on the beehive? And can you find the bee\'s 2 brown stripes?' },
-  'giraffe': { fact: 'A giraffe\'s spots are like your fingerprints — no two giraffes in the whole world have the same spot pattern!', prompt: 'Can you count the giraffe\'s spots? (There are 25!) Can you find the 3 little flowers at the bottom — pink, yellow and purple?' },
+  'busy-bee': { fact: 'A honeybee flaps its wings about 230 times every second — that fast flutter is the buzz you hear!', prompt: 'Can you count the 11 golden honeycomb cells on the beehive? And can you find the bee\'s 2 brown stripes?' },
+  'giraffe': { fact: 'A giraffe\'s spots are like your fingerprints — no two giraffes in the whole world have the same spot pattern!', prompt: 'Can you count the giraffe\'s spots? Can you find the 3 little flowers at the bottom — pink, yellow and purple?' },
   'dino': { fact: 'A baby dinosaur is called a hatchling — it hatches out of an egg, just like a baby bird!', prompt: 'Can you count the dino\'s 3 spots? And can you find the 2 pink flowers?' },
   'peacock': { fact: 'A peacock\'s big fancy tail is called a train, and it can grow almost 5 feet long — nearly as long as a grown-up is tall! He fans it out to show off his shiny eye-spots.', prompt: 'Can you count all 13 eye-spots on the peacock\'s tail? Can you find the peacock\'s crest — the 3 little stalks with dots on top of his head? And can you find the little mushroom hiding in the garden?' },
   'rainbow': { fact: 'A rainbow appears when sunlight shines through rain — the sunshine bends and splits into all the colours! You can only see a rainbow when the sun is behind you and the rain is in front of you.', prompt: 'Can you count all 10 little birds flying in the sky? How many stripes does the rainbow have? (There are 6 — red, orange, yellow, green, blue and purple!)' },
-  'whale': { fact: 'A whale breathes through a blowhole on the top of its head — when it comes up for air, it blows out a tall fountain of water, just like in this picture!', prompt: 'How many little fish are swimming with the whale? (There are 4!) Can you find the 1 smiling starfish?' },
+  'whale': { fact: 'A whale breathes through a blowhole on the top of its head — when it comes up for air, it breathes out warm air that looks like a tall fountain of mist, just like in this picture!', prompt: 'How many little fish are swimming with the whale? (There are 4!) Can you find the 1 smiling starfish?' },
   'cupcake-stand': { fact: 'Cupcakes got their name because the very first ones were baked in small cups, more than 200 years ago!', prompt: 'How many cupcakes are on the stand? (There are 11!) And how many balloons can you find? (There are 6!)' },
   'zebra': { fact: 'A zebra\'s stripes are like a fingerprint — no two zebras have the same pattern!', prompt: 'How many flowers are at the bottom? (There are 3!) Can you find the smiling sun?' },
-  'clever-fox': { fact: 'A fox\'s big ears help it hear tiny sounds underground!', prompt: 'How many petals does each flower have? (Each flower has 5!) Can you find the butterfly?' },
-  'brave-knight': { fact: 'A knight\'s shield kept them safe, and each knight had their own picture on it!', prompt: 'How many towers does the castle have? (There is 1!) Can you find the gold star?' },
+  'clever-fox': { fact: 'A fox\'s big ears help it hear tiny sounds underground!', prompt: 'How many petals does each flower have? (Each flower has 8!) Can you find the butterfly?' },
+  'brave-knight': { fact: 'A knight\'s shield kept them safe, and each knight had their own picture on it!', prompt: 'How many towers does the castle have? (There is 1!) Can you find the big gold star on the grass?' },
   'octopus': { fact: 'An octopus has three hearts and eight arms!', prompt: 'How many bubbles are floating up? (There are 3!) Can you find the seashell?' },
   'castle': { fact: 'Castles were built long ago to keep kings and queens safe!', prompt: 'How many towers does the castle have? (There are 3!) Can you find the flag?' },
   'kite': { fact: 'Kites were first flown in China more than 2,000 years ago!', prompt: 'How many bows are on the kite\'s tail? (There are 3!) Can you find the little blue bird?' },
   'camping-stars': { fact: 'The moon is not a light — it shines by bouncing sunlight back to us!', prompt: 'How many stars are in the sky? (There are 5!) Can you find the campfire?' },
   'hedgehog': { fact: 'A hedgehog\'s spikes are called quills, and it has about 5,000 of them!', prompt: 'How many flowers are beside the hedgehog? (There are 2!) Can you find the red apple?' },
   'farm-barn': { fact: 'A cow says moo, and a chicken says cluck — and a rooster crows at sunrise!', prompt: 'How many clouds are in the sky? (There are 2!) Can you find the hay bale?' },
-  'party-balloons': { fact: 'The first balloons were made long ago — today they are rubber!', prompt: 'How many balloons are in the bunch? (There are 6!) Can you find the gift box?' },
+  'party-balloons': { fact: 'The first rubber balloon was made in 1824 by a scientist named Michael Faraday — for his science experiments, not for parties! Today party balloons are made of stretchy latex.', prompt: 'How many balloons are in the bunch? (There are 6!) Can you find the gift box?' },
   'squirrel': { fact: 'Squirrels hide acorns to eat later — and sometimes forget where they put them, which plants new trees!', prompt: 'How many mushrooms grow by the tree? (There are 3!) Can you find the acorn?' },
   'crab': { fact: 'Crabs walk sideways!', prompt: 'How many shells are on the sand? (There are 4!) Can you find the smiling starfish?' },
   'submarine': { fact: 'A submarine can dive deep under the sea!', prompt: 'How many fish are swimming? (There are 3!) Can you find the two round windows (portholes)?' },
-  'snowman': { fact: 'No two snowflakes are exactly alike!', prompt: 'How many snowflakes are falling? (There are 5!) Can you find the carrot nose?' },
+  'snowman': { fact: 'Every snowflake is different! Each one grows its own special shape as it falls from the sky!', prompt: 'How many snowflakes are falling? (There are 5!) Can you find the carrot nose?' },
   'pizza': { fact: 'The first pizzas were made in Naples, Italy!', prompt: 'How many olives are on the pizza? (There are 13!) Can you find the tomato?' },
   'lighthouse': { fact: 'A lighthouse\'s light can be seen for many miles out at sea — it helps ships find their way home safely!', prompt: 'How many blue wave humps are at the bottom? (There are 8!) Can you find the little sailboat? What colour are its sails?' },
-  'snail': { fact: 'A snail carries its home on its back — its shell is its house, and it goes everywhere with it!', prompt: 'How many mushrooms are growing on the hill? (There are 4!) Can you find the snail\'s big orange shell? What colour are the flowers?' },
-  'helicopter': { fact: 'A helicopter can fly up, down, sideways, and even hover in one place — no runway needed!', prompt: 'How many green mountains are below the helicopter? (There are 3!) Can you find the helicopter\'s big round window? What colour is the rotor?' },
-  'treasure-chest': { fact: 'Long ago, pirates buried treasure chests full of gold coins and shiny gems — and some are still hidden today!', prompt: 'How many gold coins can you count in the chest? (There are more than 30!) Can you find the golden crown? What colours are the gems?' },
+  'snail': { fact: 'A snail carries its home on its back — its shell is its house, and it goes everywhere with it!', prompt: 'How many mushrooms are growing on the hill? (There are 4!) Can you find the snail\'s big orange shell? How many flowers grow on the hill? (There are 7!)' },
+  'helicopter': { fact: 'A helicopter can fly up, down, sideways, and even hover in one place — no runway needed!', prompt: 'How many green mountains are below the helicopter? (There are 3!) Can you find the helicopter\'s big round window? What colour is the big rotor on top?' },
+  'treasure-chest': { fact: 'In pirate stories, pirates buried treasure chests full of gold coins and shiny gems — and in the stories, some are still hidden today!', prompt: 'How many gold coins are on the sand? (There are 4!) Can you find the golden crown? What colours are the gems?' },
   'donut': { fact: 'The first donuts were round with no hole — the hole helps the donut cook evenly all the way through!', prompt: 'How many strawberries are beside the donut? (There are 2!) Can you find the donut\'s hole in the middle? What colour is the frosting?' },
   'fireworks': { fact: 'Fireworks were first made in China more than 1,000 years ago — people made them to celebrate happy days, just like we do now!', prompt: 'How many little houses are in the town under the fireworks? (There are 5!) Can you find the little grey smoke puff over a chimney?' },
   'jellyfish': { fact: 'A jellyfish has no brain, no heart and no bones — it has been drifting in the sea for millions of years!', prompt: 'How many little fish are swimming with the jellyfish? (There are 3!) Can you find the pink starfish on the sand?' },
@@ -1902,14 +1965,24 @@ const PAGE_FACTS = {
   'starfish': { fact: 'A starfish is not a fish at all — it is a sea star, and if it loses an arm, it can grow a new one!', prompt: 'How many bubbles float above the starfish? (There are 6!) Can you find the little purple shell? (It is next to the pink shell!)' },
   'panda': { fact: 'Giant pandas spend 10 to 16 hours every day eating bamboo — it is almost all they eat!', prompt: 'How many flowers grow in the grass? (There are 4!) Can you find the panda\'s two black ears?' },
   'toucan': { fact: 'A toucan\'s beak looks heavy, but it is very light — it is mostly hollow inside!', prompt: 'How many big green leaves are there? (There are 7!) Can you find the smiling sun in the sky?' },
-  'raccoon': { fact: 'Raccoons are famous for dipping their food in water before they eat it!', prompt: 'How many mushrooms are there? (There are 3!) Can you find the little acorn?' },
+  'raccoon': { fact: 'Raccoons have super-sensitive paws — dipping them in water helps them feel their food even better!', prompt: 'How many mushrooms are there? (There are 3!) Can you find the little acorn?' },
   'fawn': { fact: 'A baby deer is called a fawn. Its white spots help it hide in the dappled sunlight of the forest!', prompt: 'How many flowers are there? (There are 4!) Can you find the butterfly?' },
   'shark': { fact: 'Sharks have been swimming in the sea for over 400 million years — long before the first dinosaurs!', prompt: 'How many orange friends are swimming with the shark? (A little fish and a starfish — 2!) Can you find the pink coral?' },
   'guitar': { fact: 'A guitar has six strings — and people have been playing guitars for hundreds of years!', prompt: 'How many music notes are there? (There are 4!) Can you find the yellow star?' },
   'flamingo': { fact: 'Flamingos are born grey! They turn pink from the food they eat!', prompt: 'How many brown cattails are there? (There are 6!) Can you find the little pink flower on the lily pad?' },
   'bicycle': { fact: 'The first bicycles had no pedals — riders pushed along with their feet!', prompt: 'How many flowers are in the basket? (There are 6!) Can you find the butterfly?' },
   'pumpkin': { fact: 'A pumpkin is a fruit, not a vegetable — it grows from a flower and has seeds inside!', prompt: 'How many leaves are there? (There are 4 — two big vine leaves and two little flower leaves!) Can you find the smiling sun?' },
-  'parrot': { fact: 'Some parrots can learn more than 100 words!', prompt: 'How many leaves are there? (There are 7 — three big ones on the left and four little ones on the right!) Can you find the pink flower?' }
+  'parrot': { fact: 'Some parrots can learn more than 100 words!', prompt: 'How many leaves are there? (There are 8 — four on the left and four little ones on the right!) Can you find the pink flower?' },
+  'graduation-cap': { fact: 'Long ago, students at Oxford University wore a special flat cap when they finished their studies — people call it a mortarboard, because it looks like the flat board builders use to hold mortar!', prompt: 'How many bushes are along the bottom? (There are 8!) Can you find the red bow on the diploma?' },
+  'trophy': { fact: 'The very first trophies were won in ancient Greece — winners of the games were given a wreath of olive leaves to wear like a crown!', prompt: 'How many steps does the trophy stand on? (There are 3!) Can you find the red star on the cup?' },
+  'easel-canvas': { fact: 'A rainbow has seven colours — red, orange, yellow, green, blue, indigo and violet — but the rainbow on this canvas has five!', prompt: 'How many bands does the rainbow have? (There are 5!) Can you find the smiling sun on the canvas?' },
+  'golden-star': { fact: 'Stars are giant balls of hot, glowing gas — our Sun is a star, and it is the closest one to Earth.', prompt: 'How many small stars are around the big star? (There are 5!) Can you find the crescent moon?' },
+  'magic-wand': { fact: 'People have told stories about magic wands for hundreds of years — in old tales, a wand was a symbol of wisdom and wonder.', prompt: 'How many moons are on the page? (There is 1!) Can you find the crescent moon?' },
+  'diploma': { fact: 'A diploma is a special certificate that says you finished your studies — the word \"diploma\" comes from a Greek word for a paper folded in half!', prompt: 'How many books are in the stack? (There are 3!) Can you find the red wax seal?' },
+  'medal': { fact: 'Gold medals for the Olympic Games were first given out in 1904 — before that, winners got silver medals!', prompt: 'How many red stripes are on the ribbon? (There are 6!) Can you find the red star in the middle of the medal?' },
+  'paintbrush-jar': { fact: 'People were painting pictures on cave walls a very, very long time ago — tens of thousands of years!', prompt: 'How many paint blobs are on the palette? (There are 7!) Can you find the red paint tube?' },
+  'party-popper': { fact: 'A party popper goes POP and sends a shower of paper flying everywhere!', prompt: 'How many balloons are there? (There are 2!) Can you find the pink balloon?' },
+  'award-rosette': { fact: 'A rosette ribbon is a prize given to the very best — farmers have pinned rosettes on prize pumpkins and cows at fairs for over a hundred years!', prompt: 'How many ribbon tails hang below the rosette? (There are 2!) Can you find the gold star in the middle?' }
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -1985,6 +2058,35 @@ function showView(id){
   ['welcomeView','stageView','stageDetailView','deskView','galleryGridView','galleryStageView','galleryView','parentView','doodleView'].forEach(v =>
     $(v).classList.toggle('hidden', v !== id));
   window.scrollTo({ top: 0 });
+  saveScreen(id);
+}
+/* 2026-11-22 (Godwin bug report): pull-to-refresh reloaded the app back to
+   the welcome screen. The current screen is saved to sessionStorage on
+   every navigation, so a reload lands back on the same screen (restored
+   below, at the end of the script). sessionStorage only — the tab's own
+   memory, cleared when the tab closes — and the localStorage progress /
+   profile keys are untouched. The parent area is NEVER saved: the hold-gate
+   must stay in front of it, so a reload from the parent area returns to
+   the screen underneath. The welcome screen clears the saved screen, so a
+   reload from welcome still runs the fresh first-open loading flow. */
+const LS_SCREEN = 'cps-proto:screen';
+function saveScreen(id){
+  try {
+    if (id === 'welcomeView'){ sessionStorage.removeItem(LS_SCREEN); return; }
+    if (id === 'parentView') return; /* never persist the parent area */
+    let ctx = null;
+    if (id === 'stageDetailView'){
+      const m = ($('detailTitle').textContent || '').match(/(\d+)/);
+      ctx = m ? parseInt(m[1], 10) : null;
+    } else if (id === 'deskView'){
+      ctx = currentPage ? currentPage.id : null;
+    } else if (id === 'galleryStageView'){
+      ctx = currentGalleryStage;
+    } else if (id === 'galleryView'){
+      ctx = $('galleryImg').dataset.pageId || $('galleryImg').dataset.doodleId || null;
+    }
+    sessionStorage.setItem(LS_SCREEN, JSON.stringify({ view: id, ctx: ctx }));
+  } catch(e){}
 }
 
 /* ================= PERSISTENCE ================= */
@@ -2609,9 +2711,21 @@ function pencilSVG(hex){
     '<rect x="15" y="65.5" width="18" height="5" rx="2" fill="#F2A0B5" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>' +
     '</svg>';
 }
-/* Tool icons: one SVG per tool kind. New tools (master) get their own
-   icon in the tools step — until then they fall back to the crayon icon.
-   Stickers got theirs with Stage 6; stamps with Stage 9. */
+/* Master tool: a big 5-point star in the tray color, with a white gloss
+   and a small gold sparkle — the Master Studio mark. No numbers, no text. */
+function masterSVG(hex){
+  const u = 'm' + (++__svgUid);
+  return '<svg viewBox="0 0 48 72" aria-hidden="true">' +
+    '<defs><linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="' + shade(hex, 45) + '"/><stop offset=".5" stop-color="' + hex + '"/>' +
+    '<stop offset="1" stop-color="' + shade(hex, -20) + '"/></linearGradient></defs>' +
+    '<path d="M24 14 L28.8 27.4 L43 27.8 L31.8 36.5 L35.8 50.2 L24 42.2 L12.2 50.2 L16.2 36.5 L5 27.8 L19.2 27.4 Z" fill="url(#' + u + 'g)" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linejoin="round"/>' +
+    '<ellipse cx="17" cy="24" rx="3" ry="4.5" fill="rgba(255,255,255,0.55)" transform="rotate(-15 17 24)"/>' +
+    '<path d="M38 6 L39.5 10.5 L44 12 L39.5 13.5 L38 18 L36.5 13.5 L32 12 L36.5 10.5 Z" fill="#FFD60A" stroke="rgba(0,0,0,0.12)" stroke-width="0.7" stroke-linejoin="round"/>' +
+    '</svg>';
+}
+/* Tool icons: one SVG per tool kind. Master got its own icon with
+   Stage 10; stickers got theirs with Stage 6; stamps with Stage 9. */
 function toolSVG(tool, hex){
   if (tool === 'pencil') return pencilSVG(hex);
   if (tool === 'marker') return markerSVG(hex);
@@ -2621,6 +2735,7 @@ function toolSVG(tool, hex){
   if (tool === 'glitter') return glitterSVG(hex);
   if (tool === 'sticker') return stickerSVG(hex);
   if (tool === 'stamp') return stampSVG(hex);
+  if (tool === 'master') return masterSVG(hex);
   return crayonSVG(hex);
 }
 /* Sticker: a big glossy die-cut star — the tray color with a white die-cut
@@ -3235,6 +3350,18 @@ function applyFill(res){
              be confused with glitter. Deterministic, so it saves, undos
              and replays exactly. About 4% of the fill stays white. */
           if (hash2(x >> 1, y >> 1) < 0.04){ r = 255; g = 255; b = 255; }
+        } else if (tool === 'master'){
+          /* A painted-masterpiece gradient: light at the top of the
+             region shading to the full guide color at the bottom,
+             computed from the region's own bounding box. Monotonic
+             vertical — distinct from the diagonal sheens (marker, gel,
+             sticker). Deterministic, baked into the base layer, so it
+             saves, undos and replays exactly. */
+          const t = (y - box.y0) / Math.max(1, h - 1);
+          const k2 = 0.55 * (1 - t);
+          r = Math.round(gr + (255 - gr) * k2);
+          g = Math.round(gg + (255 - gg) * k2);
+          b = Math.round(gb + (255 - gb) * k2);
         }
         d[k] = r; d[k + 1] = g; d[k + 2] = b;
         colorArr[p] = currentToolIdx + 1; passArr[p] = 4;
@@ -3326,10 +3453,11 @@ function textureInto(bc, fc, mk, w0, h0, box, tool){
         /* Chunky matte grain (±10%), sampled coarse so it feels chalky. */
         const n = noiseTile[(((y >> 2) & 255) << 8) | ((x >> 1) & 255)];
         f = 1 + 0.10 * n;
-      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter' || tool === 'sticker' || tool === 'stamp'){
+      } else if (tool === 'marker' || tool === 'gel' || tool === 'glitter' || tool === 'sticker' || tool === 'stamp' || tool === 'master'){
         /* Smooth ink: almost no grain (±2%), the gloss comes from the fill.
            Stamps join this family — their uneven ink is baked into the
-           fill (applyFill), not the grain. */
+           fill (applyFill), not the grain. Master joins too — its vertical
+           gradient is baked into the fill, not the grain. */
         const n = noiseTile[(((y >> 1) & 255) << 8) | (x & 255)];
         f = 1 + 0.02 * n;
       } else {
@@ -4674,13 +4802,74 @@ function restoreProgress(){
   } catch(e){}
 }
 
+/* 2026-11-22 (Godwin bug report): restore the screen the child was using
+   after a reload (see saveScreen above). This MUST run before the INIT
+   block below: INIT's showWelcome() would otherwise wipe the saved screen
+   (saveScreen clears the key on welcomeView) and every reload would land
+   on welcome. A saved screen skips the opening loading flow entirely
+   (loadingDone is set, so the pending finishLoading timer becomes a
+   no-op) — the child lands straight back where they were. With no saved
+   screen (fresh first open) nothing happens here and the normal loading
+   bar + welcome song run. Every branch falls back to a safe screen when
+   its context is missing or no longer valid. */
+let screenRestored = false;
+(function restoreScreen(){
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(LS_SCREEN) || 'null'); } catch(e){}
+  if (!saved || !saved.view || saved.view === 'welcomeView' || saved.view === 'parentView') return;
+  loadingDone = true;
+  const ov = $('loadOverlay');
+  if (ov){ ov.classList.add('done'); ov.classList.add('hidden'); }
+  screenRestored = true;
+  if (saved.view === 'stageView'){ showStage(); }
+  else if (saved.view === 'stageDetailView'){
+    const n = parseInt(saved.ctx, 10);
+    if (n >= 1 && n <= 10 && hasStagePages(n) && !stackLocked(n)) openStage(n); else showStage();
+  }
+  else if (saved.view === 'deskView'){
+    if (saved.ctx && PAGE_BY_ID[saved.ctx]) openPage(saved.ctx); else showStage();
+  }
+  else if (saved.view === 'galleryGridView'){ showGalleryStacks(); }
+  else if (saved.view === 'galleryStageView'){
+    const n = parseInt(saved.ctx, 10);
+    if (n >= 1 && n <= 10) showGalleryStage(n); else showGalleryStacks();
+  }
+  else if (saved.view === 'galleryView'){
+    if (saved.ctx && typeof saved.ctx === 'string' && saved.ctx[0] === 'd') showSingleDoodle(saved.ctx);
+    else if (saved.ctx && PAGE_BY_ID[saved.ctx]) showSinglePainting(saved.ctx);
+    else showGalleryStacks();
+  }
+  else if (saved.view === 'doodleView'){
+    buildDoodleSwatches();
+    doodleMirror = false;
+    $('mirrorBtn').textContent = 'Mirror: Off';
+    $('mirrorBtn').setAttribute('aria-pressed', 'false');
+    showView('doodleView');
+  }
+  /* The restore skips the loading flow, so finishLoading (and its
+     checkWelcomeBack) never runs — without this, a new-day return would
+     silently lose the daily Sunshine Star gift whenever the child had
+     left the app on a non-welcome screen (caught by r13 §H, 2026-11-23).
+     The gift overlay is top-level, so it shows over the restored screen
+     and the child collects it there. checkReminder is NOT called here:
+     it writes into the welcome box, so on a restore it would be invisible
+     yet still consume the day's reminder. */
+  checkWelcomeBack();
+})();
+
 /* ================= INIT ================= */
 applyVolume();
 syncVolumeUI();
 syncMuteUI();
 syncMusicToggle();
 applyParentSettings();
-showWelcome();
+/* 2026-11-22 (Godwin bug report): the screen-restore runs BEFORE this INIT
+   block and sets screenRestored when it navigates. INIT's showWelcome()
+   used to run first and wipe the saved screen (saveScreen clears the key
+   on welcomeView) — so a reload always landed on welcome. Now it only
+   runs when nothing was restored, and a fresh first open still gets the
+   normal welcome + loading flow. */
+if (!screenRestored) showWelcome();
 updateUndoBtn();
 applyZoom();
 
