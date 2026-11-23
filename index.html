@@ -959,15 +959,14 @@
   <h2 class="parent-sec">Optional Pages</h2>
   <div class="parent-card">
     <h2>Bible-Story Pages</h2>
-    <p>An optional pack of 7 Bible-story coloring pages. Off by default — only a parent can turn it on.</p>
+    <p>An optional pack of 10 Bible-story coloring pages. Off by default — only a parent can turn it on.</p>
     <div class="switch-row">
       <div>
         <div class="lbl">Bible-Story Pages</div>
-        <div class="desc">7 extra pages, parent-enabled</div>
+        <div class="desc">10 extra pages, parent-enabled</div>
       </div>
       <button class="switch" id="bibleSwitch" role="switch" aria-checked="false" aria-label="Bible-Story Pages"></button>
     </div>
-    <div class="parent-note hidden" id="bibleNote">Bible pages are not in this prototype yet — the switch is ready for the full app.</div>
   </div>
   <div class="parent-card">
     <h2>Mythical Creatures Pages</h2>
@@ -1315,6 +1314,40 @@ const STAGES = [
     ceremony:{ title:'You unlocked Master Studio!', text:'Six pictures done — you are a Master Artist now! Every tool is yours, plus a blank canvas to draw anything you dream up!' } },
 ];
 const STAGE_BY_N = {}; STAGES.forEach(s => STAGE_BY_N[s.n] = s);
+/* ================= PARENT PACKS ================= */
+/* Optional add-on pages: OFF by default, parent-enabled from the Parent
+   area (parentPrefs.bible / .mythical / .superhero), never inside a stage,
+   included in the one unlock at no extra charge. Pack pages carry
+   `pack:'bible'` (etc.) instead of a stage, and always use the crayon tool
+   — the simplest tool, unlocked from the start. Only the Bible pack has
+   pages yet (10, landed 2026-11-23); the other two entries are the shape
+   their builds will fill in. */
+const PACKS = {
+  bible: { key:'bible', name:'Bible-Story Pages', short:'Bible-Story Pack', tool:'crayon',
+    trayLabel:'Your crayons',
+    hint:'<b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.',
+    pref:'bible' },
+  mythical: { key:'mythical', name:'Mythical Creatures Pages', short:'Mythical Creatures Pack', tool:'crayon',
+    trayLabel:'Your crayons',
+    hint:'<b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.',
+    pref:'mythical' },
+  superhero: { key:'superhero', name:'Superhero Pages', short:'Superhero Pack', tool:'crayon',
+    trayLabel:'Your crayons',
+    hint:'<b>Pick a crayon</b>, then tap the picture to color it in! Pinch or use + / &minus; to zoom in on tiny spots.',
+    pref:'superhero' },
+};
+function hasPackPages(key){ return PAGES.some(p => p.pack === key); }
+function packPages(key){ return PAGES.filter(p => p.pack === key); }
+function packDoneCount(key){ return packPages(key).filter(p => progress.finished.includes(p.id)).length; }
+function packComplete(key){ const ps = packPages(key); return ps.length > 0 && ps.every(p => progress.finished.includes(p.id)); }
+function isPackEnabled(key){ return !!(parentPrefs && parentPrefs[PACKS[key].pref]); }
+/* Where a finished picture returns to: its pack's page grid for pack
+   pages, its stage's screen for stage pages (Nana's suggestion). */
+function returnToPageHome(pageId){
+  const p = PAGE_BY_ID[pageId];
+  if (p && p.pack){ openPack(p.pack); return; }
+  if (p) openStage(p.stage);
+}
 function isStageUnlocked(n){ return n === 1 || !!(progress.unlockedStages && progress.unlockedStages[n]); }
 function firstRequiredPage(n){
   const p = PAGES.find(p => p.stage === n && isRequired(p));
@@ -1835,7 +1868,58 @@ const PAGES = [
   { id:'award-rosette', name:'Award Rosette', title:'Color the Award Rosette!', stage:10, tool:'master', required:false,
     line:'assets/award-rosette-line-2x.jpg', guide:'assets/award-rosette-guide.jpg',
     palette:[['Bush Green','#58C440'],['Ribbon Blue','#0094DC'],['Rosette Gold','#FFCE33'],
-             ['Rosette Red','#EF3C38'],['Confetti Pink','#E16791']] }
+             ['Rosette Red','#EF3C38'],['Confetti Pink','#E16791']] },
+  /* Bible-Story parent pack (10 pages, landed 2026-11-23): optional add-on,
+     parent-enabled, never in a stage; always the crayon tool. Moses's guide
+     is AI as-is; the other 9 are flat-fills (see each *-ART-REPORT.md). */
+  { id:'noahs-ark', name:"Noah's Ark", title:"Color Noah's Ark!", pack:'bible', tool:'crayon',
+    line:'assets/noahs-ark-line-2x.jpg', guide:'assets/noahs-ark-guide.jpg',
+    palette:[['Ark Wood Brown','#BA7C4C'],['Sunny Yellow','#FFD33E'],['Elephant Grey','#B4BCBC'],
+             ['Rainbow Orange','#F99534'],['Rainbow Red','#EC463F'],['Giraffe Spot Brown','#7A5741'],
+             ['Rainbow Green','#72BF52'],['Rainbow Blue','#44A1D4'],['Pale Blue','#C0E5F7']] },
+  { id:'david-goliath', name:'David and Goliath', title:'Color David and Goliath!', pack:'bible', tool:'crayon',
+    line:'assets/david-goliath-line-2x.jpg', guide:'assets/david-goliath-guide.jpg',
+    palette:[['Sunny Yellow','#FDE15A'],['Skin Peach','#FDD1A6'],['Sheep Blue','#B4DEEF'],
+             ['Stone Brown','#AB7C52'],['Sheep Orange','#FF9B4B'],['Sheep Purple','#B789D1'],
+             ['Man Blue','#399CDF'],['Cape Red','#FD5148'],['Flower Pink','#FC91B0']] },
+  { id:'daniel-lions', name:'Daniel and the Lions', title:'Color Daniel and the Lions!', pack:'bible', tool:'crayon',
+    line:'assets/daniel-lions-line-2x.jpg', guide:'assets/daniel-lions-guide.jpg',
+    palette:[['Cave Brown','#90552F'],['Lion Gold','#FDC43F'],['Lion Orange','#F8872B'],
+             ['Cave Light','#FCEC9F'],['Robe Blue','#579ED5'],['Skin Peach','#FDC59C'],
+             ['Grass Green','#859B40'],['Lion Pink','#F79386'],['Deep Blue','#205D8D']] },
+  { id:'jonah-fish', name:'Jonah and the Big Fish', title:'Color Jonah and the Big Fish!', pack:'bible', tool:'crayon',
+    line:'assets/jonah-fish-line-2x.jpg', guide:'assets/jonah-fish-guide.jpg',
+    palette:[['Fish Blue','#4DB4E8'],['Skin Peach','#F7CAA1'],['Hair Brown','#A36437'],
+             ['Seaweed Green','#73B855'],['Sandal Blue','#2071BD'],['Fish Mouth Pink','#D67B7E'],
+             ['Bubble Light Blue','#9EDEF8']] },
+  { id:'baby-jesus', name:'Baby Jesus', title:'Color Baby Jesus!', pack:'bible', tool:'crayon',
+    line:'assets/baby-jesus-line-2x.jpg', guide:'assets/baby-jesus-guide.jpg',
+    palette:[['Warm Brown','#A8765A'],['Hay Gold','#FBCB64'],['Mary Blue','#82B0D6'],
+             ['Skin Peach','#FCCEAE'],['Blanket Cream','#FCECD2'],['Dark Brown','#724730'],
+             ['Hoof Grey','#DDD9D5'],['Leaf Green','#799E4D']] },
+  { id:'moses-sea', name:'Moses and the Red Sea', title:'Color Moses and the Red Sea!', pack:'bible', tool:'crayon',
+    line:'assets/moses-sea-line-2x.jpg', guide:'assets/moses-sea-guide.jpg',
+    palette:[['Sea Blue','#36A0DE'],['Path Sand','#FECF6A'],['Robe Brown','#A46F4C'],
+             ['Fish Orange','#FC7C3A'],['Skin','#FDD3AE'],['Purple','#B385BD'],
+             ['Teal','#42AFB0'],['Tunic Tan','#DDC9B0'],['Green','#86B070']] },
+  { id:'joseph-coat', name:"Joseph's Coat", title:"Color Joseph's Coat!", pack:'bible', tool:'crayon',
+    line:'assets/joseph-coat-line-2x.jpg', guide:'assets/joseph-coat-guide.jpg',
+    palette:[['Hill Green','#4BB43D'],['Coat Tan','#D29F70'],['Sheep Black','#303030'],
+             ['Panel Blue','#0195DB'],['Panel Yellow','#FEDF37'],['Hair Brown','#975D2D'],
+             ['Panel Purple','#A547E0'],['Panel Red','#EE3D39'],['Panel Orange','#FF8836']] },
+  { id:'abraham-stars', name:'Abraham and the Stars', title:'Color Abraham and the Stars!', pack:'bible', tool:'crayon',
+    line:'assets/abraham-stars-line-2x.jpg', guide:'assets/abraham-stars-guide.jpg',
+    palette:[['Ground Sand','#F6D48A'],['Robe Brown','#996E4F'],['Fire Orange','#F19449'],
+             ['Star Yellow','#FEDD55'],['Stone Grey','#C9C9C8'],['Tent Navy','#154377']] },
+  { id:'esther-queen', name:'Queen Esther', title:'Color Queen Esther!', pack:'bible', tool:'crayon',
+    line:'assets/esther-queen-line-2x.jpg', guide:'assets/esther-queen-guide.jpg',
+    palette:[['Ground Green','#ACE08E'],['Pillar Cream','#FDF1BD'],['Robe Pink','#E6739E'],
+             ['Roof Red','#E12D2E'],['Robe Purple','#9465CD'],['Flower Yellow','#FDE152'],
+             ['Skin','#FBD1A9'],['Hair Brown','#8C5A33'],['Crown Gold','#FFCD36']] },
+  { id:'ruth-fields', name:'Ruth in the Fields', title:'Color Ruth in the Fields!', pack:'bible', tool:'crayon',
+    line:'assets/ruth-fields-line-2x.jpg', guide:'assets/ruth-fields-guide.jpg',
+    palette:[['Field Green','#B2D27D'],['Wheat Gold','#FDD94D'],['Dress Blue','#318FD3'],
+             ['Basket Brown','#BE7B3F'],['Skin','#FBCFAC'],['Scarf Red','#E84840']] },
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -2007,7 +2091,22 @@ const PAGE_FACTS = {
   'medal': { fact: 'Gold medals for the Olympic Games were first given out in 1904 — before that, winners got silver medals!', prompt: 'How many red stripes are on the ribbon? (There are 6!) Can you find the red star in the middle of the medal?' },
   'paintbrush-jar': { fact: 'People were painting pictures on cave walls a very, very long time ago — tens of thousands of years!', prompt: 'How many paint blobs are on the palette? (There are 7!) Can you find the red paint tube?' },
   'party-popper': { fact: 'A party popper goes POP and sends a shower of paper flying everywhere!', prompt: 'How many balloons are there? (There are 2!) Can you find the pink balloon?' },
-  'award-rosette': { fact: 'A rosette ribbon is a prize given to the very best — farmers have pinned rosettes on prize pumpkins and cows at fairs for over a hundred years!', prompt: 'How many ribbon tails hang below the rosette? (There are 2!) Can you find the gold star in the middle?' }
+  'award-rosette': { fact: 'A rosette ribbon is a prize given to the very best — farmers have pinned rosettes on prize pumpkins and cows at fairs for over a hundred years!', prompt: 'How many ribbon tails hang below the rosette? (There are 2!) Can you find the gold star in the middle?' },
+  /* Bible-Story parent pack (landed 2026-11-23). Quoted lines verified
+     word-for-word against Bible Gateway NIV 2011: Genesis 9:13, Daniel 6:22,
+     Genesis 15:5, Esther 4:14. The rest are story paraphrases; numbers in
+     prompts were checked against the shipped guides. Abraham's prompt is a
+     find, not a count — the guide's star regions number 35, not 46. */
+  'noahs-ark': { fact: "After the great flood, God put a rainbow in the sky as a sign of his promise to Noah. The Bible says, 'I have set my rainbow in the clouds, and it will be the sign of the covenant between me and the earth.'", prompt: 'Can you find the 2 giraffes on the ark?' },
+  'david-goliath': { fact: 'David was a young shepherd boy, and he trusted God. Before he faced the giant Goliath, he chose five smooth stones from the stream for his sling.', prompt: 'Can you find the 5 sheep with David?' },
+  'daniel-lions': { fact: "Daniel prayed to God every day, and God kept him safe all night with the lions. Daniel said, 'My God sent his angel, and he shut the mouths of the lions. They have not hurt me.'", prompt: 'Can you find the 4 lions?' },
+  'jonah-fish': { fact: 'Jonah was inside a huge fish for three days and three nights, and God kept him safe the whole time. Then the fish set him safely back on dry land.', prompt: 'Can you find the 2 clouds in the sky?' },
+  'baby-jesus': { fact: 'When Jesus was born in Bethlehem, Mary wrapped him in cloths and laid him in a manger.', prompt: 'Can you find the 4 animals around the manger?' },
+  'moses-sea': { fact: 'God parted the sea so Moses and the people could walk through on dry land, with the water standing up like walls on both sides.', prompt: 'Can you count the 6 people walking through the sea?' },
+  'joseph-coat': { fact: "Joseph's father loved him very much and made him a beautiful ornate robe — a special coat, brighter than any of his brothers' coats.", prompt: "Can you count the 6 colors in Joseph's coat?" },
+  'abraham-stars': { fact: "God took Abraham outside at night and told him to look up and count the stars. God said his family would be as many as the stars in the sky. God's words were, 'Look up at the sky and count the stars — if indeed you can count them. So shall your offspring be.'", prompt: 'Can you find the crescent moon?' },
+  'esther-queen': { fact: "Esther was a brave queen. When her people were in danger, she spoke up to the king to save them. Her uncle Mordecai told her, 'And who knows but that you have come to your royal position for such a time as this?'", prompt: 'Can you find the 3 flowers in the palace?' },
+  'ruth-fields': { fact: 'Ruth gathered leftover grain in the fields so she and Naomi would have food to eat, and God took care of them both.', prompt: 'Can you count the 4 birds flying in the sky?' },
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -2102,12 +2201,12 @@ function saveScreen(id){
     if (id === 'parentView') return; /* never persist the parent area */
     let ctx = null;
     if (id === 'stageDetailView'){
-      const m = ($('detailTitle').textContent || '').match(/(\d+)/);
-      ctx = m ? parseInt(m[1], 10) : null;
+      if (currentDetailPack){ ctx = currentDetailPack; }
+      else { const m = ($('detailTitle').textContent || '').match(/(\d+)/); ctx = m ? parseInt(m[1], 10) : null; }
     } else if (id === 'deskView'){
       ctx = currentPage ? currentPage.id : null;
     } else if (id === 'galleryStageView'){
-      ctx = currentGalleryStage;
+      ctx = currentGalleryPack || currentGalleryStage;
     } else if (id === 'galleryView'){
       ctx = $('galleryImg').dataset.pageId || $('galleryImg').dataset.doodleId || null;
     }
@@ -2383,7 +2482,10 @@ function dailyShowcaseSeed(){
 }
 function mulberry32(a){ return function(){ a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 function pickDailyShowcase(){
-  const req = PAGES.filter(p => p.required !== false);
+  /* One required page per stage, round-robin. Pack pages never join the
+     showcase — they are parent-gated, and the welcome screen must not
+     tease pages a parent has not turned on. */
+  const req = PAGES.filter(p => p.required !== false && !p.pack);
   const byStage = {};
   req.forEach(p => { (byStage[p.stage] = byStage[p.stage] || []).push(p); });
   const stages = Object.keys(byStage).map(Number).sort((a, b) => a - b);
@@ -2942,7 +3044,7 @@ function selectTool(btn, kind, idx, magic){
 function buildTray(){
   const tray = $('tools');
   tray.innerHTML = '';
-  $('trayLabel').textContent = STAGE_BY_N[currentPage.stage].trayLabel;
+  $('trayLabel').textContent = currentPage.pack ? PACKS[currentPage.pack].trayLabel : STAGE_BY_N[currentPage.stage].trayLabel;
   currentPage.palette.forEach(([name, hex], i) => {
     const b = document.createElement('button');
     b.className = 'tool' + (i === 0 ? ' sel' : '');
@@ -3042,7 +3144,9 @@ function stageComplete(stage){
 }
 function makeStageCard(p, locked, stageN){
   const done = progress.finished.includes(p.id);
-  const lockText = 'Finish ' + requiredTotal(stageN - 1) + ' Stage ' + (stageN - 1) + ' pages to unwrap ' + STAGE_BY_N[stageN].name + '!';
+  const lockText = locked
+    ? 'Finish ' + requiredTotal(stageN - 1) + ' Stage ' + (stageN - 1) + ' pages to unwrap ' + STAGE_BY_N[stageN].name + '!'
+    : '';
   const card = document.createElement('button');
   card.className = 'card' + (locked ? ' locked' : '');
   card.setAttribute('aria-label', locked ? p.name + ', locked' : 'Color the ' + p.name);
@@ -3125,6 +3229,9 @@ function openStage(n){
      section — the same cards the old all-stages screen showed. */
   if (!hasStagePages(n)) { toast(stackLockText(n)); return; }
   if (stackLocked(n)) { toast(stackLockText(n)); return; }
+  currentDetailPack = null;
+  const bonusSec = document.querySelector('#stageDetailView .bonus-sec');
+  if (bonusSec) bonusSec.classList.remove('hidden');
   const st = STAGE_BY_N[n];
   $('detailTitle').textContent = 'Stage ' + n;
   const pill = $('detailPill');
@@ -3133,6 +3240,7 @@ function openStage(n){
   $('detailProg').textContent = (requiredDoneCount(n) + bonusDoneCount(n)) + ' of 10 done';
   const badge = document.getElementById('detailBadge') || document.querySelector('#stageDetailView .complete-badge');
   badge.id = 'stage' + n + 'Badge';
+  badge.innerHTML = STAR_SVG + 'Stage Complete';
   badge.classList.toggle('hidden', !stageComplete(n));
   const reqWrap = $('detailRequired');
   reqWrap.innerHTML = '';
@@ -3143,9 +3251,71 @@ function openStage(n){
   tagMonthlyDrops();
   showView('stageDetailView');
 }
-/* Parent-pack sections (Phase 9): built when a pack toggle is ON. Stub
-   until the packs land — called from buildStacks. */
-function buildPackSections(){}
+/* Parent-pack sections: one Polaroid stack per ENABLED pack that has pages,
+   rendered after the 10 stage stacks on the Stages screen. A pack is never
+   locked by progress — the parent toggle IS the gate — so its stack always
+   opens. When the toggle is OFF the pack is invisible here (and in the
+   gallery); the child's finished pack paintings wait until a parent turns
+   it back on. */
+let currentDetailPack = null;
+function buildPackSections(){
+  const wrap = $('stacksList');
+  if (!wrap) return;
+  Object.keys(PACKS).forEach(key => {
+    const pk = PACKS[key];
+    if (!hasPackPages(key) || !isPackEnabled(key)) return;
+    const pages = packPages(key);
+    const done = packDoneCount(key);
+    const btn = document.createElement('button');
+    btn.className = 'stack pack-stack';
+    btn.setAttribute('aria-label', pk.short + ', ' + done + ' of ' + pages.length + ' done');
+    const faces = [
+      { img: pages[0].guide, name: pages[0].name },
+      pages[1] ? { img: pages[1].guide, name: pages[1].name } : null,
+      pages[2] ? { img: pages[2].guide, name: pages[2].name } : null,
+    ];
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2') +
+        polaroidHTML(faces[1], 'back1') +
+        polaroidHTML(faces[0], 'front') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">' + pk.short.toUpperCase() + '</span>' +
+        '<span class="stage-pill ' + pk.tool + '">' + pk.name + '</span>' +
+        (packComplete(key) ? '<span class="complete-badge">' + STAR_SVG + 'Pack Complete</span>' : '') +
+        '<span class="stack-progress">' + done + ' of ' + pages.length + ' done</span>' +
+      '</span>';
+    btn.addEventListener('click', () => openPack(key));
+    wrap.appendChild(btn);
+  });
+}
+function openPack(key){
+  /* One pack's pages as a plain grid — no required/bonus split, no unlock
+     rule: every page is open as soon as a parent turns the pack on. Reuses
+     the stage detail view; the Bonus section is hidden and the badge reads
+     "Pack Complete" at 10/10. */
+  const pk = PACKS[key];
+  if (!pk || !hasPackPages(key) || !isPackEnabled(key)){ toast('Ask a grown-up to turn this pack on in For Parents.'); return; }
+  currentDetailPack = key;
+  const pages = packPages(key);
+  $('detailTitle').textContent = pk.name;
+  const pill = $('detailPill');
+  pill.textContent = pk.short;
+  pill.className = 'stage-pill ' + pk.tool;
+  $('detailProg').textContent = packDoneCount(key) + ' of ' + pages.length + ' done';
+  const badge = document.getElementById('detailBadge') || document.querySelector('#stageDetailView .complete-badge');
+  badge.innerHTML = STAR_SVG + 'Pack Complete';
+  badge.classList.toggle('hidden', !packComplete(key));
+  const reqWrap = $('detailRequired');
+  reqWrap.innerHTML = '';
+  pages.forEach(p => reqWrap.appendChild(makeStageCard(p, false, 1)));
+  const bonWrap = $('detailBonus');
+  bonWrap.innerHTML = '';
+  const bonusSec = document.querySelector('#stageDetailView .bonus-sec');
+  if (bonusSec) bonusSec.classList.add('hidden');
+  showView('stageDetailView');
+}
 /* Monthly drops (QW9): the bonus pages are the "New in {Month}" drop. */
 function tagMonthlyDrops(){
   document.querySelectorAll('.bonus-head').forEach(h => {
@@ -3217,15 +3387,23 @@ function openPage(id){
   currentFillKind = 'flat'; currentMagic = null;
   zoom.scale = 1; zoom.tx = 0; zoom.ty = 0; applyZoom();
   $('deskTitle').textContent = currentPage.title;
-  const st = STAGE_BY_N[currentPage.stage];
   const stEl = $('deskStage');
-  stEl.textContent = 'Stage ' + currentPage.stage + ' · ' + st.name;
-  stEl.className = 'stage ' + st.tool;
+  if (currentPage.pack){
+    /* Pack pages have no stage: the pill names the pack, the tool is
+       always crayons (see PACKS). */
+    const pk = PACKS[currentPage.pack];
+    stEl.textContent = pk.short + ' · Crayons';
+    stEl.className = 'stage ' + pk.tool;
+  } else {
+    const st = STAGE_BY_N[currentPage.stage];
+    stEl.textContent = 'Stage ' + currentPage.stage + ' · ' + st.name;
+    stEl.className = 'stage ' + st.tool;
+  }
   $('guideThumbImg').src = currentPage.guide;
   $('guideThumbImg').alt = 'Color guide: the finished ' + currentPage.name.toLowerCase();
   $('guideThumbImg').style.aspectRatio = currentPage.square ? '1/1' : '3/2';
   $('guideFullImg').src = currentPage.guide;
-  $('hint').innerHTML = st.hint;
+  $('hint').innerHTML = currentPage.pack ? PACKS[currentPage.pack].hint : STAGE_BY_N[currentPage.stage].hint;
   $('paper').classList.add('loading');
   $('loadingNote').classList.remove('hidden');
   $('loadingNote').textContent = 'Loading your ' + currentPage.name.toLowerCase() + '…';
@@ -3821,8 +3999,9 @@ $('doneBtn').addEventListener('click', () => {
   const isNewFinish = !progress.finished.includes(currentPage.id);
   if (isNewFinish) progress.finished.push(currentPage.id);
   /* Unlock: the last distinct REQUIRED page of this stage finished. Bonus
-     pages never count toward the unlock. */
-  if (isNewFinish && isRequired(currentPage) && requiredDoneCount(currentPage.stage) >= requiredTotal(currentPage.stage)){
+     pages never count toward the unlock. Pack pages never unlock anything
+     (no stage, no ceremony) — they just count as finished. */
+  if (!currentPage.pack && isNewFinish && isRequired(currentPage) && requiredDoneCount(currentPage.stage) >= requiredTotal(currentPage.stage)){
     const next = currentPage.stage + 1;
     if (next <= 10 && !isStageUnlocked(next)){
       progress.unlockedStages[next] = true;
@@ -3864,8 +4043,8 @@ $('seePictureBtn').addEventListener('click', () => {
   }
   /* 2026-11-22 (Nana's suggestion): finishing a picture returns to THAT
      STAGE'S screen — not the gallery. The gallery is still one tap away
-     from the stage screen's menu. */
-  openStage(currentPage.stage);
+     from the stage screen's menu. Pack pages return to their pack's grid. */
+  returnToPageHome(currentPage.id);
 });
 $('signPictureBtn').addEventListener('click', () => {
   $('starsOverlay').classList.add('hidden');
@@ -3875,8 +4054,9 @@ $('restMoreBtn').addEventListener('click', () => {
   $('restOverlay').classList.add('hidden');
   sessionDone = 0;
   /* 2026-11-22 (Nana's suggestion): "One more picture" goes back to the
-     stage's screen to pick the next picture — not the gallery. */
-  openStage(currentPage.stage);
+     stage's screen to pick the next picture — not the gallery. Pack pages
+     go back to their pack's grid. */
+  returnToPageHome(currentPage.id);
 });
 $('restDoneBtn').addEventListener('click', () => {
   $('restOverlay').classList.add('hidden');
@@ -4141,12 +4321,13 @@ $('signDoneBtn').addEventListener('click', () => {
   $('signOverlay').classList.add('hidden');
   toast('Signed! Now it\'s really yours.');
   /* 2026-11-22 (Nana's suggestion): after signing, back to the stage's
-     screen — the signed painting is in the gallery via the stage menu. */
-  openStage(PAGE_BY_ID[signPageId].stage);
+     screen — the signed painting is in the gallery via the stage menu.
+     Pack pages go back to their pack's grid. */
+  returnToPageHome(signPageId);
 });
 $('signCancelBtn').addEventListener('click', () => {
   $('signOverlay').classList.add('hidden');
-  openStage(PAGE_BY_ID[signPageId].stage);
+  returnToPageHome(signPageId);
 });
 
 /* ================= GALLERY ================= */
@@ -4218,6 +4399,7 @@ async function paintingDataURL(pageId){
    Saving a doodle opens Stage 10's paintings right away so the child sees
    what they just made, even while Stage 10 is still locked. */
 let currentGalleryStage = 1;
+let currentGalleryPack = null; /* set when viewing one pack's paintings */
 async function showGalleryStacks(){
   const wrap = $('galleryStacksList');
   wrap.innerHTML = '';
@@ -4276,6 +4458,77 @@ async function showGalleryStacks(){
     });
     wrap.appendChild(btn);
   }
+  /* One stack per ENABLED pack that has pages — same Polaroid look, no
+     lock (the parent toggle is the gate). Finished pack paintings stay
+     visible while the pack is on; turning it off hides the stack. */
+  for (const key of Object.keys(PACKS)){
+    const pk = PACKS[key];
+    if (!hasPackPages(key) || !isPackEnabled(key)) continue;
+    const pages = packPages(key);
+    const ids = pages.map(p => p.id).filter(id => finished.includes(id));
+    const count = ids.length;
+    const faces = [
+      count ? { img: await paintingDataURL(ids[0]), name: PAGE_BY_ID[ids[0]].name } : null,
+      count > 1 ? { img: await paintingDataURL(ids[1]), name: PAGE_BY_ID[ids[1]].name } : null,
+      count > 2 ? { img: await paintingDataURL(ids[2]), name: PAGE_BY_ID[ids[2]].name } : null,
+    ];
+    const btn = document.createElement('button');
+    btn.className = 'stack pack-stack';
+    btn.setAttribute('aria-label', pk.short + ' gallery, ' + count + (count === 1 ? ' painting' : ' paintings'));
+    btn.innerHTML =
+      '<span class="stack-fan">' +
+        polaroidHTML(faces[2], 'back2') +
+        polaroidHTML(faces[1], 'back1') +
+        polaroidHTML(faces[0], 'front') +
+      '</span>' +
+      '<span class="stack-label">' +
+        '<span class="stack-title">' + pk.short.toUpperCase() + '</span>' +
+        '<span class="stage-pill ' + pk.tool + '">' + pk.name + '</span>' +
+        (packComplete(key) ? '<span class="complete-badge">' + STAR_SVG + 'Pack Complete</span>' : '') +
+        '<span class="stack-progress">' + (count ? count + (count === 1 ? ' painting' : ' paintings') : 'No paintings yet') + '</span>' +
+      '</span>';
+    btn.addEventListener('click', () => showGalleryPack(key));
+    wrap.appendChild(btn);
+  }
+}
+/* One pack's saved paintings, newest first — mirrors showGalleryStage,
+   but with no lock and no required/bonus split. */
+async function showGalleryPack(key){
+  const pk = PACKS[key];
+  if (!pk || !hasPackPages(key) || !isPackEnabled(key)){ toast('Ask a grown-up to turn this pack on in For Parents.'); return; }
+  currentGalleryPack = key;
+  currentGalleryStage = null;
+  const pages = packPages(key);
+  const ids = pages.map(p => p.id).filter(id => progress.finished.includes(id));
+  $('galleryStageTitle').textContent = pk.name;
+  /* NOTE (2026-11-23): this first used $('galleryStageCount') and
+     $('galleryStageGrid') — neither id exists. The stage view has no count
+     line and its grid is $('galleryGrid'), so the pack view mirrors
+     showGalleryStage exactly: title + gcard buttons in galleryGrid. */
+  const grid = $('galleryGrid');
+  grid.innerHTML = '';
+  const seen = new Set();
+  for (let i = ids.length - 1; i >= 0; i--){
+    const id = ids[i];
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const card = document.createElement('button');
+    card.className = 'gcard';
+    const img = document.createElement('img');
+    const url = await paintingDataURL(id);
+    if (!url){ continue; }
+    img.src = url;
+    img.alt = 'Your finished ' + PAGE_BY_ID[id].name.toLowerCase() + ' painting';
+    card.appendChild(img);
+    const nm = document.createElement('div');
+    nm.className = 'name';
+    nm.textContent = PAGE_BY_ID[id].name;
+    card.appendChild(nm);
+    card.addEventListener('click', () => showSinglePainting(id));
+    grid.appendChild(card);
+  }
+  $('galleryStageEmpty').classList.toggle('hidden', ids.length > 0);
+  showView('galleryStageView');
 }
 async function showGalleryStage(n){
   currentGalleryStage = n;
@@ -4323,7 +4576,8 @@ async function showGalleryStage(n){
 }
 async function showSinglePainting(pageId){
   const p = PAGE_BY_ID[pageId];
-  currentGalleryStage = p.stage;
+  if (p.pack){ currentGalleryPack = p.pack; currentGalleryStage = null; }
+  else { currentGalleryPack = null; currentGalleryStage = p.stage; }
   $('galleryTitle').textContent = 'My ' + p.name;
   $('galleryImg').alt = 'Your finished colored ' + p.name.toLowerCase();
   const url = await paintingDataURL(pageId);
@@ -4353,7 +4607,10 @@ function showSingleDoodle(id){
 }
 $('galleryBtn').addEventListener('click', () => showGalleryStacks());
 $('galleryBackBtn').addEventListener('click', () => showStage());
-$('singleBackBtn').addEventListener('click', () => showGalleryStage(currentGalleryStage));
+$('singleBackBtn').addEventListener('click', () => {
+  if (currentGalleryPack) showGalleryPack(currentGalleryPack);
+  else showGalleryStage(currentGalleryStage);
+});
 $('detailBackBtn').addEventListener('click', () => showStage());
 $('galleryStageBackBtn').addEventListener('click', () => showGalleryStacks());
 $('againBtn').addEventListener('click', () => {
@@ -4665,7 +4922,6 @@ $('holdBtn').addEventListener('pointerdown', e => {
   $('holdBtn').addEventListener(ev, resetHold));
 function syncParentScreen(){
   $('bibleSwitch').setAttribute('aria-checked', parentPrefs.bible ? 'true' : 'false');
-  $('bibleNote').classList.toggle('hidden', !parentPrefs.bible);
   $('mythicalSwitch').setAttribute('aria-checked', parentPrefs.mythical ? 'true' : 'false');
   $('mythicalNote').classList.toggle('hidden', !parentPrefs.mythical);
   $('heroSwitch').setAttribute('aria-checked', parentPrefs.superhero ? 'true' : 'false');
@@ -4774,13 +5030,18 @@ function renderProgressView(){
   const p = profiles.profiles.find(x => x.id === activeProfileId) || profiles.profiles[0];
   const rows = [
     ['Coloring as', '<b>' + escapeHtml(p.name || 'Player') + '</b>'],
-    ['Pictures finished', '<b>' + progress.finished.length + ' of ' + PAGES.length + '</b>']
+    ['Pictures finished', '<b>' + progress.finished.length + ' of ' + PAGES.filter(pg => !pg.pack || isPackEnabled(pg.pack)).length + '</b>']
   ];
   /* One row per stage that has pages (grows as stages land). */
   STAGES.forEach(st => {
     if (!PAGES.some(pg => pg.stage === st.n)) return;
     rows.push(['Stage ' + st.n + ' · ' + st.name,
       '<b>' + requiredDoneCount(st.n) + ' of ' + requiredTotal(st.n) + ' to finish · ' + bonusDoneCount(st.n) + ' of ' + bonusTotal(st.n) + ' bonus</b>' + (stageComplete(st.n) ? ' · Stage Complete!' : '')]);
+  });
+  /* One row per landed parent pack. */
+  Object.keys(PACKS).forEach(key => {
+    if (!hasPackPages(key)) return;
+    rows.push([PACKS[key].name, '<b>' + packDoneCount(key) + ' of ' + packPages(key).length + ' done</b>' + (packComplete(key) ? ' · Pack Complete!' : '')]);
   });
   rows.push(
     ['Sunshine Stars', '<b>' + meta.welcomeStars + '</b>'],
@@ -4911,16 +5172,16 @@ let screenRestored = false;
   screenRestored = true;
   if (saved.view === 'stageView'){ showStage(); }
   else if (saved.view === 'stageDetailView'){
-    const n = parseInt(saved.ctx, 10);
-    if (n >= 1 && n <= 10 && hasStagePages(n) && !stackLocked(n)) openStage(n); else showStage();
+    if (typeof saved.ctx === 'string' && PACKS[saved.ctx] && hasPackPages(saved.ctx) && isPackEnabled(saved.ctx)) openPack(saved.ctx);
+    else { const n = parseInt(saved.ctx, 10); if (n >= 1 && n <= 10 && hasStagePages(n) && !stackLocked(n)) openStage(n); else showStage(); }
   }
   else if (saved.view === 'deskView'){
     if (saved.ctx && PAGE_BY_ID[saved.ctx]) openPage(saved.ctx); else showStage();
   }
   else if (saved.view === 'galleryGridView'){ showGalleryStacks(); }
   else if (saved.view === 'galleryStageView'){
-    const n = parseInt(saved.ctx, 10);
-    if (n >= 1 && n <= 10) showGalleryStage(n); else showGalleryStacks();
+    if (typeof saved.ctx === 'string' && PACKS[saved.ctx] && hasPackPages(saved.ctx) && isPackEnabled(saved.ctx)) showGalleryPack(saved.ctx);
+    else { const n = parseInt(saved.ctx, 10); if (n >= 1 && n <= 10) showGalleryStage(n); else showGalleryStacks(); }
   }
   else if (saved.view === 'galleryView'){
     if (saved.ctx && typeof saved.ctx === 'string' && saved.ctx[0] === 'd') showSingleDoodle(saved.ctx);
@@ -4997,6 +5258,7 @@ window.__cps = {
   setZoom(s){ zoom.scale = s; applyZoom(); },
   openPage,
   showStage, openStage, showGalleryStacks, showGalleryStage,
+  openPack, showGalleryPack, pickDailyShowcase,
   fillPixel(x, y){
     const d = fctx.getImageData(x, y, 1, 1).data;
     return [d[0], d[1], d[2], d[3]];
