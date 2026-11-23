@@ -1019,15 +1019,14 @@
   </div>
   <div class="parent-card">
     <h2>Mythical Creatures Pages</h2>
-    <p>An optional pack of mythical creature coloring pages. Off by default — only a parent can turn it on.</p>
+    <p>An optional pack of 10 mythical creature coloring pages. Off by default — only a parent can turn it on.</p>
     <div class="switch-row">
       <div>
         <div class="lbl">Mythical Creatures Pages</div>
-        <div class="desc">Extra pages, parent-enabled</div>
+        <div class="desc">10 extra pages, parent-enabled</div>
       </div>
       <button class="switch" id="mythicalSwitch" role="switch" aria-checked="false" aria-label="Mythical Creatures Pages"></button>
     </div>
-    <div class="parent-note hidden" id="mythicalNote">Mythical creature pages are not in this prototype yet — the switch is ready for the full app.</div>
   </div>
   <div class="parent-card">
     <h2>Superhero Pages</h2>
@@ -1368,9 +1367,9 @@ const STAGE_BY_N = {}; STAGES.forEach(s => STAGE_BY_N[s.n] = s);
    area (parentPrefs.bible / .mythical / .superhero), never inside a stage,
    included in the one unlock at no extra charge. Pack pages carry
    `pack:'bible'` (etc.) instead of a stage, and always use the crayon tool
-   — the simplest tool, unlocked from the start. Only the Bible pack has
-   pages yet (10, landed 2026-11-23); the other two entries are the shape
-   their builds will fill in. */
+   — the simplest tool, unlocked from the start. The Bible pack (10, landed
+   2026-11-23) and the Mythical Creatures pack (10, landed 2026-11-23) have
+   pages; the superhero entry is the shape its build will fill in. */
 const PACKS = {
   bible: { key:'bible', name:'Bible-Story Pages', short:'Bible-Story Pack', tool:'crayon',
     trayLabel:'Your crayons',
@@ -1969,6 +1968,47 @@ const PAGES = [
     line:'assets/ruth-fields-line-2x.jpg', guide:'assets/ruth-fields-guide.jpg',
     palette:[['Field Green','#B2D27D'],['Wheat Gold','#FDD94D'],['Dress Blue','#318FD3'],
              ['Basket Brown','#BE7B3F'],['Skin','#FBCFAC'],['Scarf Red','#E84840']] },
+  { id:'phoenix', name:'The Phoenix', title:'Color the Phoenix!', pack:'mythical', tool:'crayon',
+    line:'assets/phoenix-line-2x.jpg', guide:'assets/phoenix-guide.jpg',
+    palette:[['Flame Red','#F34E25'],['Phoenix Gold','#F6B528']] },
+  { id:'pegasus', name:'Pegasus', title:'Color Pegasus!', pack:'mythical', tool:'crayon',
+    line:'assets/pegasus-line-2x.jpg', guide:'assets/pegasus-guide.jpg',
+    palette:[['Mane Gold','#FCD255'],['Flower Pink','#F98CA3'],['Grass Green','#54AE52']] },
+  { id:'griffin', name:'The Griffin', title:'Color the Griffin!', pack:'mythical', tool:'crayon',
+    line:'assets/griffin-line-2x.jpg', guide:'assets/griffin-guide.jpg',
+    palette:[['Grass Green','#5FB43C'],['Griffin Gold','#D7963F'],['Rock Grey','#9E9E9B'],
+             ['Sun Yellow','#FED847'],['Flower Pink','#FD6B9F']] },
+  { id:'centaur', name:'The Centaur', title:'Color the Centaur!', pack:'mythical', tool:'crayon',
+    line:'assets/centaur-line-2x.jpg', guide:'assets/centaur-guide.jpg',
+    palette:[['Leaf Green','#82B744'],['Horse Brown','#B97749'],['Skin Peach','#FBCEAC'],
+             ['Tunic Blue','#4899D4'],['Sun Yellow','#FCD55A'],['Tail Brown','#674833'],
+             ['Flower Pink','#F46F8A'],['Butterfly Orange','#FC9E55']] },
+  { id:'kraken', name:'The Kraken', title:'Color the Kraken!', pack:'mythical', tool:'crayon',
+    line:'assets/kraken-line-2x.jpg', guide:'assets/kraken-guide.jpg',
+    palette:[['Sand Yellow','#FCEBA6'],['Kraken Purple','#9A7BC1'],['Seaweed Green','#86C360'],
+             ['Starfish Pink','#FAA4B4'],['Fish Orange','#FC9647'],['Bubble Blue','#C1E2EB']] },
+  { id:'yeti', name:'The Yeti', title:'Color the Yeti!', pack:'mythical', tool:'crayon',
+    line:'assets/yeti-line-2x.jpg', guide:'assets/yeti-guide.jpg',
+    palette:[['Pine Green','#4FA24C'],['Mountain Blue','#BFDBEA'],['Yeti Peach','#FCCEB7'],
+             ['Sun Yellow','#FED451'],['Trunk Brown','#9A6C4C']] },
+  { id:'jackalope', name:'The Jackalope', title:'Color the Jackalope!', pack:'mythical', tool:'crayon',
+    line:'assets/jackalope-line-2x.jpg', guide:'assets/jackalope-guide.jpg',
+    palette:[['Bunny Tan','#D1A57B'],['Sun Yellow','#FDD84C'],['Carrot Orange','#FA8136'],
+             ['Antler Brown','#9D6E4C'],['Grass Green','#68A948'],['Butterfly Grey','#51504F'],
+             ['Butterfly Blue','#78BADC'],['Cream','#FAF0E5'],['Ear Pink','#FB9EB4']] },
+  { id:'cyclops', name:'The Cyclops', title:'Color the Cyclops!', pack:'mythical', tool:'crayon',
+    line:'assets/cyclops-line-2x.jpg', guide:'assets/cyclops-guide.jpg',
+    palette:[['Meadow Green','#41C13E'],['Skin Peach','#FDC7AC'],['Trouser Blue','#0070BA'],
+             ['Boot Brown','#A96733'],['Sun Yellow','#FDDD44'],['Flower Pink','#FB8AB6']] },
+  { id:'sphinx', name:'The Sphinx', title:'Color the Sphinx!', pack:'mythical', tool:'crayon',
+    line:'assets/sphinx-line-2x.jpg', guide:'assets/sphinx-guide.jpg',
+    palette:[['Sand Gold','#F0B760'],['Skin Peach','#FEC9A3'],['Headdress Blue','#5694C5'],
+             ['Palm Green','#7FB254'],['Palm Brown','#A67047'],['Bird Blue','#C4E1E9']] },
+  { id:'minotaur', name:'The Minotaur', title:'Color the Minotaur!', pack:'mythical', tool:'crayon',
+    line:'assets/minotaur-line-2x.jpg', guide:'assets/minotaur-guide.jpg',
+    palette:[['Leaf Green','#66B431'],['Minotaur Brown','#AC6E40'],['Sun Yellow','#FDDA33'],
+             ['Muzzle Cream','#F4DEAC'],['Flower Pink','#FD91B0'],['Butterfly Blue','#6ABEE7'],
+             ['Dark Brown','#6A3B20'],['Butterfly Orange','#FE9B3C']] },
 ];
 const PAGE_BY_ID = {}; PAGES.forEach(p => PAGE_BY_ID[p.id] = p);
 const WALL = 200;
@@ -2156,6 +2196,16 @@ const PAGE_FACTS = {
   'abraham-stars': { fact: "God took Abraham outside at night and told him to look up and count the stars. God said his family would be as many as the stars in the sky. God's words were, 'Look up at the sky and count the stars — if indeed you can count them. So shall your offspring be.'", prompt: 'Can you find the crescent moon?' },
   'esther-queen': { fact: "Esther was a brave queen. When her people were in danger, she spoke up to the king to save them. Her uncle Mordecai told her, 'And who knows but that you have come to your royal position for such a time as this?'", prompt: 'Can you find the 3 flowers in the palace?' },
   'ruth-fields': { fact: 'Ruth gathered leftover grain in the fields so she and Naomi would have food to eat, and God took care of them both.', prompt: 'Can you count the 4 birds flying in the sky?' },
+  'phoenix': { fact: 'In old stories from Egypt and Greece, the phoenix was a beautiful fiery bird that lived for a very long time. When it grew old, people said it burst into flames — and a brand-new phoenix rose up from the ashes!', prompt: 'How many yellow stars are in the sky? (There are 5!)' },
+  'pegasus': { fact: 'In old Greek stories, Pegasus was a winged horse who could fly up to the home of the gods. People said that wherever his hoof struck the ground, a spring of water bubbled up!', prompt: 'How many flowers are on the hill? (There are 5!)' },
+  'griffin': { fact: 'In old Greek stories, a griffin had the head and wings of an eagle and the body of a lion. People said griffins were very strong — and that they guarded piles of gold!', prompt: 'How many pink flowers are on the grass? (There are 3!)' },
+  'centaur': { fact: 'In old Greek stories, centaurs were half person and half horse. The kindest centaur was named Chiron — he was a wise teacher who taught heroes like Achilles.', prompt: 'How many butterflies are flying? (There are 3!)' },
+  'kraken': { fact: 'In old stories told by sailors from Norway, the kraken was a giant sea creature as big as an island! Sailors said it had huge arms that could reach right up out of the water.', prompt: 'How many little fish are swimming with the kraken? (There are 3!)' },
+  'yeti': { fact: 'In old stories from the Himalaya mountains, the yeti is a big, shaggy, shy creature that lives high up in the snow. Some people call it the Abominable Snowman — but in our picture, it is just a friendly giant!', prompt: 'How many snowflakes are falling? (There are 6!)' },
+  'jackalope': { fact: 'In old stories from the American West, the jackalope is a rabbit with little antlers like a deer. People in Wyoming tell tales about it — and some even say it can sing!', prompt: 'How many jackalopes are in the meadow? (There are 2!)' },
+  'cyclops': { fact: 'In old Greek stories, a Cyclops was a giant with just one big eye. The most famous Cyclops was named Polyphemus — he lived in a cave, and the hero Odysseus met him on his long journey home.', prompt: 'How many birds are flying in the sky? (There are 4!)' },
+  'sphinx': { fact: 'In old stories from Egypt, the Sphinx was a creature with a lion\'s body and a person\'s head. The biggest one still sits in the sand near the pyramids — it is as long as a jumbo jet!', prompt: 'How many pyramids are behind the sphinx? (There are 2!)' },
+  'minotaur': { fact: 'In old Greek stories, the Minotaur was a creature with a bull\'s head who lived in a twisty maze called the Labyrinth on the island of Crete. The hero Theseus found his way through the maze with a ball of string!', prompt: 'How many butterflies are flying? (There are 3!)' },
 };
 /* Monthly drops (QW9/BB6): the bonus pages of each stage ARE this month's
    new drop — the badge is dated from the real calendar month. Future drops
@@ -4998,7 +5048,6 @@ $('holdBtn').addEventListener('pointerdown', e => {
 function syncParentScreen(){
   $('bibleSwitch').setAttribute('aria-checked', parentPrefs.bible ? 'true' : 'false');
   $('mythicalSwitch').setAttribute('aria-checked', parentPrefs.mythical ? 'true' : 'false');
-  $('mythicalNote').classList.toggle('hidden', !parentPrefs.mythical);
   $('heroSwitch').setAttribute('aria-checked', parentPrefs.superhero ? 'true' : 'false');
   $('heroNote').classList.toggle('hidden', !parentPrefs.superhero);
   $('leftSwitch').setAttribute('aria-checked', parentPrefs.leftHanded ? 'true' : 'false');
