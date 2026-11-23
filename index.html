@@ -86,6 +86,50 @@
   .home-note{margin-top:14px; color:#FFE9B8; font-size:13.5px; font-weight:700; text-align:center;
     text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65);}
 
+  /* ---------- stage menu (2026-11-22, Nana's suggestion) ---------- */
+  /* The Pick a Stage screen's bottom buttons live under a drop-down menu
+     icon at the top-right corner. The button sits beside the small hanging
+     sign (top-center, max 180px wide), never over it; the panel drops down
+     over the stacks while open and closes on any tap outside it or on a
+     menu item. Buttons keep their ids + handlers — only their home changes. */
+  #stageView{position:relative;}
+  .stage-menu-btn{position:absolute; top:12px; right:14px; z-index:30;
+    width:52px; height:52px; border-radius:50%;
+    background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 2px rgba(255,255,255,.55);
+    display:flex; align-items:center; justify-content:center;}
+  .stage-menu-btn:active{transform:scale(.94);}
+  .stage-menu{position:absolute; top:72px; right:14px; z-index:30;
+    width:min(300px,calc(100vw - 28px));
+    background:#FFFDF6; border-radius:18px; padding:14px;
+    box-shadow:0 18px 40px rgba(50,25,0,.45), inset 0 0 0 2px rgba(138,109,59,.28);}
+  .stage-menu .home-btns{flex-direction:column; margin-top:0;}
+  .stage-menu .bg-music-row{flex-direction:column; margin-top:12px;}
+  .stage-menu .done-btn, .stage-menu .bg-change-btn{width:100%;}
+  .stage-menu .parents-btn{width:100%; min-height:56px;
+    background:linear-gradient(180deg,#FFFFFF,#F3EAD6); color:#5C4632;
+    box-shadow:0 3px 8px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.08), inset 0 0 0 2px rgba(138,109,59,.35);}
+  .stage-menu .song-replay-btn{flex:0 0 auto; width:100%; min-height:56px; border-radius:16px;
+    background:linear-gradient(180deg,#FFFFFF,#F3EAD6); color:#5C4632; gap:8px;
+    box-shadow:0 3px 8px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.08);}
+  .stage-menu .song-replay-btn svg{fill:#5C4632;}
+  .stage-menu .song-replay-btn .menu-label{display:inline; font-size:17px; font-weight:800; color:#5C4632;}
+  .song-replay-btn .menu-label{display:none;}
+  .stage-menu .bg-change-btn{background:linear-gradient(180deg,#FFFFFF,#F3EAD6); color:#5C4632;
+    box-shadow:0 3px 8px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.08);}
+  .stage-menu #changeBgBtn svg{fill:#5C4632;}
+  .stage-menu #doodleBtn svg{stroke:#5C4632;}
+  .stage-menu .stop-btn{flex:0 0 auto; width:100%; min-height:56px; flex-direction:row; gap:8px;
+    background:linear-gradient(180deg,#FFFFFF,#F3EAD6); color:#5C4632;
+    box-shadow:0 3px 8px rgba(50,25,0,.18), inset 0 2px 0 rgba(255,255,255,.95),
+      inset 0 -3px 0 rgba(0,0,0,.08);}
+  .stage-menu .stop-btn svg{fill:#5C4632;}
+  .stage-menu .stop-btn .toggle-label{font-size:15px;}
+  /* left-handed flip is a row flip — inside the menu the rows stay stacked */
+  body.left-handed .stage-menu .home-btns, body.left-handed .stage-menu .bg-music-row{flex-direction:column;}
+
   /* ---------- desk screen (Phase 0 layout, reused) ---------- */
   .desk{min-height:100dvh; display:flex; flex-direction:column; align-items:center;
     padding:calc(10px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom));
@@ -593,14 +637,10 @@
 
 <!-- ============ STAGE SCREEN ============ -->
 <div class="screen" id="stageView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
-    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
-  </div>
-  <h1>Pick a Stage</h1>
-  <p class="sub">Tap a stack to see its pictures</p>
-
-  <div class="stacks-list" id="stacksList"></div>
-
+  <button class="stage-menu-btn" id="stageMenuBtn" aria-label="More choices" aria-expanded="false" aria-controls="stageMenu">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="stage-menu hidden" id="stageMenu" role="menu" aria-label="More choices">
   <div class="home-btns">
     <button class="done-btn" id="galleryBtn">
       My Gallery
@@ -609,6 +649,7 @@
     <button class="parents-btn" id="parentsBtn">For Parents</button>
     <button class="song-replay-btn" id="replaySongBtn" aria-label="Hear the welcome song again">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      <span class="menu-label">Hear our song</span>
     </button>
   </div>
   <div class="bg-music-row hidden" id="bgMusicRow">
@@ -628,6 +669,15 @@
       Doodle Pad — Master Studio
     </button>
   </div>
+  </div>
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+    <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
+  </div>
+  <h1>Pick a Stage</h1>
+  <p class="sub">Tap a stack to see its pictures</p>
+
+  <div class="stacks-list" id="stacksList"></div>
+
   <p class="home-note">Your paintings stay here in the app.</p>
   <div id="welcomeStarsWrap" class="hidden" style="width:100%; text-align:center;">
     <span class="stars-pill" id="welcomeStarsPill">
@@ -1044,7 +1094,7 @@
     </div>
     <h2>You did it!</h2>
     <p id="starsText">You colored the whole picture!</p>
-    <button class="big-btn" id="seePictureBtn">See my picture</button>
+    <button class="big-btn" id="seePictureBtn">Back to my stage</button>
     <button class="ghost-btn" id="signPictureBtn">Sign your picture</button>
   </div>
 </div>
@@ -2855,6 +2905,7 @@ function tagMonthlyDrops(){
 }
 function showStage(){
   buildStacks();
+  setStageMenu(false); /* a fresh stage screen always starts with the menu shut */
   $('bgMusicRow').classList.toggle('hidden', BG_TRACKS.length === 0);
   updateStarsPill();
   showView('stageView');
@@ -3310,7 +3361,7 @@ $('redoBtn').addEventListener('click', () => {
 /* ================= ZOOM (Phase 0, proven) ================= */
 const zoomViewport = $('zoomViewport');
 let zoom = { scale: 1, tx: 0, ty: 0 };
-const ZOOM_MIN = 1, ZOOM_MAX = 3, TAP_SLOP = 12, TAP_MS = 600;
+const ZOOM_MIN = 1, ZOOM_MAX = 5, TAP_SLOP = 12, TAP_MS = 600;
 const pointers = new Map();
 let tapCandidate = null;
 let pinch = null;
@@ -3503,7 +3554,10 @@ $('seePictureBtn').addEventListener('click', () => {
     $('restOverlay').classList.remove('hidden');
     return;
   }
-  showSinglePainting(currentPage.id);
+  /* 2026-11-22 (Nana's suggestion): finishing a picture returns to THAT
+     STAGE'S screen — not the gallery. The gallery is still one tap away
+     from the stage screen's menu. */
+  openStage(currentPage.stage);
 });
 $('signPictureBtn').addEventListener('click', () => {
   $('starsOverlay').classList.add('hidden');
@@ -3512,7 +3566,9 @@ $('signPictureBtn').addEventListener('click', () => {
 $('restMoreBtn').addEventListener('click', () => {
   $('restOverlay').classList.add('hidden');
   sessionDone = 0;
-  showSinglePainting(currentPage.id);
+  /* 2026-11-22 (Nana's suggestion): "One more picture" goes back to the
+     stage's screen to pick the next picture — not the gallery. */
+  openStage(currentPage.stage);
 });
 $('restDoneBtn').addEventListener('click', () => {
   $('restOverlay').classList.add('hidden');
@@ -3776,11 +3832,13 @@ $('signDoneBtn').addEventListener('click', () => {
   saveProgress(true);
   $('signOverlay').classList.add('hidden');
   toast('Signed! Now it\'s really yours.');
-  showSinglePainting(signPageId);
+  /* 2026-11-22 (Nana's suggestion): after signing, back to the stage's
+     screen — the signed painting is in the gallery via the stage menu. */
+  openStage(PAGE_BY_ID[signPageId].stage);
 });
 $('signCancelBtn').addEventListener('click', () => {
   $('signOverlay').classList.add('hidden');
-  showSinglePainting(signPageId);
+  openStage(PAGE_BY_ID[signPageId].stage);
 });
 
 /* ================= GALLERY ================= */
@@ -4237,6 +4295,31 @@ $('parentsBtn').addEventListener('click', () => {
   gatePurpose = 'parent'; gateAfter = null;
   $('gateOverlay').classList.remove('hidden');
   resetHold();
+});
+/* Stage menu (2026-11-22, Nana's suggestion): the Pick a Stage screen's
+   bottom buttons live under a drop-down menu icon at the top-right corner.
+   Tapping the icon opens/closes the panel; tapping a menu item runs its
+   usual handler and closes the panel; tapping anywhere else closes it.
+   Uses getElementById so it is safe to call from showStage() before this
+   wiring runs. */
+function setStageMenu(open){
+  const m = document.getElementById('stageMenu'), b = document.getElementById('stageMenuBtn');
+  if (!m || !b) return;
+  m.classList.toggle('hidden', !open);
+  b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+$('stageMenuBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  setStageMenu($('stageMenu').classList.contains('hidden'));
+});
+document.addEventListener('click', e => {
+  const m = $('stageMenu');
+  if (m.classList.contains('hidden')) return;
+  if (m.contains(e.target) || $('stageMenuBtn').contains(e.target)) return;
+  setStageMenu(false);
+});
+$('stageMenu').addEventListener('click', e => {
+  if (e.target.closest('button')) setStageMenu(false);
 });
 $('gateClose').addEventListener('click', () => {
   gatePurpose = 'parent'; gateAfter = null;
