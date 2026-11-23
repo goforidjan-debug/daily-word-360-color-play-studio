@@ -457,6 +457,16 @@
   .fact-line{margin:12px 4px 0; text-align:center; font-size:14px; font-weight:700; color:#FFE9B8;
     text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65); line-height:1.45;}
   .fact-line b{color:#FFE45C;}
+  /* "Did you know?" narration — speaker button (Caitlin reads the fact).
+     30px gold circular tap target, pulsing while playing. SVG only, no emoji. */
+  .fact-speak{display:inline-flex; align-items:center; justify-content:center;
+    width:30px; height:30px; margin:0 2px; padding:0; vertical-align:middle;
+    color:#FFE45C; background:rgba(43,24,4,.55); border:2px solid #FFE45C;
+    border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,.35);}
+  .fact-speak svg{width:18px; height:18px; display:block;}
+  .fact-speak.playing{background:#FFE45C; color:#5A3A00;
+    animation:fact-speak-pulse 1s ease-in-out infinite;}
+  @keyframes fact-speak-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
   .alive{animation:alive-dance 1.2s ease-in-out infinite;}
   @keyframes alive-dance{
     0%,100%{transform:rotate(-5deg) scale(1) translateY(0);}
@@ -649,6 +659,7 @@
 
 <audio id="welcomeAudio" src="assets/welcome-song.mp3" preload="auto"></audio>
 <audio id="bgAudio" preload="auto"></audio>
+<audio id="factAudio" preload="none"></audio>
 
 <!-- ============ STAGE SCREEN ============ -->
 <div class="screen" id="stageView">
@@ -2055,6 +2066,7 @@ function toast(msg){
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
 }
 function showView(id){
+  stopFactAudio();
   ['welcomeView','stageView','stageDetailView','deskView','galleryGridView','galleryStageView','galleryView','parentView','doodleView'].forEach(v =>
     $(v).classList.toggle('hidden', v !== id));
   window.scrollTo({ top: 0 });
@@ -2163,6 +2175,7 @@ const BG_TRACKS = ['assets/bg-1-happy-ukulele.mp3', 'assets/bg-2-gentle-flutes.m
 const BG_NAMES = ['Happy Ukulele', 'Gentle Flutes', 'Bouncy Cartoon', 'Sunny Pop', 'Quiet and Calm'];
 const song = $('welcomeAudio');
 const bgAudio = $('bgAudio');
+const factAudio = $('factAudio');
 let volumePref = loadVolumePref();
 let muted = loadMutedPref();
 let bgIndex = 0;
@@ -2183,8 +2196,10 @@ function loadMutedPref(){
 function applyVolume(){
   song.volume = VOL[volumePref] || 1;
   bgAudio.volume = (VOL[volumePref] || 1) * BG_GAIN;
+  factAudio.volume = VOL[volumePref] || 1;
   song.muted = muted;
   bgAudio.muted = muted;
+  factAudio.muted = muted;
 }
 function syncVolumeUI(){
   $('volHighBtn').classList.toggle('sel', volumePref === 'high');
@@ -3115,14 +3130,46 @@ function showStage(){
 }
 
 /* ================= LOAD LINE ART ================= */
+/* --- "Did you know?" narration (Caitlin) ---
+   Speaker button sits after the "Did you know?" heading, before the fact
+   text (Godwin, 2026-11-23). Tap to play, tap again to stop. The button is
+   rebuilt on every page open, so the tap handler is delegated (see INIT). */
+const FACT_SPEAK_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const FACT_STOP_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+const FACT_SPEAK_BTN = '<button type="button" class="fact-speak" id="factSpeakBtn" aria-label="Hear this fact read aloud">' + FACT_SPEAK_SVG + '</button>';
+function syncFactSpeakUI(){
+  const btn = $('factSpeakBtn');
+  if (!btn) return;
+  const playing = !factAudio.paused && !factAudio.ended;
+  btn.classList.toggle('playing', playing);
+  btn.innerHTML = playing ? FACT_STOP_SVG : FACT_SPEAK_SVG;
+  btn.setAttribute('aria-label', playing ? 'Stop reading this fact' : 'Hear this fact read aloud');
+}
+function stopFactAudio(){
+  factAudio.pause();
+  try { factAudio.currentTime = 0; } catch(e){}
+  syncFactSpeakUI();
+}
+function toggleFactAudio(){
+  if (!currentPage || !PAGE_FACTS[currentPage.id]) return;
+  if (!factAudio.paused && !factAudio.ended){ stopFactAudio(); return; }
+  if (muted){ toast('Sound is off — a grown-up can turn it on in For Parents.'); return; }
+  factAudio.src = 'assets/audio/did-you-know/' + currentPage.id + '.mp3';
+  applyVolume();
+  const p = factAudio.play();
+  if (p && p.catch) p.catch(() => {});
+  syncFactSpeakUI();
+}
+factAudio.addEventListener('ended', syncFactSpeakUI);
 function showFactLine(){
   const el = $('factLine');
   const f = PAGE_FACTS[currentPage.id];
-  if (!parentPrefs.factsOn || !f){ el.classList.add('hidden'); el.innerHTML = ''; return; }
-  el.innerHTML = '<b>Did you know?</b> ' + f.fact + ' ' + f.prompt;
+  if (!parentPrefs.factsOn || !f){ stopFactAudio(); el.classList.add('hidden'); el.innerHTML = ''; return; }
+  el.innerHTML = '<b>Did you know?</b> ' + FACT_SPEAK_BTN + ' ' + f.fact + ' ' + f.prompt;
   el.classList.remove('hidden');
 }
 function openPage(id){
+  stopFactAudio();
   currentPage = PAGE_BY_ID[id];
   undoStack = []; taps = 0; doneFlag = false;
   redoStack = []; fillLog = []; signedFlag = false;
@@ -4872,6 +4919,11 @@ applyParentSettings();
 if (!screenRestored) showWelcome();
 updateUndoBtn();
 applyZoom();
+/* "Did you know?" narration — one delegated tap handler for the speaker
+   button (rebuilt on every page open, so delegation survives re-renders). */
+$('factLine').addEventListener('click', (e) => {
+  if (e.target.closest('#factSpeakBtn')) toggleFactAudio();
+});
 
 /* Debug handle for automated verification only (not part of the UI). */
 window.__cps = {
