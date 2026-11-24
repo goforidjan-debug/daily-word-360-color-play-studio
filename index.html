@@ -362,6 +362,38 @@
     box-shadow:0 3px 10px rgba(50,25,0,.35), inset 0 2px 0 rgba(255,255,255,.9),
       inset 0 -2px 0 rgba(0,0,0,.1);}
 
+  /* ---------- storage meter + select/delete (Gallery, 2026-11-23 storage fix) ----------
+     Paintings moved from localStorage (~5 MB cap) to IndexedDB (origin quota).
+     The meter shows real usage vs quota every time the Gallery opens; at 80%
+     it calmly asks a grown-up to delete old paintings. Delete is parent-gated
+     (same 3 s hold as Send/Print) + confirmed. Glossy 3D buttons, cream/gold,
+     SVG icons only — same as the rest of the Gallery. */
+  .storage-meter{width:100%; max-width:640px; background:rgba(255,251,242,.97); border-radius:16px;
+    padding:12px 14px; margin-top:14px; box-shadow:0 8px 20px rgba(50,25,0,.35);}
+  .storage-meter-row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .storage-meter-label{display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; color:#2B2118;}
+  .storage-meter-label svg{flex:0 0 auto;}
+  .storage-meter-text{font-size:14px; font-weight:700; color:#5C4632; text-align:right;}
+  .storage-meter-bar{height:12px; border-radius:999px; background:#EADFC8; margin-top:10px; overflow:hidden;}
+  .storage-meter-fill{height:100%; width:0%; border-radius:999px;
+    background:linear-gradient(180deg,#FFE45C,#FFD60A 55%,#F5B800); transition:width .4s ease;}
+  .storage-meter-fill.almost-full{background:linear-gradient(180deg,#FF9A7A,#FF6B4A 55%,#E8552F);}
+  .storage-meter-warn{margin:10px 0 0; font-size:14px; font-weight:700; color:#8A3B00;}
+  #storageFullOverlay .big-btn{display:block; margin:0 auto 12px;}
+  .gallery-select-row{width:100%; max-width:640px; display:flex; align-items:center; gap:12px; margin-top:12px;}
+  .gallery-select-row .save-btn{flex:0 0 auto; min-height:48px; padding:0 22px; font-size:16px;}
+  .gallery-select-row .save-btn.on{background:linear-gradient(180deg,#FFE45C,#FFD60A 55%,#F5B800); color:#4A2E00;}
+  .gallery-select-count{font-size:15px; font-weight:800; color:#FFE9B8;
+    text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8);}
+  #galleryDeleteBtn:disabled{opacity:.45;}
+  .gcard{position:relative;}
+  .gcard .sel-badge{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,.95); border:3px solid #B9A27A; color:#B8860B;
+    display:none; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.3);}
+  .gallery-selecting .gcard .sel-badge{display:flex;}
+  .gcard.selected{box-shadow:0 0 0 3px #FFD60A, 0 0 0 6px #2B2118, 0 10px 24px rgba(50,25,0,.38);}
+  .gcard.selected .sel-badge{border-color:#FFD60A; background:#FFD60A; color:#4A2E00;}
+
   /* ---------- parent area ---------- */
   .parent-card{width:100%; max-width:640px; background:rgba(255,251,242,.97); border-radius:18px;
     padding:18px; margin-top:16px; box-shadow:0 10px 26px rgba(50,25,0,.38);}
@@ -913,6 +945,18 @@
   </div>
   <h1>My Gallery</h1>
   <p class="sub">Look what you made! Tap a stack to see that stage's paintings.</p>
+  <div class="storage-meter" id="storageMeter">
+    <div class="storage-meter-row">
+      <span class="storage-meter-label">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A6D3B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+        Storage
+      </span>
+      <span class="storage-meter-text" id="storageMeterText">Checking storage…</span>
+    </div>
+    <div class="storage-meter-bar"><div class="storage-meter-fill" id="storageMeterFill"></div></div>
+    <p class="storage-meter-warn hidden" id="storageMeterWarn">Storage is almost full — ask a grown-up to delete some old paintings.</p>
+  </div>
+  <p class="sub hidden" id="galleryStorageHint">Storage is full — tap a stage, then Select, to delete old paintings.</p>
   <div class="stacks-list" id="galleryStacksList"></div>
   <p class="sub">Your paintings stay here in the app.</p>
   <p class="sub hidden" id="galleryStacksEmpty">No paintings yet — color a page and tap Done!</p>
@@ -931,6 +975,25 @@
   </div>
   <h1 id="galleryStageTitle">Stage 1</h1>
   <p class="sub">Your finished paintings</p>
+  <div class="storage-meter" id="storageMeter2">
+    <div class="storage-meter-row">
+      <span class="storage-meter-label">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A6D3B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+        Storage
+      </span>
+      <span class="storage-meter-text" id="storageMeterText2">Checking storage…</span>
+    </div>
+    <div class="storage-meter-bar"><div class="storage-meter-fill" id="storageMeterFill2"></div></div>
+    <p class="storage-meter-warn hidden" id="storageMeterWarn2">Storage is almost full — ask a grown-up to delete some old paintings.</p>
+  </div>
+  <div class="gallery-select-row">
+    <button class="save-btn" id="gallerySelectBtn" aria-label="Select paintings to delete">Select</button>
+    <span class="gallery-select-count hidden" id="gallerySelectCount">Tap paintings to select them</span>
+  </div>
+  <div class="gallery-btns hidden" id="galleryDeleteBar">
+    <button class="done-btn" id="galleryDeleteBtn" disabled>Delete</button>
+    <button class="save-btn" id="gallerySelectCancelBtn">Done</button>
+  </div>
   <div class="gallery-grid" id="galleryGrid"></div>
   <p class="sub hidden" id="galleryStageEmpty">No paintings yet — color a page and tap Done!</p>
 </div>
@@ -989,6 +1052,27 @@
     <h2>Grown-ups only</h2>
     <p>Press and hold the circle for 3 seconds.</p>
     <div class="hold-ring" id="holdRing"><div class="inner" id="holdBtn">Hold<br>here</div></div>
+  </div>
+</div>
+
+<!-- ============ STORAGE FULL — DELETE OR SAVE TO DEVICE (2026-11-23 storage fix) ============ -->
+<div class="overlay hidden" id="storageFullOverlay" role="dialog" aria-label="Storage is full">
+  <div class="stars-box">
+    <h2>Storage is full</h2>
+    <p>This picture could not be saved. Your picture is still here — choose what to do.</p>
+    <button class="big-btn" id="storageSaveDeviceBtn">Save this picture to the device</button>
+    <button class="big-btn" id="storageDeleteBtn">Delete old paintings</button>
+    <button class="ghost-btn" id="storageFullClose">Not now</button>
+  </div>
+</div>
+
+<!-- ============ DELETE PAINTINGS — CONFIRM (2026-11-23 storage fix) ============ -->
+<div class="overlay hidden" id="deleteConfirmOverlay" role="dialog" aria-label="Delete paintings">
+  <div class="stars-box">
+    <h2 id="deleteConfirmTitle">Delete 1 painting?</h2>
+    <p>They will be gone from the gallery, and those pages will be blank to color again.</p>
+    <button class="big-btn" id="deleteConfirmYes">Yes, delete</button>
+    <button class="ghost-btn" id="deleteConfirmNo">Keep them</button>
   </div>
 </div>
 
@@ -2295,7 +2379,7 @@ let fillLog = [];          /* BB2 replay log: {kind, colorIdx, magic, x, y} per 
 let signedFlag = false;    /* this page already has a signature stamped on it */
 let replaying = false;     /* true while a replay is running: no taps, no saves */
 let sessionDone = 0;       /* pictures finished this session (BB5 gentle ending) */
-let gatePurpose = 'parent';/* 'parent' | 'send' | 'print' — what the hold gate unlocks */
+let gatePurpose = 'parent';/* 'parent' | 'send' | 'print' | 'delete-paintings' — what the hold gate unlocks */
 let gateAfter = null;      /* callback to run when the gate opens for send/print */
 let currentFillKind = 'flat'; /* 'flat' | 'magic' | 'eraser' | 'glitter-brush' */
 let currentMagic = null;   /* magic fill id when currentFillKind === 'magic' */
@@ -4485,6 +4569,131 @@ $('signCancelBtn').addEventListener('click', () => {
 });
 
 /* ================= GALLERY ================= */
+/* ---- Storage meter, select + delete, storage-full choice (2026-11-23) ----
+   Meter: navigator.storage.estimate() — real origin usage vs quota, refreshed
+   every time a Gallery screen opens and after every save/delete. At 80% of
+   quota a calm one-line note asks a grown-up to delete old paintings.
+   Delete: parent-gated (same 3 s press-and-hold as Send/Print) + a
+   "Delete N paintings?" confirm — never a one-tap wipe. Deleting removes
+   the stored painting AND its progress, so the page returns to uncoloured
+   (the desk starts white and restore finds nothing). Doodles are kept
+   separately and cannot be deleted here. */
+function formatBytes(n){
+  if (n >= 1073741824) return (n / 1073741824).toFixed(1) + ' GB';
+  if (n >= 1048576) return (n / 1048576 >= 10 ? (n / 1048576).toFixed(0) : (n / 1048576).toFixed(1)) + ' MB';
+  if (n >= 1024) return (n / 1024).toFixed(0) + ' KB';
+  return n + ' B';
+}
+async function refreshStorageMeter(override){
+  let usage = null, quota = null;
+  if (override && typeof override.usage === 'number' && typeof override.quota === 'number'){
+    usage = override.usage; quota = override.quota;
+  } else {
+    try {
+      const est = await navigator.storage.estimate();
+      if (est && typeof est.usage === 'number' && typeof est.quota === 'number' && est.quota > 0){
+        usage = est.usage; quota = est.quota;
+      }
+    } catch(e){}
+    if (usage === null){
+      /* estimate() unavailable: fall back to the localStorage-era count. */
+      let total = 0;
+      try {
+        for (let i = 0; i < localStorage.length; i++){
+          const k = localStorage.key(i);
+          if (k && k.indexOf('cps-proto:') === 0) total += (localStorage.getItem(k) || '').length;
+        }
+      } catch(e){}
+      usage = total; quota = 5 * 1024 * 1024;
+    }
+  }
+  const frac = quota > 0 ? usage / quota : 0;
+  const text = formatBytes(usage) + ' of ' + formatBytes(quota) + ' used';
+  /* A minimum 1% sliver while anything is stored: with a GB-scale quota a
+     family's first paintings would otherwise round to a 0.0% bar that never
+     visibly moves. The text above stays exact. */
+  const widthPct = usage > 0 ? Math.min(100, Math.max(frac * 100, 1)) : 0;
+  [['storageMeterText', 'storageMeterFill', 'storageMeterWarn'],
+   ['storageMeterText2', 'storageMeterFill2', 'storageMeterWarn2']].forEach(([t, f, w]) => {
+    const te = $(t); if (te) te.textContent = text;
+    const fe = $(f);
+    if (fe){ fe.style.width = widthPct.toFixed(1) + '%'; fe.classList.toggle('almost-full', frac >= 0.8); }
+    const we = $(w); if (we) we.classList.toggle('hidden', frac < 0.8);
+  });
+  return { usage, quota, frac };
+}
+let gallerySelectMode = false;
+let gallerySelected = new Set();
+let autoSelectOnStage = false; /* jump from the storage-full choice into select mode */
+function selBadge(){
+  const s = document.createElement('span');
+  s.className = 'sel-badge';
+  s.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+  return s;
+}
+function setGallerySelectMode(on){
+  gallerySelectMode = !!on;
+  if (!on) gallerySelected.clear();
+  const grid = $('galleryGrid');
+  if (grid) grid.classList.toggle('gallery-selecting', gallerySelectMode);
+  const btn = $('gallerySelectBtn');
+  if (btn){ btn.classList.toggle('on', gallerySelectMode); btn.textContent = gallerySelectMode ? 'Selecting…' : 'Select'; }
+  const bar = $('galleryDeleteBar');
+  if (bar) bar.classList.toggle('hidden', !gallerySelectMode);
+  refreshGallerySelection();
+}
+function refreshGallerySelection(){
+  const n = gallerySelected.size;
+  const count = $('gallerySelectCount');
+  if (count){
+    count.classList.toggle('hidden', !gallerySelectMode);
+    count.textContent = n ? n + (n === 1 ? ' painting selected' : ' paintings selected') : 'Tap paintings to select them';
+  }
+  const del = $('galleryDeleteBtn');
+  if (del) del.disabled = n === 0;
+  document.querySelectorAll('#galleryGrid .gcard[data-page-id]').forEach(card => {
+    card.classList.toggle('selected', gallerySelected.has(card.dataset.pageId));
+  });
+}
+function toggleGallerySelect(pageId){
+  if (gallerySelected.has(pageId)) gallerySelected.delete(pageId);
+  else gallerySelected.add(pageId);
+  refreshGallerySelection();
+}
+function showDeleteConfirm(){
+  const n = gallerySelected.size;
+  if (!n) return;
+  $('deleteConfirmTitle').textContent = 'Delete ' + n + (n === 1 ? ' painting?' : ' paintings?');
+  $('deleteConfirmOverlay').classList.remove('hidden');
+}
+async function deleteSelectedPaintings(){
+  const ids = Array.from(gallerySelected);
+  if (!ids.length) return;
+  for (const id of ids){
+    await deletePaintingRecord(id);
+    delete paintingCache[id];
+    const i = progress.finished.indexOf(id);
+    if (i >= 0) progress.finished.splice(i, 1);
+  }
+  saveProgressState();
+  setGallerySelectMode(false);
+  $('deleteConfirmOverlay').classList.add('hidden');
+  if (currentGalleryPack) await showGalleryPack(currentGalleryPack);
+  else if (currentGalleryStage) await showGalleryStage(currentGalleryStage);
+  else showGalleryStacks();
+  refreshStorageMeter();
+  toast(ids.length === 1 ? 'Painting deleted.' : ids.length + ' paintings deleted.');
+}
+/* Storage full: instead of only the toast, offer the choice — delete old
+   paintings (jump to the Gallery select mode) or save this finished
+   painting to the device (the share-first path; the painting is still in
+   memory, so nothing is lost). */
+let storageFullPageId = null;
+function onStorageFull(){
+  storageFailed = true;
+  storageFullPageId = currentPage ? currentPage.id : null;
+  $('storageFullOverlay').classList.remove('hidden');
+}
 const paintingCache = {};   /* page id -> composited data URL (this session) */
 function compositeCanvasFor(pageId, baseImg, line){
   const p = PAGE_BY_ID[pageId];
@@ -4513,10 +4722,7 @@ async function paintingDataURL(pageId){
     paintingCache[pageId] = c.toDataURL('image/png');
     return paintingCache[pageId];
   }
-  let raw = null;
-  try { raw = localStorage.getItem(LS_PAGE(pageId)); } catch(e){}
-  if (!raw) return null;
-  const saved = JSON.parse(raw);
+  const saved = await getPaintingRecord(pageId);
   if (!saved || !saved.data) return null;
   const [baseImg, line] = await Promise.all([loadImage(saved.data), loadImage(PAGE_BY_ID[pageId].line)]);
   /* Re-apply the page's grain to the stored flat base so the gallery shows
@@ -4559,6 +4765,9 @@ async function showGalleryStacks(){
   wrap.innerHTML = '';
   $('galleryStacksEmpty').classList.add('hidden');
   showView('galleryGridView');
+  setGallerySelectMode(false);
+  $('galleryStorageHint').classList.toggle('hidden', !autoSelectOnStage);
+  refreshStorageMeter();
   const finished = progress.finished.slice();
   const doodles = loadDoodles();
   if (!finished.length && !doodles.length){
@@ -4655,6 +4864,8 @@ async function showGalleryPack(key){
   const pages = packPages(key);
   const ids = pages.map(p => p.id).filter(id => progress.finished.includes(id));
   $('galleryStageTitle').textContent = pk.name;
+  setGallerySelectMode(false);
+  refreshStorageMeter();
   /* NOTE (2026-11-23): this first used $('galleryStageCount') and
      $('galleryStageGrid') — neither id exists. The stage view has no count
      line and its grid is $('galleryGrid'), so the pack view mirrors
@@ -4668,6 +4879,7 @@ async function showGalleryPack(key){
     seen.add(id);
     const card = document.createElement('button');
     card.className = 'gcard';
+    card.dataset.pageId = id;
     const img = document.createElement('img');
     const url = await paintingDataURL(id);
     if (!url){ continue; }
@@ -4678,7 +4890,11 @@ async function showGalleryPack(key){
     nm.className = 'name';
     nm.textContent = PAGE_BY_ID[id].name;
     card.appendChild(nm);
-    card.addEventListener('click', () => showSinglePainting(id));
+    card.appendChild(selBadge());
+    card.addEventListener('click', () => {
+      if (gallerySelectMode){ toggleGallerySelect(id); return; }
+      showSinglePainting(id);
+    });
     grid.appendChild(card);
   }
   $('galleryStageEmpty').classList.toggle('hidden', ids.length > 0);
@@ -4692,11 +4908,14 @@ async function showGalleryStage(n){
   grid.innerHTML = '';
   $('galleryStageEmpty').classList.add('hidden');
   showView('galleryStageView');
+  setGallerySelectMode(false);
+  refreshStorageMeter();
   const ids = progress.finished.filter(id => PAGE_BY_ID[id].stage === n);
   for (const id of ids){
     const p = PAGE_BY_ID[id];
     const card = document.createElement('button');
     card.className = 'gcard';
+    card.dataset.pageId = id;
     const img = document.createElement('img');
     img.alt = 'Your finished ' + p.name.toLowerCase() + ' painting';
     const url = await paintingDataURL(id);
@@ -4707,7 +4926,11 @@ async function showGalleryStage(n){
     nm.className = 'name';
     nm.textContent = p.name;
     card.appendChild(nm);
-    card.addEventListener('click', () => showSinglePainting(id));
+    card.appendChild(selBadge());
+    card.addEventListener('click', () => {
+      if (gallerySelectMode){ toggleGallerySelect(id); return; }
+      showSinglePainting(id);
+    });
     grid.appendChild(card);
   }
   if (n === 10){
@@ -4722,11 +4945,16 @@ async function showGalleryStage(n){
       nm.className = 'name';
       nm.textContent = 'Doodle';
       card.appendChild(nm);
-      card.addEventListener('click', () => showSingleDoodle(d.id));
+      card.addEventListener('click', () => {
+        if (gallerySelectMode){ toast('Only paintings can be deleted here — doodles stay.'); return; }
+        showSingleDoodle(d.id);
+      });
       grid.appendChild(card);
     }
   }
   if (!grid.children.length) $('galleryStageEmpty').classList.remove('hidden');
+  /* Jump from the storage-full choice: land straight in select mode. */
+  if (autoSelectOnStage){ autoSelectOnStage = false; setGallerySelectMode(true); }
 }
 async function showSinglePainting(pageId){
   const p = PAGE_BY_ID[pageId];
@@ -4740,8 +4968,8 @@ async function showSinglePainting(pageId){
   $('galleryImg').dataset.doodleId = '';
   /* "Sign it" hides once the picture is already signed; "Watch it again"
      hides when no fill order was recorded (older paintings). */
-  let rec = null;
-  try { const raw = localStorage.getItem(LS_PAGE(pageId)); if (raw) rec = JSON.parse(raw); } catch(e){}
+  let rec = getPaintingRecordSync(pageId);
+  if (!rec) rec = await getPaintingRecord(pageId);
   $('signItBtn').classList.toggle('hidden', !!(rec && rec.signed));
   $('replayBtn').classList.toggle('hidden', !(rec && rec.fills && rec.fills.length));
   showView('galleryView');
@@ -4862,10 +5090,41 @@ $('replayBtn').addEventListener('click', () => {
   startReplay(pageId);
 });
 
+/* ---- Gallery select + delete (2026-11-23 storage fix) ---- */
+$('gallerySelectBtn').addEventListener('click', () => setGallerySelectMode(!gallerySelectMode));
+$('gallerySelectCancelBtn').addEventListener('click', () => setGallerySelectMode(false));
+/* Delete is parent-gated (same 3 s hold as Send/Print) + confirmed in the
+   overlay that follows — never a one-tap wipe, and never by the child. */
+$('galleryDeleteBtn').addEventListener('click', () => {
+  if (!gallerySelected.size) return;
+  gatePurpose = 'delete-paintings';
+  gateAfter = () => showDeleteConfirm();
+  $('gateOverlay').classList.remove('hidden');
+  resetHold();
+});
+$('deleteConfirmYes').addEventListener('click', () => { deleteSelectedPaintings(); });
+$('deleteConfirmNo').addEventListener('click', () => { $('deleteConfirmOverlay').classList.add('hidden'); });
+
+/* ---- Storage-full choice (2026-11-23 storage fix) ---- */
+$('storageSaveDeviceBtn').addEventListener('click', () => {
+  $('storageFullOverlay').classList.add('hidden');
+  if (!storageFullPageId){ toast('Open a picture first.'); return; }
+  /* Share-first save, same path as the Gallery Save button: share sheet,
+     download only as a fallback. The painting is still in memory, so the
+     share works even though the disk save failed. */
+  sharePaintingFile(storageFullPageId);
+});
+$('storageDeleteBtn').addEventListener('click', () => {
+  $('storageFullOverlay').classList.add('hidden');
+  autoSelectOnStage = true;
+  showGalleryStacks();
+});
+$('storageFullClose').addEventListener('click', () => { $('storageFullOverlay').classList.add('hidden'); });
+
 /* ================= REPLAY / TIME-LAPSE (BB2) ================= */
-function startReplay(pageId){
-  let rec = null;
-  try { const raw = localStorage.getItem(LS_PAGE(pageId)); if (raw) rec = JSON.parse(raw); } catch(e){}
+async function startReplay(pageId){
+  let rec = getPaintingRecordSync(pageId);
+  if (!rec) rec = await getPaintingRecord(pageId);
   const fills = (rec && rec.fills) || (currentPage && currentPage.id === pageId ? fillLog : []);
   if (!fills || !fills.length){
     toast('Nothing to replay yet — color this picture first!');
@@ -5180,6 +5439,7 @@ function switchProfile(id){
   LS_PROGRESS = 'cps-proto:' + id + ':progress';
   progress = loadProgress();
   for (const k in paintingCache) delete paintingCache[k];
+  for (const k in paintingStore) delete paintingStore[k]; /* per-profile records */
   sessionDone = 0;
   buildStacks();
   renderProfileChips();
@@ -5256,6 +5516,187 @@ $('heroSwitch').addEventListener('click', () => {
   syncParentScreen();
 });
 
+/* ================= PAINTING STORAGE: IndexedDB (2026-11-23 storage fix) =================
+   Paintings used to live in localStorage as full PNG data URLs under
+   cps-proto:<profile>:<pageId>, and localStorage caps at ~5 MB per origin —
+   family testing filled it ("Storage is full — this page could not be
+   saved."). Paintings now live in IndexedDB (the browser's origin quota,
+   typically hundreds of MB+), same record shape {taps, done, data, at,
+   signed, fills (capped 300), pass/color for pencil/watercolor}, keyed by
+   the same key string. Progress, parent prefs, profiles, meta and doodles
+   stay in localStorage (small JSON, unchanged).
+   Sync path: saveProgress writes the in-memory cache FIRST, so the current
+   session never blocks on disk; the IndexedDB write follows async. If
+   IndexedDB is unavailable the old localStorage write is the fallback, and
+   only if BOTH fail is storageFailed set. restoreProgress reads the cache
+   synchronously and falls back to an async IndexedDB fetch on a cold start.
+   Migration (once, at boot): every localStorage painting key is read, the
+   newer of the IndexedDB / localStorage copy wins (by `at`), the winner is
+   written to IndexedDB, and the localStorage key is deleted — so no family
+   painting is lost in the move. A corrupt record is left in place, never
+   deleted, and counted in lsAfter. */
+const IDB_NAME = 'cps-paintings';
+const IDB_STORE = 'paintings';
+let idb = null, idbReady = false, idbError = null;
+let paintingStore = {};   /* full key ('cps-proto:p1:lion') -> record (in-memory cache) */
+let storageMigration = { ran: false, found: 0, moved: 0, kept: 0, lsBefore: 0, lsAfter: 0, error: null };
+let storageReadyResolve = null;
+const storageReadyPromise = new Promise(r => { storageReadyResolve = r; });
+let idbOpenPromise = null;
+function idbOpen(){
+  if (idbOpenPromise) return idbOpenPromise;
+  idbOpenPromise = new Promise((resolve, reject) => {
+    let req;
+    try { req = indexedDB.open(IDB_NAME, 1); } catch(e){ reject(e); return; }
+    req.onupgradeneeded = () => { req.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('indexedDB open failed'));
+    req.onblocked = () => reject(new Error('indexedDB open blocked'));
+  });
+  return idbOpenPromise;
+}
+function idbPut(key, rec){
+  return new Promise((res, rej) => {
+    if (!idb){ rej(new Error('indexedDB not open')); return; }
+    const tx = idb.transaction(IDB_STORE, 'readwrite');
+    const rq = tx.objectStore(IDB_STORE).put(rec, key);
+    rq.onsuccess = () => res();
+    rq.onerror = () => rej(rq.error || new Error('indexedDB put failed'));
+    tx.onerror = () => rej(tx.error || new Error('indexedDB put failed'));
+  });
+}
+function idbGet(key){
+  return new Promise((res, rej) => {
+    if (!idb){ rej(new Error('indexedDB not open')); return; }
+    const tx = idb.transaction(IDB_STORE, 'readonly');
+    const rq = tx.objectStore(IDB_STORE).get(key);
+    rq.onsuccess = () => res(rq.result || null);
+    rq.onerror = () => rej(rq.error || new Error('indexedDB get failed'));
+  });
+}
+function idbDelete(key){
+  return new Promise((res, rej) => {
+    if (!idb){ rej(new Error('indexedDB not open')); return; }
+    const tx = idb.transaction(IDB_STORE, 'readwrite');
+    const rq = tx.objectStore(IDB_STORE).delete(key);
+    rq.onsuccess = () => res();
+    rq.onerror = () => rej(rq.error || new Error('indexedDB delete failed'));
+  });
+}
+function idbGetAll(){
+  return new Promise((res, rej) => {
+    if (!idb){ rej(new Error('indexedDB not open')); return; }
+    const out = [];
+    const tx = idb.transaction(IDB_STORE, 'readonly');
+    const rq = tx.objectStore(IDB_STORE).openCursor();
+    rq.onsuccess = () => {
+      const cur = rq.result;
+      if (cur){ out.push({ key: cur.key, rec: cur.value }); cur.continue(); }
+      else res(out);
+    };
+    rq.onerror = () => rej(rq.error || new Error('indexedDB scan failed'));
+  });
+}
+const paintingKey = pageId => LS_PAGE(pageId);
+function getPaintingRecordSync(pageId){
+  return paintingStore[paintingKey(pageId)] || null;
+}
+async function getPaintingRecord(pageId){
+  await storageReadyPromise;
+  const key = paintingKey(pageId);
+  if (paintingStore[key]) return paintingStore[key];
+  let rec = null;
+  if (idbReady){
+    try { rec = await idbGet(key); } catch(e){ rec = null; }
+  }
+  if (!rec){
+    try { const raw = localStorage.getItem(key); if (raw) rec = JSON.parse(raw); } catch(e){ rec = null; }
+  }
+  if (rec && rec.data) paintingStore[key] = rec;
+  return (rec && rec.data) ? rec : null;
+}
+/* Disk write for one painting: IndexedDB first, localStorage fallback.
+   The in-memory cache is written by the caller (synchronously, before this
+   is awaited) so the session never waits on disk. Throws only when both
+   stores fail — the caller turns that into the storage-full choice. */
+async function putPaintingRecord(key, rec){
+  await storageReadyPromise;
+  if (idbReady){
+    try {
+      await idbPut(key, rec);
+      try { localStorage.removeItem(key); } catch(e){} /* no stale twin copy */
+      return;
+    } catch(e){ /* fall through to localStorage */ }
+  }
+  localStorage.setItem(key, JSON.stringify(rec));
+}
+async function deletePaintingRecord(pageId){
+  const key = paintingKey(pageId);
+  delete paintingStore[key];
+  if (idbReady){ try { await idbDelete(key); } catch(e){} }
+  try { localStorage.removeItem(key); } catch(e){}
+}
+function migrationTargetKey(lsKey){
+  const m = lsKey.match(/^cps-proto:(p[^:]+):(.+)$/);
+  if (m) return lsKey; /* already profile-scoped */
+  return 'cps-proto:p1:' + lsKey.slice('cps-proto:'.length); /* legacy pre-profile key */
+}
+function lsPaintingKeysPresent(){
+  const keys = [];
+  const pids = profiles.profiles.map(p => p.id);
+  PAGES.forEach(p => {
+    pids.forEach(pid => keys.push('cps-proto:' + pid + ':' + p.id));
+    keys.push('cps-proto:' + p.id);
+  });
+  return keys.filter(k => { try { return localStorage.getItem(k) != null; } catch(e){ return false; } });
+}
+async function migratePaintingsFromLS(){
+  const before = lsPaintingKeysPresent();
+  storageMigration.lsBefore = before.length;
+  for (const lsKey of before){
+    let rec = null;
+    try { rec = JSON.parse(localStorage.getItem(lsKey)); } catch(e){ continue; } /* corrupt: leave in place */
+    if (!rec || !rec.data) continue;
+    storageMigration.found++;
+    const key = migrationTargetKey(lsKey);
+    let moved = false;
+    if (idbReady){
+      try {
+        const existing = await idbGet(key);
+        if (!existing || (rec.at || 0) >= (existing.at || 0)) await idbPut(key, rec);
+        paintingStore[key] = (existing && (existing.at || 0) > (rec.at || 0)) ? existing : rec;
+        moved = true;
+      } catch(e){ moved = false; }
+    }
+    if (moved){
+      try { localStorage.removeItem(lsKey); } catch(e){}
+      storageMigration.moved++;
+    } else {
+      storageMigration.kept++;
+      if (rec && rec.data) paintingStore[key] = paintingStore[key] || rec;
+    }
+  }
+  storageMigration.lsAfter = lsPaintingKeysPresent().length;
+}
+async function initPaintingStore(){
+  try {
+    idb = await idbOpen();
+    idbReady = true;
+    try {
+      const all = await idbGetAll();
+      all.forEach(({ key, rec }) => { if (rec && rec.data) paintingStore[key] = rec; });
+    } catch(e){ /* preload is best-effort; single gets still work */ }
+  } catch(e){
+    idbReady = false;
+    idbError = String((e && e.message) || e);
+  }
+  try { await migratePaintingsFromLS(); }
+  catch(e){ storageMigration.error = String((e && e.message) || e); }
+  storageMigration.ran = true;
+  storageReadyResolve();
+}
+initPaintingStore();
+
 /* ================= PERSISTENCE (per page) ================= */
 function scheduleSave(){
   if (replaying) return;
@@ -5264,9 +5705,10 @@ function scheduleSave(){
 }
 function saveProgress(immediate){
   if (!lineImg || !currentPage) return;
+  let rec;
   try {
     syncLayerCanvases();
-    const rec = {
+    rec = {
       taps: taps, done: doneFlag,
       data: baseCanvas.toDataURL('image/png'), at: Date.now(),
       signed: signedFlag, fills: fillLog.slice(-300)
@@ -5275,57 +5717,76 @@ function saveProgress(immediate){
       rec.pass = passCanvas.toDataURL('image/png');
       rec.color = colorCanvas.toDataURL('image/png');
     }
-    localStorage.setItem(LS_PAGE(currentPage.id), JSON.stringify(rec));
-    /* Keep the gallery cache fresh for this page. */
-    if (paintingCache[currentPage.id]){
-      const c = compositeCanvasFor(currentPage.id, fillCanvas, lineImg);
-      paintingCache[currentPage.id] = c.toDataURL('image/png');
-    }
-    storageFailed = false;
   } catch(e){
-    storageFailed = true;   /* quota: painting stays in memory for the session */
-    if (immediate) toast('Storage is full — this page could not be saved.');
+    storageFailed = true;   /* could not even build the record: offer the choice */
+    if (immediate) onStorageFull();
+    return;
   }
+  /* Sync in-memory path first: the painting stays usable this session even
+     if the disk write below fails. */
+  const key = LS_PAGE(currentPage.id);
+  paintingStore[key] = rec;
+  /* Keep the gallery cache fresh for this page. */
+  if (paintingCache[currentPage.id]){
+    const c = compositeCanvasFor(currentPage.id, fillCanvas, lineImg);
+    paintingCache[currentPage.id] = c.toDataURL('image/png');
+  }
+  storageFailed = false;
+  /* IndexedDB write follows async (localStorage fallback inside); only if
+     BOTH stores fail does the storage-full choice appear. */
+  putPaintingRecord(key, rec).then(() => { refreshStorageMeter(); })
+    .catch(() => {
+      storageFailed = true;   /* quota: painting stays in memory for the session */
+      if (immediate) onStorageFull();
+    });
 }
 function restoreProgress(){
   if (replaying) return;   /* replay loads the saved painting itself at the end */
-  let raw = null;
-  try { raw = localStorage.getItem(LS_PAGE(currentPage.id)); } catch(e){}
-  if (!raw) return;
-  try {
-    const saved = JSON.parse(raw);
-    if (!saved || !saved.data) return;
-    const img = new Image();
-    img.onload = () => {
-      bctx.drawImage(img, 0, 0, W, H);
-      const finish = () => {
-        textureAll();
-        taps = saved.taps || 0;
-        doneFlag = !!saved.done;
-        signedFlag = !!saved.signed;
-        fillLog = Array.isArray(saved.fills) ? saved.fills.slice(-300) : [];
-        render();
-        if (doneFlag && !progress.finished.includes(currentPage.id)){
-          progress.finished.push(currentPage.id);
-          saveProgressState();
-        }
-        if (taps > 0 && !doneFlag) toast('Welcome back — your picture was saved!');
-      };
-      if (saved.pass && saved.color){
-        const imgP = new Image();
-        imgP.onload = () => {
-          pctx.drawImage(imgP, 0, 0, W, H);
-          const imgC = new Image();
-          imgC.onload = () => { cctx.drawImage(imgC, 0, 0, W, H); readLayerCanvases(); finish(); };
-          imgC.onerror = finish;
-          imgC.src = saved.color;
-        };
-        imgP.onerror = finish;
-        imgP.src = saved.pass;
-      } else finish();
+  const cached = getPaintingRecordSync(currentPage.id);
+  if (cached){ applySavedRecord(cached); return; }
+  /* Cold start (IndexedDB preload still running): fetch async and apply
+     when it lands — the desk canvases start white, exactly as they did
+     while the old sync read waited on img.onload. */
+  const id = currentPage.id;
+  getPaintingRecord(id).then(rec => {
+    if (rec && currentPage && currentPage.id === id) applySavedRecord(rec);
+  }).catch(() => {});
+}
+function applySavedRecord(saved){
+  if (!saved || !saved.data) return;
+  const id = currentPage.id;
+  const img = new Image();
+  img.onload = () => {
+    if (!currentPage || currentPage.id !== id) return; /* child moved on meanwhile */
+    bctx.drawImage(img, 0, 0, W, H);
+    const finish = () => {
+      if (!currentPage || currentPage.id !== id) return;
+      textureAll();
+      taps = saved.taps || 0;
+      doneFlag = !!saved.done;
+      signedFlag = !!saved.signed;
+      fillLog = Array.isArray(saved.fills) ? saved.fills.slice(-300) : [];
+      render();
+      if (doneFlag && !progress.finished.includes(currentPage.id)){
+        progress.finished.push(currentPage.id);
+        saveProgressState();
+      }
+      if (taps > 0 && !doneFlag) toast('Welcome back — your picture was saved!');
     };
-    img.src = saved.data;
-  } catch(e){}
+    if (saved.pass && saved.color){
+      const imgP = new Image();
+      imgP.onload = () => {
+        pctx.drawImage(imgP, 0, 0, W, H);
+        const imgC = new Image();
+        imgC.onload = () => { cctx.drawImage(imgC, 0, 0, W, H); readLayerCanvases(); finish(); };
+        imgC.onerror = finish;
+        imgC.src = saved.color;
+      };
+      imgP.onerror = finish;
+      imgP.src = saved.pass;
+    } else finish();
+  };
+  img.src = saved.data;
 }
 
 /* 2026-11-22 (Godwin bug report): restore the screen the child was using
@@ -5452,7 +5913,26 @@ window.__cps = {
       if (k && k.indexOf('cps-proto:') === 0){ total += localStorage.getItem(k).length; keys.push(k); }
     }
     return { total, keys };
-  }
+  },
+  /* Storage fix (2026-11-23): IndexedDB state, migration counts, meter +
+     full-storage hooks — verification only, not part of the UI. */
+  get storage(){ return { idbReady, idbError, migration: JSON.parse(JSON.stringify(storageMigration)), cached: Object.keys(paintingStore).length }; },
+  get storageReady(){ return storageReadyPromise; },
+  async storageInfo(){
+    let usage = null, quota = null, estimateOk = false;
+    try {
+      const est = await navigator.storage.estimate();
+      if (est && typeof est.quota === 'number' && est.quota > 0){ usage = est.usage; quota = est.quota; estimateOk = true; }
+    } catch(e){}
+    let idbCount = 0;
+    if (idbReady){ try { idbCount = (await idbGetAll()).length; } catch(e){} }
+    return { usage, quota, estimateOk, idbCount, cachedKeys: Object.keys(paintingStore) };
+  },
+  refreshStorageMeter,
+  simulateStorageFull(){ onStorageFull(); },
+  testStorageMeter(usage, quota){ return refreshStorageMeter({ usage, quota }); },
+  get gallerySelectMode(){ return gallerySelectMode; },
+  get gallerySelected(){ return Array.from(gallerySelected); },
 };
 </script>
 </body>
