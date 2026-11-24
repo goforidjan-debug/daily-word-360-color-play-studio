@@ -39,7 +39,8 @@
   .logo-hanger img{display:block; width:100%; height:auto;
     filter:drop-shadow(0 12px 16px rgba(60,30,5,.35));}
   /* small sign: same hanging spot on inner screens (stage, gallery, parent),
-     about half the welcome size; tap it to go back home */
+     about half the welcome size; tap it to go to Pick a Stage (2026-11-23,
+     Godwin: "Logo goes to Pick a Stage, welcome stays first") */
   .logo-hanger.small{width:min(48vw,180px); margin:-12px auto 14px; cursor:pointer;}
   .screen .sub{color:#FFE9B8; font-size:15px; font-weight:700; margin:6px 0 0; text-align:center;
     text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65);}
@@ -770,7 +771,7 @@
     </button>
   </div>
   </div>
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <h1>Pick a Stage</h1>
@@ -789,7 +790,7 @@
 
 <!-- ============ STAGE DETAIL (one stage's pages) ============ -->
 <div class="screen hidden" id="stageDetailView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <div class="back-row">
@@ -934,7 +935,7 @@
 
 <!-- ============ GALLERY: GRID ============ -->
 <div class="screen hidden" id="galleryGridView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <div class="back-row">
@@ -964,7 +965,7 @@
 
 <!-- ============ GALLERY: ONE STAGE'S PAINTINGS ============ -->
 <div class="screen hidden" id="galleryStageView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <div class="back-row">
@@ -1000,7 +1001,7 @@
 
 <!-- ============ GALLERY: SINGLE PAINTING ============ -->
 <div class="screen hidden" id="galleryView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <div class="back-row">
@@ -1078,7 +1079,7 @@
 
 <!-- ============ PARENT SCREEN ============ -->
 <div class="screen hidden" id="parentView">
-  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Back to home">
+  <div class="logo-hanger small" role="button" tabindex="0" aria-label="Go to Pick a Stage">
     <img src="assets/logo-sign.png?v=8" alt="My Little Studio — Color &amp; Play">
   </div>
   <div class="back-row">
@@ -1378,12 +1379,18 @@ function signTick(now){
   requestAnimationFrame(signTick);
 }
 if (signHangers.length) requestAnimationFrame(signTick);
-/* Small signs on inner screens are the way home: tap one to go back
-   to the welcome screen. */
+/* Small signs on inner screens go to Pick a Stage (2026-11-23, Godwin:
+   "Logo goes to Pick a Stage, welcome stays first"). On the Pick a Stage
+   screen itself the sign is already there, so a tap does nothing. The
+   welcome screen stays the first screen on a fresh open (see INIT). */
+function goStagesFromSign(){
+  if (!document.getElementById('stageView').classList.contains('hidden')) return;
+  showStage();
+}
 for (const h of document.querySelectorAll('.logo-hanger.small')) {
-  h.addEventListener('click', showWelcome);
+  h.addEventListener('click', goStagesFromSign);
   h.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showWelcome(); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goStagesFromSign(); }
   });
 }
 function signEnableMotion(){
