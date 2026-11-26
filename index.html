@@ -2582,6 +2582,9 @@ const LS_STORY_VOLUME = 'cps-proto:story-volume';
 const LS_MUTED = 'cps-proto:muted';
 const VOL = { high: 1.0, low: 0.35 };
 const BG_GAIN = 0.4;   /* background music plays gently, never loud */
+const DUCK_GAIN = 0.1; /* music drops to a whisper while Caitlin speaks
+   (Godwin's brother, 2026-11-26): bg music 0.4 -> 0.04, song 1.0 -> 0.1 */
+let musicDucked = false; /* true while the story voice is playing */
 /* Godwin's 5 background tracks, in cycle order (all normalized to -16 LUFS,
    true peak -1.5, same as the welcome song). Names are used in the
    change-music toast only. */
@@ -2620,8 +2623,9 @@ function loadMutedPref(){
   try { return localStorage.getItem(LS_MUTED) === '1'; } catch(e){ return false; }
 }
 function applyVolume(){
-  song.volume = VOL[volumePref] || 1;
-  bgAudio.volume = (VOL[volumePref] || 1) * BG_GAIN;
+  const duck = musicDucked ? DUCK_GAIN : 1;
+  song.volume = (VOL[volumePref] || 1) * duck;
+  bgAudio.volume = (VOL[volumePref] || 1) * BG_GAIN * duck;
   factAudio.volume = VOL[storyVolumePref] || 1;
   song.muted = muted;
   bgAudio.muted = muted;
@@ -3673,6 +3677,14 @@ function toggleFactAudio(){
   syncFactSpeakUI();
 }
 factAudio.addEventListener('ended', syncFactSpeakUI);
+/* Music ducking (Godwin's brother, 2026-11-26): while Caitlin speaks, the
+   music drops to a whisper; when she stops, it comes back up. The 'play' /
+   'pause' / 'ended' events cover every start and stop (tap to play, tap
+   to stop, natural end, screen change, interruption) — setting the flag
+   and calling applyVolume() is idempotent, so a double call is harmless. */
+factAudio.addEventListener('play', () => { musicDucked = true; applyVolume(); });
+factAudio.addEventListener('pause', () => { musicDucked = false; applyVolume(); });
+factAudio.addEventListener('ended', () => { musicDucked = false; applyVolume(); });
 function showFactLine(){
   const el = $('factLine');
   const f = PAGE_FACTS[currentPage.id];
