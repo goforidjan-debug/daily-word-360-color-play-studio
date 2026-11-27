@@ -53,9 +53,9 @@
 
   /* ---------- stage screen ---------- */
   .stage-sec-head{display:flex; align-items:center; gap:10px; margin-bottom:10px; padding:0 2px;}
-  .stage-sec-head h2{margin:0; font-size:19px; font-weight:800; color:#fff;
+  .stage-sec-head h2{margin:0; font-size:16px; font-weight:800; color:#fff;
     text-shadow:0 2px 8px rgba(60,30,5,.55);}
-  .stage-pill{background:#FFD60A; color:#4A2E00; font-size:12px; font-weight:800; letter-spacing:.08em;
+  .stage-pill{background:#FFD60A; color:#4A2E00; font-size:10.5px; font-weight:800; letter-spacing:.08em;
     text-transform:uppercase; padding:5px 11px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
   .stage-pill.pencil{background:#7ED6FF; color:#0B3D5C;}
   .stage-pill.marker{background:#FF8FB1; color:#5C1030;}
@@ -209,11 +209,12 @@
   .topbar{width:100%; display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
     padding:2px 2px 0;}
   .titleblock{padding-top:2px;}
-  .desk h1{margin:0; font-size:31px; line-height:1.05; font-weight:800; letter-spacing:-.01em; color:#fff;
+  .desk h1{margin:0; font-size:24px; line-height:1.05; font-weight:800; letter-spacing:-.01em; color:#fff;
     text-shadow:0 2px 10px rgba(60,30,5,.55), 0 1px 2px rgba(60,30,5,.6);}
   .stage{display:inline-block; margin-top:8px; background:#FFD60A; color:#4A2E00;
-    font-size:13.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
-    padding:6px 13px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
+    font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+    white-space:nowrap;
+    padding:5px 11px; border-radius:999px; box-shadow:0 3px 10px rgba(60,30,5,.35);}
   .stage.pencil{background:#7ED6FF; color:#0B3D5C;}
   .stage.marker{background:#FF8FB1; color:#5C1030;}
   .stage.watercolor{background:#9BE7FF; color:#0B3D5C;}
@@ -596,9 +597,9 @@
     letter-spacing:.06em; text-transform:uppercase; padding:6px 12px; border-radius:999px;
     box-shadow:0 3px 10px rgba(60,30,5,.4);}
   .stack-label{display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px;}
-  .stack-title{font-size:17px; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(60,30,5,.55);}
+  .stack-title{font-size:15px; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(60,30,5,.55);}
   .stack-progress{font-size:13px; color:#FFE9B8; font-weight:700; text-shadow:0 1px 2px rgba(43,24,4,.9), 0 0 5px rgba(43,24,4,.8), 0 2px 12px rgba(43,24,4,.65);}
-  .stack-label .stage-pill{font-size:11px; padding:4px 9px; white-space:nowrap;}
+  .stack-label .stage-pill{font-size:10px; padding:4px 9px; white-space:nowrap;}
   /* Hover (mouse) / press (touch): the stack lifts a touch and the fanned
      pages spread a little wider, then settles back — small and calm, never
      a shake or a big jump. Hover is scoped to real hover devices so it
@@ -702,7 +703,8 @@
   }
 
   @media (min-width:700px){
-    h1,.desk h1{font-size:38px;}
+    h1{font-size:38px;}
+    .desk h1{font-size:28px;}
     .guide-thumb{width:104px;}
   }
 </style>
